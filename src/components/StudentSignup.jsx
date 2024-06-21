@@ -5,6 +5,7 @@ import { PrimaryButton, SecondaryButton, IconButton } from "./Button";
 import AuthCarousel from "./AuthCarousel";
 import InputField from "./Input";
 import google from "/google.png";
+import logo from "/logo.png";
 import { DividerWithText, Divider } from "./Dividers";
 
 const StudentSignup = ({ setRole }) => {
@@ -84,7 +85,10 @@ const StudentSignup = ({ setRole }) => {
 					onSubmit={onSubmit}
 				>
 					{({ values, handleChange }) => (
-						<Form className="w-full py-8 lg:py-14 flex flex-col gap-4 lg:gap-8 justify-between">
+						<Form className="w-full py-8 lg:py-5 flex flex-col gap-4 lg:gap-8 justify-between">
+							<div className="w-[15%] self-end">
+								<img src={logo} className="" />
+							</div>
 							<div>
 								<div className="flex flex-row gap-2 justify-between">
 									<h3 className="text-xl lg:text-3xl font-semibold">
@@ -118,7 +122,6 @@ const StudentSignup = ({ setRole }) => {
 									</div>
 								</div>
 							</div>
-
 							{step === 1 && (
 								<div className="flex flex-col gap-6">
 									<IconButton
