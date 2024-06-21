@@ -12,7 +12,7 @@ export const DividerWithText = ({ text = "or" }) => {
 
 export const Divider = ({ text = "or" }) => {
 	return (
-		<div className="flex items-center justify-center mt-4">
+		<div className="flex items-center justify-center my-2">
 			<hr className="flex-grow border-lightGray" />
 		</div>
 	);

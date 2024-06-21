@@ -135,7 +135,7 @@ const TutorSignin = ({ setRole }) => {
 										text={"Sign in"}
 									/>
 									<Divider />
-									<p>
+									<p className="text-sm">
 										New to Edture?{" "}
 										<a href="/signup" className="text-primaryBlue">
 											Create an account
