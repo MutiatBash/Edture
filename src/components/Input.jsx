@@ -12,7 +12,7 @@ const InputField = ({ label, ...props }) => {
 			<input
 				{...field}
 				{...props}
-				className="py-2 px-3 lg:py-3 border border-lightGray rounded-lg placeholder:text-[#c5c3c3a8]"
+				className="py-2 px-3 lg:py-3 border border-lightGray rounded-lg placeholder:text-[#c5c3c3a8] focus:border-primaryBlue"
 			/>
 			{meta.touched && meta.error ? (
 				<span className="text-red text-sm">{meta.error}</span>

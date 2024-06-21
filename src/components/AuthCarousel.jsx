@@ -16,7 +16,7 @@ const AuthCarousel = ({images}) => {
 	};
 
 	return (
-		<div className="carousel-container">
+		<div className="carousel-container inset-y-0">
 			<Slider {...settings}>
 				{images.map((image, index) => (
 					<div key={index} className="img-container">

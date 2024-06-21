@@ -73,80 +73,78 @@ const TutorSignin = ({ setRole }) => {
 	};
 
 	return (
-		<section className="flex flex-col justify-between p-5 lg:pr-[120px] lg:pl-8 lg:py-6 relative">
-			<div className="flex flex-row justify-between pt-4">
-				<div className="hidden md:block w-[48%] inset-0 left-0 bg-white">
-					<AuthCarousel images={studentImages} />
-				</div>
-				<div className="flex flex-row justify-center items-center w-[45%]">
-					<Formik
-						initialValues={initialValues}
-						validationSchema={validationSchema}
-						onSubmit={onSubmit}
-					>
-						{({ values, handleChange }) => (
-							<Form className="w-full py-8 lg:py-14 flex flex-col gap-4 lg:gap-8 justify-between">
-								<div>
-									<div className="flex flex-row gap-2 justify-between">
-										<h3 className="text-xl lg:text-3xl font-semibold">
-											Welcome Back
-										</h3>
-										<SecondaryButton
-											text={"Student Sign in"}
-											onClick={() => setRole("STUDENT")}
-										/>
-									</div>
+		<section className="flex flex-col lg:flex-row items-center p-5 lg:pr-24 lg:pl-8 lg:py-6">
+			<div className="hidden md:block fixed left-0 top-0 bottom-0 w-[45%] bg-white z-0">
+				<AuthCarousel images={studentImages} className="" />
+			</div>
+			<div className="flex flex-row justify-center items-center lg:w-1/2 w-full lg:ml-auto">
+				<Formik
+					initialValues={initialValues}
+					validationSchema={validationSchema}
+					onSubmit={onSubmit}
+				>
+					{({ values, handleChange }) => (
+						<Form className="w-full py-8 lg:py-14 flex flex-col gap-4 lg:gap-8 justify-between">
+							<div>
+								<div className="flex flex-row gap-2 justify-between">
+									<h3 className="text-xl lg:text-3xl font-semibold">
+										Welcome Back
+									</h3>
+									<SecondaryButton
+										text={"Student Sign in"}
+										onClick={() => setRole("STUDENT")}
+									/>
 								</div>
+							</div>
 
-								<div className="flex flex-col gap-6">
-									<IconButton
-										icon={google}
-										text={"Sign in with Google"}
-										className="w-full"
-									/>
-									<DividerWithText />
-									<InputField
-										label="Email Address"
-										name="email"
-										placeholder="Enter your email address"
-									/>
-									<InputField
-										label="Password"
-										name="password"
-										type="password"
-										placeholder="********"
-									/>
-									<div>
-										<label>
-											<Field
-												type="checkbox"
-												name="rememberme"
-												checked={values.receiveNewsletterUpdate}
-												onChange={handleChange}
-											/>
-											<span className="ml-2">Remember me</span>
-										</label>
-									</div>
+							<div className="flex flex-col gap-6">
+								<IconButton
+									icon={google}
+									text={"Sign in with Google"}
+									className="w-full"
+								/>
+								<DividerWithText />
+								<InputField
+									label="Email Address"
+									name="email"
+									placeholder="Enter your email address"
+								/>
+								<InputField
+									label="Password"
+									name="password"
+									type="password"
+									placeholder="********"
+								/>
+								<div>
+									<label>
+										<Field
+											type="checkbox"
+											name="rememberme"
+											checked={values.receiveNewsletterUpdate}
+											onChange={handleChange}
+										/>
+										<span className="ml-2">Remember me</span>
+									</label>
 								</div>
-								<div className="flex flex-col gap-3">
-									<PrimaryButton
-										className={`w-full`}
-										type="submit"
-										text={"Sign in"}
-									/>
-									<Divider />
-									<p className="text-sm">
-										New to Edture?{" "}
-										<a href="/signup" className="text-primaryBlue">
-											Create an account
-										</a>{" "}
-										for free
-									</p>
-								</div>
-							</Form>
-						)}
-					</Formik>
-				</div>
+							</div>
+							<div className="flex flex-col gap-3">
+								<PrimaryButton
+									className={`w-full`}
+									type="submit"
+									text={"Sign in"}
+								/>
+								<Divider />
+								<p className="text-sm">
+									New to Edture?{" "}
+									<a href="/signup" className="text-primaryBlue">
+										Create an account
+									</a>{" "}
+									for free
+								</p>
+							</div>
+						</Form>
+					)}
+				</Formik>
 			</div>
 		</section>
 	);
