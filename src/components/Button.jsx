@@ -15,7 +15,7 @@ export const PrimaryButton = ({ text, className, onClick, type, disabled }) => {
 	);
 };
 
-export const SecondaryButton = ({ text, className, onClick }) => {
+export const SecondaryButton = ({ text, className, onClick, disabled }) => {
 	return (
 		<div>
 			<button
@@ -28,16 +28,16 @@ export const SecondaryButton = ({ text, className, onClick }) => {
 	);
 };
 
-export const IconButton = ({ text, className, onClick }) => {
+export const IconButton = ({ text, className, onClick, icon }) => {
 	return (
 		<div>
 			<button
 				onClick={onClick}
-				className={`gap-2 w-[fit-content] py-[0.8rem] px-2 whitespace-nowrap text-base bg-transparent border border-white text-white font-semibold md:py-[0.6875rem] md:px-5 hover:shadow-md cursor-pointer transition-all ease-in ${className}`}
+				className={`gap-2 flex justify-center rounded-lg py-[0.8rem] px-2  text-base bg-transparent border border-lightGray text-darkGray md:py-[0.6875rem] md:px-5 cursor-pointer transition-all ease-in ${className}`}
 			>
-				{text}
+				<img src={icon} />
+				<span>{text}</span>
 			</button>
 		</div>
 	);
 };
-
