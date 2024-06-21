@@ -27,7 +27,7 @@ const StudentSignin = ({ setRole }) => {
 		firstname: "",
 		lastname: "",
 		username: "",
-		receiveNewsletterUpdate: false,
+		// receiveNewsletterUpdate: false,
 	};
 
 	const validationSchema = Yup.object({
@@ -47,25 +47,26 @@ const StudentSignin = ({ setRole }) => {
 
 	const onSubmit = async (values) => {
 		try {
-			const role = "STUDENT";
+			
 			const data = {
 				...values,
-				role: role,
 			};
 
-			const response = await fetch("https://edture.onrender.com/users", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify(data),
-			});
+			const response = await fetch(
+				"https://edture.onrender.com/auth/login",
+				{
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify(data),
+				}
+			);
 
 			if (!response.ok) {
 				throw new Error("Failed to submit data");
 			}
 
-			// Optionally handle successful submission here
 			console.log("Data submitted successfully:", values);
 		} catch (error) {
 			console.error("Error submitting data:", error.message);
@@ -120,7 +121,7 @@ const StudentSignin = ({ setRole }) => {
 											<Field
 												type="checkbox"
 												name="rememberme"
-												checked={values.receiveNewsletterUpdate}
+												// checked={values}
 												onChange={handleChange}
 											/>
 											<span className="ml-2">Remember me</span>
