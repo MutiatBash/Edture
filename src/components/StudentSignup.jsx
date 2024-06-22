@@ -8,8 +8,12 @@ import google from "/google.png";
 import logo from "/logo.png";
 import { DividerWithText, Divider } from "./Dividers";
 import ValidationIndicator from "./ValidationIndicator";
+import { Link, useNavigate } from "react-router-dom";
+
 
 const StudentSignup = ({ setRole }) => {
+    	const navigate = useNavigate();
+
 	const studentImages = [
 		"/signup-carousel/student1.png",
 		"/signup-carousel/student2.png",
@@ -89,6 +93,7 @@ const StudentSignup = ({ setRole }) => {
 
 			// Optionally handle successful submission here
 			console.log("Data submitted successfully:", values);
+            	navigate("/login");
 		} catch (error) {
 			console.error("Error submitting data:", error.message);
 		}
