@@ -9,7 +9,7 @@ import logo from "/logo.png";
 import { DividerWithText, Divider } from "./Dividers";
 
 const TutorSignup = ({ setRole }) => {
-	const studentImages = [
+	const tutorImages = [
 		"/signup-carousel/tutor1.png",
 		"/signup-carousel/tutor2.png",
 		"/signup-carousel/tutor3.png",
@@ -74,9 +74,9 @@ const TutorSignup = ({ setRole }) => {
 	};
 
 	return (
-		<section className="flex flex-col lg:flex-row items-center p-5 lg:pr-24 lg:pl-8 lg:py-6">
+		<section className="flex flex-col lg:flex-row items-center p-5 lg:pr-[120px] lg:pl-8 lg:py-6">
 			<div className="hidden md:block fixed left-0 top-0 bottom-0 w-[45%] bg-white z-0">
-				<AuthCarousel images={studentImages} className="" />
+				<AuthCarousel images={tutorImages} className="" />
 			</div>
 			<div className="flex flex-row justify-center items-center lg:w-1/2 w-full lg:ml-auto">
 				<Formik

@@ -8,6 +8,7 @@ import google from "/google.png";
 import logo from "/logo.png";
 import { DividerWithText, Divider } from "./Dividers";
 
+
 const StudentSignin = ({ setRole }) => {
 	const studentImages = [
 		"/signup-carousel/student1.png",
@@ -60,7 +61,7 @@ const StudentSignin = ({ setRole }) => {
 	};
 
 	return (
-		<section className="flex flex-col lg:flex-row items-center p-5 lg:pr-24 lg:pl-8 lg:py-6">
+		<section className="flex flex-col lg:flex-row items-center p-5 lg:pr-[120px] lg:pl-8 lg:py-6">
 			<div className="hidden md:block fixed left-0 top-0 bottom-0 w-[45%] bg-white z-0">
 				<AuthCarousel images={studentImages} className="" />
 			</div>

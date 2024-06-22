@@ -9,6 +9,7 @@ a,
 button,
 span {
 	font-family: "Inter", sans-serif;
+	font-size:14px;
 }
 .carousel-container {
 	width: 80%;

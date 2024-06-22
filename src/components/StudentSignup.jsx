@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Formik, Form, Field } from "formik";
+import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { PrimaryButton, SecondaryButton, IconButton } from "./Button";
 import AuthCarousel from "./AuthCarousel";
@@ -7,6 +7,7 @@ import InputField from "./Input";
 import google from "/google.png";
 import logo from "/logo.png";
 import { DividerWithText, Divider } from "./Dividers";
+import ValidationIndicator from "./ValidationIndicator";
 
 const StudentSignup = ({ setRole }) => {
 	const studentImages = [
@@ -17,10 +18,24 @@ const StudentSignup = ({ setRole }) => {
 	];
 
 	const [step, setStep] = useState(1);
-
 	const nextStep = () => setStep(step + 1);
 	const prevStep = () => setStep(step - 1);
 	const goToStep = (stepNumber) => setStep(stepNumber);
+
+	const [passwordTouched, setPasswordTouched] = useState(false);
+	const [passwordValidations, setPasswordValidations] = useState({
+		length: false,
+		upperLower: false,
+		numberSpecialChar: false,
+	});
+
+	const validatePassword = (password) => {
+		setPasswordValidations({
+			length: password.length >= 8 && password.length <= 72,
+			upperLower: /[a-z]/.test(password) && /[A-Z]/.test(password),
+			numberSpecialChar: /[0-9\W_]/.test(password),
+		});
+	};
 
 	const initialValues = {
 		email: "",
@@ -36,11 +51,17 @@ const StudentSignup = ({ setRole }) => {
 			.email("Invalid email address")
 			.required("Email is required"),
 		password: Yup.string()
-			.required("Password is required")
+			.min(8, "Password must be between 8-72 characters")
+			.max(72, "Password must be between 8-72 characters")
 			.matches(
-				/^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,20}$/,
-				"Password must have at least 8 characters, including 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character"
-			),
+				/[a-zA-Z]/,
+				"Password must contain both uppercase and lowercase letters"
+			)
+			.matches(
+				/[0-9!@#$%^&*]/,
+				"Password must contain at least one number or special character"
+			)
+			.required("Password is required"),
 		firstname: Yup.string().required("First name is required"),
 		lastname: Yup.string().required("Last name is required"),
 		username: Yup.string().required("Username is required"),
@@ -74,7 +95,7 @@ const StudentSignup = ({ setRole }) => {
 	};
 
 	return (
-		<section className="flex flex-col lg:flex-row items-center p-5 lg:pr-24 lg:pl-8 lg:py-6">
+		<section className="flex flex-col lg:flex-row items-center p-5 lg:pr-[120px] lg:pl-8 lg:py-6">
 			<div className="hidden md:block fixed left-0 top-0 bottom-0 w-[45%] bg-white z-0">
 				<AuthCarousel images={studentImages} className="" />
 			</div>
@@ -84,7 +105,7 @@ const StudentSignup = ({ setRole }) => {
 					validationSchema={validationSchema}
 					onSubmit={onSubmit}
 				>
-					{({ values, handleChange }) => (
+					{({ errors, touched, values, handleChange, handleBlur }) => (
 						<Form className="w-full py-8 lg:py-5 flex flex-col gap-4 lg:gap-8 justify-between">
 							<div className="w-[15%] self-end">
 								<img src={logo} className="" />
@@ -140,7 +161,31 @@ const StudentSignup = ({ setRole }) => {
 										name="password"
 										type="password"
 										placeholder="********"
+										onBlur={(e) => {
+											handleBlur(e);
+											setPasswordTouched(true);
+											validatePassword(e.target.value);
+										}}
+										value={values.password}
 									/>
+									{passwordTouched && (
+										<>
+											<ValidationIndicator
+												message="Password is between 8-72 characters"
+												isValid={passwordValidations.length}
+											/>
+											<ValidationIndicator
+												message="Contains both uppercase and lowercase letters"
+												isValid={passwordValidations.upperLower}
+											/>
+											<ValidationIndicator
+												message="Contains at least one number or special character."
+												isValid={
+													passwordValidations.numberSpecialChar
+												}
+											/>
+										</>
+									)}
 								</div>
 							)}
 							{step === 2 && (

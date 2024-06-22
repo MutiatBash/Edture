@@ -5,6 +5,8 @@ export default {
 		extend: {},
 		colors: {
 			primaryBlue: "#4356FF",
+			hoverBlue: "#6272FF",
+			secondaryHoverBlue: "#D9DDFF",
 			gray: "#C0C0C0",
 			primaryBlack: "#191919",
 			lightGray: "#B3B3B3",
