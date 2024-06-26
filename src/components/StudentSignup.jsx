@@ -1,19 +1,42 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import { PrimaryButton, SecondaryButton, IconButton } from "./Button";
 import AuthCarousel from "./AuthCarousel";
 import InputField from "./Input";
-import ValidationIndicator from "./ValidationIndicator";
-import { Link, useNavigate } from "react-router-dom";
 import google from "/google.png";
 import logo from "/logo.png";
 import { DividerWithText, Divider } from "./Dividers";
+import { Link, useNavigate } from "react-router-dom";
+import ValidationIndicator from "./ValidationIndicator";
+import { userContext } from "../context/UserContext";
 
 const StudentSignup = ({ setRole }) => {
 	const navigate = useNavigate();
+	const {
+		firstName,
+		setFirstName,
+		lastName,
+		setLastName,
+		emailAddress,
+		setEmailAddress,
+		loading,
+		setLoading,
+		error,
+		setError,
+	} = useContext(userContext);
+
+	const studentImages = [
+		"/signup-carousel/student1.png",
+		"/signup-carousel/student2.png",
+		"/signup-carousel/student3.png",
+		"/signup-carousel/student4.png",
+	];
+
 	const [step, setStep] = useState(1);
+
 	const [passwordTouched, setPasswordTouched] = useState(false);
+	const [passwordFocused, setPasswordFocused] = useState(false);
 	const [passwordValidations, setPasswordValidations] = useState({
 		length: false,
 		upperLower: false,
@@ -50,20 +73,9 @@ const StudentSignup = ({ setRole }) => {
 		username: Yup.string().required("Username is required"),
 	});
 
-	const nextStep = (formikProps) => {
-		if (step === 1) {
-			formikProps.validateForm().then((errors) => {
-				if (!errors.email && !errors.password) {
-					setStep(step + 1);
-				}
-			});
-		} else {
-			setStep(step + 1);
-		}
-	};
-
 	const onSubmit = async (values) => {
 		try {
+			setLoading(true);
 			const role = "STUDENT";
 			const data = {
 				...values,
@@ -81,18 +93,28 @@ const StudentSignup = ({ setRole }) => {
 			if (!response.ok) {
 				throw new Error("Failed to submit data");
 			}
-			navigate("/login");
+			setLoading(false);
+			navigate("/signin");
 		} catch (error) {
+			setLoading(false);
 			console.error("Error submitting data:", error.message);
 		}
 	};
 
-	const studentImages = [
-		"/signup-carousel/student1.png",
-		"/signup-carousel/student2.png",
-		"/signup-carousel/student3.png",
-		"/signup-carousel/student4.png",
-	];
+	const nextStep = (formikProps) => {
+		if (step === 1) {
+			formikProps.validateForm().then((errors) => {
+				if (Object.keys(errors).length === 0) {
+					setStep(step + 1);
+				}
+			});
+		} else {
+			setStep(step + 1);
+		}
+	};
+
+	const prevStep = () => setStep(step - 1);
+	const goToStep = (stepNumber) => setStep(stepNumber);
 
 	return (
 		<section className="flex flex-col lg:flex-row items-center p-5 lg:pr-[120px] lg:pl-8 lg:py-6">
@@ -129,7 +151,7 @@ const StudentSignup = ({ setRole }) => {
 								<div className="flex mt-3">
 									<div className="flex w-[20%] justify-between gap-1">
 										<div
-											onClick={() => setStep(1)}
+											onClick={() => goToStep(1)}
 											className={`h-1 rounded-full cursor-pointer transition-all duration-300 ${
 												step === 1
 													? "bg-darkGray w-[70%]"
@@ -137,7 +159,7 @@ const StudentSignup = ({ setRole }) => {
 											}`}
 										></div>
 										<div
-											onClick={() => setStep(2)}
+											onClick={() => goToStep(2)}
 											className={`h-1 rounded-full cursor-pointer transition-all duration-300 ${
 												step === 2
 													? "bg-darkGray w-[70%]"
@@ -158,37 +180,47 @@ const StudentSignup = ({ setRole }) => {
 									<InputField
 										label="Email Address"
 										name="email"
-										type="email"
 										placeholder="Enter your email address"
 									/>
 									<InputField
 										label="Password"
 										name="password"
 										type="password"
-										placeholder="Enter your password"
+										placeholder="********"
+										onFocus={() => setPasswordFocused(true)}
 										onBlur={(e) => {
 											formikProps.handleBlur(e);
+											setPasswordFocused(false);
 											setPasswordTouched(true);
 											validatePassword(e.target.value);
 										}}
+										onChange={(e) => {
+											formikProps.handleChange(e);
+											validatePassword(e.target.value);
+										}}
 									/>
-									{passwordTouched && (
-										<div>
-											<ValidationIndicator
-												message="Between 8 and 72 characters"
-												isValid={passwordValidations.length}
-											/>
-											<ValidationIndicator
-												message="Contains uppercase (AZ) and lowercase letters (az)"
-												isValid={passwordValidations.upperLower}
-											/>
-											<ValidationIndicator
-												message="Contains at least one number (0-9) or one symbol"
-												isValid={
-													passwordValidations.numberSpecialChar
-												}
-											/>
-										</div>
+									{passwordFocused && (
+										<>
+											<div>
+												<p className="text-darkGray text-sm pb-1">
+													Hints:
+												</p>
+												<ValidationIndicator
+													message="Between 8 and 72 characters"
+													isValid={passwordValidations.length}
+												/>
+												<ValidationIndicator
+													message="Contains uppercase (AZ) and lowercase letters (az)"
+													isValid={passwordValidations.upperLower}
+												/>
+												<ValidationIndicator
+													message="Contains at least one number (0-9) or one symbol"
+													isValid={
+														passwordValidations.numberSpecialChar
+													}
+												/>
+											</div>
+										</>
 									)}
 								</div>
 							)}
@@ -242,7 +274,7 @@ const StudentSignup = ({ setRole }) => {
 											className={`w-full`}
 											onClick={() => nextStep(formikProps)}
 											text={"Continue"}
-											type="button"
+											type="submit"
 										/>
 										<Divider />
 									</>
@@ -252,7 +284,13 @@ const StudentSignup = ({ setRole }) => {
 										<PrimaryButton
 											className={`w-full`}
 											type="submit"
-											text={"Create Account"}
+											text={
+												loading
+													? "Creating account...."
+													: "Create Account"
+											}
+											disabled={loading}
+                                            
 										/>
 										<Divider />
 									</>
@@ -269,11 +307,11 @@ const StudentSignup = ({ setRole }) => {
 									<p className="self-start text-left text-sm">
 										By clicking on create account you agree to
 										Edture’s{" "}
-										<Link to="/" className="text-primaryBlue">
+										<Link to="#" className="text-primaryBlue">
 											Terms and conditions
 										</Link>{" "}
 										and{" "}
-										<Link to="/" className="text-primaryBlue">
+										<Link to="#" className="text-primaryBlue">
 											Privacy Policy
 										</Link>
 									</p>
