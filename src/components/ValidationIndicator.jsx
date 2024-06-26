@@ -8,7 +8,11 @@ const ValidationIndicator = ({ message, isValid }) => {
 			) : (
 				<span className="text-red mr-1">x</span>
 			)}
-			<span className="text-sm">{message}</span>
+			{isValid ? (
+				<span className="text-sm text-green">{message}</span>
+			) : (
+				<span className="text-sm text-red">{message}</span>
+			)}
 		</div>
 	);
 };

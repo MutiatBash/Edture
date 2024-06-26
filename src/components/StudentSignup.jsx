@@ -1,31 +1,18 @@
 import React, { useState } from "react";
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import { PrimaryButton, SecondaryButton, IconButton } from "./Button";
 import AuthCarousel from "./AuthCarousel";
 import InputField from "./Input";
+import ValidationIndicator from "./ValidationIndicator";
+import { Link, useNavigate } from "react-router-dom";
 import google from "/google.png";
 import logo from "/logo.png";
 import { DividerWithText, Divider } from "./Dividers";
-import ValidationIndicator from "./ValidationIndicator";
-import { Link, useNavigate } from "react-router-dom";
-
 
 const StudentSignup = ({ setRole }) => {
-    	const navigate = useNavigate();
-
-	const studentImages = [
-		"/signup-carousel/student1.png",
-		"/signup-carousel/student2.png",
-		"/signup-carousel/student3.png",
-		"/signup-carousel/student4.png",
-	];
-
+	const navigate = useNavigate();
 	const [step, setStep] = useState(1);
-	const nextStep = () => setStep(step + 1);
-	const prevStep = () => setStep(step - 1);
-	const goToStep = (stepNumber) => setStep(stepNumber);
-
 	const [passwordTouched, setPasswordTouched] = useState(false);
 	const [passwordValidations, setPasswordValidations] = useState({
 		length: false,
@@ -50,26 +37,30 @@ const StudentSignup = ({ setRole }) => {
 		receiveNewsletterUpdate: false,
 	};
 
-	const validationSchema = Yup.object({
+	const validationSchemaStep1 = Yup.object({
 		email: Yup.string()
 			.email("Invalid email address")
 			.required("Email is required"),
-		password: Yup.string()
-			.min(8, "Password must be between 8-72 characters")
-			.max(72, "Password must be between 8-72 characters")
-			.matches(
-				/[a-zA-Z]/,
-				"Password must contain both uppercase and lowercase letters"
-			)
-			.matches(
-				/[0-9!@#$%^&*]/,
-				"Password must contain at least one number or special character"
-			)
-			.required("Password is required"),
+		password: Yup.string().required("Password is required"),
+	});
+
+	const validationSchemaStep2 = Yup.object({
 		firstname: Yup.string().required("First name is required"),
 		lastname: Yup.string().required("Last name is required"),
 		username: Yup.string().required("Username is required"),
 	});
+
+	const nextStep = (formikProps) => {
+		if (step === 1) {
+			formikProps.validateForm().then((errors) => {
+				if (!errors.email && !errors.password) {
+					setStep(step + 1);
+				}
+			});
+		} else {
+			setStep(step + 1);
+		}
+	};
 
 	const onSubmit = async (values) => {
 		try {
@@ -90,14 +81,18 @@ const StudentSignup = ({ setRole }) => {
 			if (!response.ok) {
 				throw new Error("Failed to submit data");
 			}
-
-			// Optionally handle successful submission here
-			console.log("Data submitted successfully:", values);
-            	navigate("/login");
+			navigate("/login");
 		} catch (error) {
 			console.error("Error submitting data:", error.message);
 		}
 	};
+
+	const studentImages = [
+		"/signup-carousel/student1.png",
+		"/signup-carousel/student2.png",
+		"/signup-carousel/student3.png",
+		"/signup-carousel/student4.png",
+	];
 
 	return (
 		<section className="flex flex-col lg:flex-row items-center p-5 lg:pr-[120px] lg:pl-8 lg:py-6">
@@ -107,13 +102,17 @@ const StudentSignup = ({ setRole }) => {
 			<div className="flex flex-row justify-center items-center lg:w-1/2 w-full lg:ml-auto">
 				<Formik
 					initialValues={initialValues}
-					validationSchema={validationSchema}
+					validationSchema={
+						step === 1 ? validationSchemaStep1 : validationSchemaStep2
+					}
 					onSubmit={onSubmit}
+					validateOnChange={true}
+					validateOnBlur={true}
 				>
-					{({ errors, touched, values, handleChange, handleBlur }) => (
+					{(formikProps) => (
 						<Form className="w-full py-8 lg:py-5 flex flex-col gap-4 lg:gap-8 justify-between">
 							<div className="w-[15%] self-end">
-								<img src={logo} className="" />
+								<img src={logo} className="" alt="Logo" />
 							</div>
 							<div>
 								<div className="flex flex-row gap-2 justify-between">
@@ -130,7 +129,7 @@ const StudentSignup = ({ setRole }) => {
 								<div className="flex mt-3">
 									<div className="flex w-[20%] justify-between gap-1">
 										<div
-											onClick={() => goToStep(1)}
+											onClick={() => setStep(1)}
 											className={`h-1 rounded-full cursor-pointer transition-all duration-300 ${
 												step === 1
 													? "bg-darkGray w-[70%]"
@@ -138,7 +137,7 @@ const StudentSignup = ({ setRole }) => {
 											}`}
 										></div>
 										<div
-											onClick={() => goToStep(2)}
+											onClick={() => setStep(2)}
 											className={`h-1 rounded-full cursor-pointer transition-all duration-300 ${
 												step === 2
 													? "bg-darkGray w-[70%]"
@@ -159,37 +158,37 @@ const StudentSignup = ({ setRole }) => {
 									<InputField
 										label="Email Address"
 										name="email"
+										type="email"
 										placeholder="Enter your email address"
 									/>
 									<InputField
 										label="Password"
 										name="password"
 										type="password"
-										placeholder="********"
+										placeholder="Enter your password"
 										onBlur={(e) => {
-											handleBlur(e);
+											formikProps.handleBlur(e);
 											setPasswordTouched(true);
 											validatePassword(e.target.value);
 										}}
-										value={values.password}
 									/>
 									{passwordTouched && (
-										<>
+										<div>
 											<ValidationIndicator
-												message="Password is between 8-72 characters"
+												message="Between 8 and 72 characters"
 												isValid={passwordValidations.length}
 											/>
 											<ValidationIndicator
-												message="Contains both uppercase and lowercase letters"
+												message="Contains uppercase (AZ) and lowercase letters (az)"
 												isValid={passwordValidations.upperLower}
 											/>
 											<ValidationIndicator
-												message="Contains at least one number or special character."
+												message="Contains at least one number (0-9) or one symbol"
 												isValid={
 													passwordValidations.numberSpecialChar
 												}
 											/>
-										</>
+										</div>
 									)}
 								</div>
 							)}
@@ -222,8 +221,11 @@ const StudentSignup = ({ setRole }) => {
 											<Field
 												type="checkbox"
 												name="receiveNewsletterUpdate"
-												checked={values.receiveNewsletterUpdate}
-												onChange={handleChange}
+												checked={
+													formikProps.values
+														.receiveNewsletterUpdate
+												}
+												onChange={formikProps.handleChange}
 											/>
 											<span className="ml-2">
 												{" "}
@@ -238,8 +240,9 @@ const StudentSignup = ({ setRole }) => {
 									<>
 										<PrimaryButton
 											className={`w-full`}
-											onClick={nextStep}
+											onClick={() => nextStep(formikProps)}
 											text={"Continue"}
+											type="button"
 										/>
 										<Divider />
 									</>
@@ -257,20 +260,22 @@ const StudentSignup = ({ setRole }) => {
 								{step === 1 && (
 									<p className="self-start text-left text-sm">
 										Already have an account?{" "}
-										<a href="/signin" className="text-primaryBlue">
+										<Link to="/signin" className="text-primaryBlue">
 											Sign in
-										</a>
+										</Link>
 									</p>
 								)}
 								{step === 2 && (
 									<p className="self-start text-left text-sm">
 										By clicking on create account you agree to
 										Edture’s{" "}
-										<a className="text-primaryBlue">
+										<Link to="/" className="text-primaryBlue">
 											Terms and conditions
-										</a>{" "}
+										</Link>{" "}
 										and{" "}
-										<a className="text-primaryBlue">Privacy Policy</a>
+										<Link to="/" className="text-primaryBlue">
+											Privacy Policy
+										</Link>
 									</p>
 								)}
 							</div>

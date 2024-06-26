@@ -3,29 +3,83 @@
 } */
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap");
 
+@font-face {
+	font-family: "Trap Grotesk";
+	src: url("/fonts/Trap-Light.otf");
+	font-weight: 300;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: "Trap Grotesk";
+	src: url("/fonts/Trap-Regular.otf");
+	font-weight: 400;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: "Trap Grotesk";
+	src: url("/fonts/Trap-Medium.otf");
+	font-weight: 500;
+	font-style: normal;
+}
+@font-face {
+	font-family: "Trap Grotesk";
+	src: url("/fonts/Trap-SemiBold.otf") ;
+	font-weight: 600;
+	font-style: normal;
+}
+@font-face {
+	font-family: "Trap Grotesk";
+	src: url("/fonts/Trap-Bold 700.otf");
+	font-weight: 700;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: "Trap Grotesk";
+	src: url("/fonts/Trap-ExtraBold.otf");
+	font-weight: 800;
+	font-style: normal;
+}
+@font-face {
+	font-family: "Trap Grotesk";
+	src: url("/fonts/Trap-Black.otf");
+	font-weight: 900;
+	font-style: normal;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h5,
+button, button a {
+	font-family: "Trap Grotesk", sans-serif;
+}
 p,
 label,
 a,
-button,
 span {
 	font-family: "Inter", sans-serif;
-	font-size:14px;
+	font-size: 14px;
 }
 .carousel-container {
 	width: 80%;
-	height: calc(100% - 60px); 
+	height: calc(100% - 60px);
 	margin: 30px 40px;
 	border-radius: 10px;
 	overflow: hidden;
-	position:relative
+	position: relative;
 }
 
 .carousel-container .img-container {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+	width: 100%;
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 
 .carousel-container img {
