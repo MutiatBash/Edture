@@ -101,6 +101,10 @@ const StudentSignup = ({ setRole }) => {
 		}
 	};
 
+	const handleGoogleAuth = (e) => {
+		e.preventDefault();
+	};
+
 	const nextStep = (formikProps) => {
 		if (step === 1) {
 			formikProps.validateForm().then((errors) => {
@@ -175,6 +179,8 @@ const StudentSignup = ({ setRole }) => {
 										icon={google}
 										text={"Sign up with Google"}
 										className="w-full"
+										type="button"
+										onClick={handleGoogleAuth}
 									/>
 									<DividerWithText />
 									<InputField
