@@ -7,6 +7,7 @@ const UserContextProvider = ({ children }) => {
 	const [lastName, setLastName] = useState("");
 	const [emailAddress, setEmailAddress] = useState("");
 	const [loading, setLoading] = useState(false);
+	const [success, setSuccess] = useState(false);
 	const [error, setError] = useState("");
 
 	return (
@@ -22,6 +23,8 @@ const UserContextProvider = ({ children }) => {
 				setLoading,
 				error,
 				setError,
+				success,
+				setSuccess,
 			}}
 		>
 			{children}

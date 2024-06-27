@@ -5,7 +5,7 @@ import { PrimaryButton, SecondaryButton, IconButton } from "./Button";
 import AuthCarousel from "./AuthCarousel";
 import InputField from "./Input";
 import google from "/google.png";
-import logo from "/logo.png";
+import logo from "/edture-logo.svg";
 import { DividerWithText, Divider } from "./Dividers";
 import { Link, useNavigate } from "react-router-dom";
 import ValidationIndicator from "./ValidationIndicator";

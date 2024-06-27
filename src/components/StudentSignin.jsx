@@ -1,15 +1,29 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import { PrimaryButton, SecondaryButton, IconButton } from "./Button";
 import AuthCarousel from "./AuthCarousel";
 import InputField from "./Input";
 import google from "/google.png";
-import logo from "/logo.png";
+import logo from "/edture-logo.svg";
 import { DividerWithText, Divider } from "./Dividers";
-
+import { Link, useNavigate } from "react-router-dom";
+import { userContext } from "../context/UserContext";
 
 const StudentSignin = ({ setRole }) => {
+	const navigate = useNavigate();
+	const {
+		firstName,
+		setFirstName,
+		lastName,
+		setLastName,
+		emailAddress,
+		setEmailAddress,
+		loading,
+		setLoading,
+		error,
+		setError,
+	} = useContext(userContext);
 	const studentImages = [
 		"/signup-carousel/student1.png",
 		"/signup-carousel/student2.png",
@@ -25,18 +39,14 @@ const StudentSignin = ({ setRole }) => {
 	const validationSchema = Yup.object({
 		email: Yup.string()
 			.email("Invalid email address")
-			.required("Email is required"),
-		password: Yup.string()
-			.required("Password is required")
-			.matches(
-				/^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,20}$/,
-				"Password must have at least 8 characters, including 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character"
-			),
+			.required("Enter your email address"),
+		password: Yup.string().required("Enter your password"),
 	});
 
 	const onSubmit = async (values) => {
 		console.log("Submitting values:", values);
 		try {
+			setLoading(true);
 			const response = await fetch(
 				"https://edture.onrender.com/auth/login",
 				{
@@ -48,14 +58,16 @@ const StudentSignin = ({ setRole }) => {
 				}
 			);
 
-			console.log("Response status:", response.status);
 			if (!response.ok) {
 				throw new Error("Failed to submit data");
 			}
 
 			const data = await response.json();
+			setLoading(false);
 			console.log("Data submitted successfully:", data);
+			navigate("/dashboard");
 		} catch (error) {
+			setLoading(false);
 			console.error("Error submitting data:", error.message);
 		}
 	};
@@ -74,7 +86,7 @@ const StudentSignin = ({ setRole }) => {
 					{({ values, handleChange }) => (
 						<Form className="w-full py-8 lg:py-5 flex flex-col gap-4 lg:gap-8 justify-between">
 							<div className="w-[15%] self-end">
-								<img src={logo} className=""/>
+								<img src={logo} className="" />
 							</div>
 							<div>
 								<div className="flex flex-row gap-2 justify-between">
@@ -105,8 +117,8 @@ const StudentSignin = ({ setRole }) => {
 									type="password"
 									placeholder="********"
 								/>
-								<div>
-									<label>
+								<div className="flex items-center justify-between">
+									<label className="flex items-center">
 										<Field
 											type="checkbox"
 											name="rememberme"
@@ -114,9 +126,15 @@ const StudentSignin = ({ setRole }) => {
 										/>
 										<span className="ml-2">Remember me</span>
 									</label>
+									<Link
+										to="/forgot-password"
+										className="text-primaryBlue underline"
+									>
+										Forgot Password?
+									</Link>
 								</div>
 							</div>
-							<div className="flex flex-col gap-3">
+							<div className="flex flex-col gap-3 pt-2">
 								<PrimaryButton
 									className={`w-full`}
 									type="submit"
@@ -125,9 +143,9 @@ const StudentSignin = ({ setRole }) => {
 								<Divider />
 								<p className="text-sm">
 									New to Edture?{" "}
-									<a href="/signup" className="text-primaryBlue">
+									<Link to="/signup" className="text-primaryBlue underline">
 										Create an account
-									</a>{" "}
+									</Link>{" "}
 									for free
 								</p>
 							</div>
