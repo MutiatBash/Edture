@@ -44,9 +44,13 @@ const StudentSignin = ({ setRole }) => {
 	});
 
 	const onSubmit = async (values) => {
-		console.log("Submitting values:", values);
 		try {
 			setLoading(true);
+			const role = "STUDENT";
+			const data = {
+				...values,
+				role: role,
+			};
 			const response = await fetch(
 				"https://edture.onrender.com/auth/login",
 				{
@@ -54,7 +58,7 @@ const StudentSignin = ({ setRole }) => {
 					headers: {
 						"Content-Type": "application/json",
 					},
-					body: JSON.stringify(values),
+					body: JSON.stringify(data),
 				}
 			);
 
@@ -62,9 +66,9 @@ const StudentSignin = ({ setRole }) => {
 				throw new Error("Failed to submit data");
 			}
 
-			const data = await response.json();
+			const dataFetched = await response.json();
 			setLoading(false);
-			console.log("Data submitted successfully:", data);
+			console.log("Data submitted successfully:", dataFetched);
 			navigate("/dashboard");
 		} catch (error) {
 			setLoading(false);
@@ -85,12 +89,12 @@ const StudentSignin = ({ setRole }) => {
 				>
 					{({ values, handleChange }) => (
 						<Form className="w-full py-8 lg:py-5 flex flex-col gap-4 lg:gap-8 justify-between">
-							<div className="w-[15%] self-end">
-								<img src={logo} className="" />
+							<div className="w-[20%] md:w-[15%]  self-end pb-8">
+								<img src={logo} className="w-full" />
 							</div>
 							<div>
-								<div className="flex flex-row gap-2 justify-between">
-									<h3 className="text-xl lg:text-3xl font-semibold">
+								<div className="flex flex-row gap-2 justify-between items-center">
+									<h3 className="text-3xl font-semibold w-1/2">
 										Welcome Back
 									</h3>
 									<SecondaryButton
@@ -143,7 +147,10 @@ const StudentSignin = ({ setRole }) => {
 								<Divider />
 								<p className="text-sm">
 									New to Edture?{" "}
-									<Link to="/signup" className="text-primaryBlue underline">
+									<Link
+										to="/signup"
+										className="text-primaryBlue underline"
+									>
 										Create an account
 									</Link>{" "}
 									for free

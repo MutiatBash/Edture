@@ -133,12 +133,12 @@ const StudentSignup = ({ setRole }) => {
 				>
 					{(formikProps) => (
 						<Form className="w-full py-8 lg:py-5 flex flex-col gap-4 lg:gap-8 justify-between">
-							<div className="w-[15%] self-end">
-								<img src={logo} className="" alt="Logo" />
+							<div className="w-[20%] md:w-[15%] self-end pb-8">
+								<img src={logo} className="w-full" alt="Logo" />
 							</div>
 							<div>
-								<div className="flex flex-row gap-2 justify-between">
-									<h3 className="text-xl lg:text-3xl font-semibold">
+								<div className="flex flex-row gap-2 justify-between items-center">
+									<h3 className="text-3xl font-semibold w-1/2">
 										Create an Account
 									</h3>
 									{step !== 2 && (
@@ -148,7 +148,7 @@ const StudentSignup = ({ setRole }) => {
 										/>
 									)}
 								</div>
-								<div className="flex mt-3">
+								<div className="flex mt-3 mb-6 md:mb-0">
 									<div className="flex w-[20%] justify-between gap-1">
 										<div
 											onClick={() => goToStep(1)}
@@ -297,7 +297,10 @@ const StudentSignup = ({ setRole }) => {
 								{step === 1 && (
 									<p className="self-start text-left text-sm">
 										Already have an account?{" "}
-										<Link to="/signin" className="text-primaryBlue">
+										<Link
+											to="/signin"
+											className="text-primaryBlue underline"
+										>
 											Sign in
 										</Link>
 									</p>

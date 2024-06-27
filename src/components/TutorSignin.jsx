@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import { IconButton, PrimaryButton, SecondaryButton } from "./Button";
@@ -7,47 +7,46 @@ import InputField from "./Input";
 import google from "/google.png";
 import logo from "/edture-logo.svg";
 import { DividerWithText, Divider } from "./Dividers";
+import { userContext } from "../context/UserContext";
+import { Link,useNavigate } from "react-router-dom";
 
 const TutorSignin = ({ setRole }) => {
-	const studentImages = [
+	const navigate = useNavigate();
+	const {
+		firstName,
+		setFirstName,
+		lastName,
+		setLastName,
+		emailAddress,
+		setEmailAddress,
+		loading,
+		setLoading,
+		error,
+		setError,
+	} = useContext(userContext);
+
+	const tutorImages = [
 		"/signup-carousel/tutor1.png",
 		"/signup-carousel/tutor2.png",
 		"/signup-carousel/tutor3.png",
 		"/signup-carousel/tutor4.png",
 	];
 
-	const [step, setStep] = useState(1);
-
-	const nextStep = () => setStep(step + 1);
-	const prevStep = () => setStep(step - 1);
-	const goToStep = (stepNumber) => setStep(stepNumber);
-
 	const initialValues = {
 		email: "",
 		password: "",
-		firstname: "",
-		lastname: "",
-		username: "",
-		receiveNewsletterUpdate: false,
 	};
 
 	const validationSchema = Yup.object({
 		email: Yup.string()
 			.email("Invalid email address")
-			.required("Email is required"),
-		password: Yup.string()
-			.required("Password is required")
-			.matches(
-				/^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,20}$/,
-				"Password must have at least 8 characters, including 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character"
-			),
-		firstname: Yup.string().required("First name is required"),
-		lastname: Yup.string().required("Last name is required"),
-		username: Yup.string().required("Username is required"),
+			.required("Enter your email address"),
+		password: Yup.string().required("Enter your password"),
 	});
 
 	const onSubmit = async (values) => {
 		try {
+			setLoading(true);
 			const role = "TUTOR";
 			const data = {
 				...values,
@@ -65,10 +64,12 @@ const TutorSignin = ({ setRole }) => {
 			if (!response.ok) {
 				throw new Error("Failed to submit data");
 			}
-
-			// Optionally handle successful submission here
-			console.log("Data submitted successfully:", values);
+			const dataFetched = await response.json();
+			setLoading(false);
+			console.log("Data submitted successfully:", dataFetched);
+			navigate("/dashboard");
 		} catch (error) {
+			setLoading(false);
 			console.error("Error submitting data:", error.message);
 		}
 	};
@@ -76,7 +77,7 @@ const TutorSignin = ({ setRole }) => {
 	return (
 		<section className="flex flex-col lg:flex-row items-center p-5 lg:pr-[120px] lg:pl-8 lg:py-6">
 			<div className="hidden md:block fixed left-0 top-0 bottom-0 w-[45%] bg-white z-0">
-				<AuthCarousel images={studentImages} className="" />
+				<AuthCarousel images={tutorImages} className="" />
 			</div>
 			<div className="flex flex-row justify-center items-center lg:w-1/2 w-full lg:ml-auto">
 				<Formik
@@ -86,12 +87,12 @@ const TutorSignin = ({ setRole }) => {
 				>
 					{({ values, handleChange }) => (
 						<Form className="w-full py-8 lg:py-5 flex flex-col gap-4 lg:gap-8 justify-between">
-							<div className="w-[15%] self-end">
-								<img src={logo} className="" />
+							<div className="w-[20%] md:w-[15%]  self-end pb-8">
+								<img src={logo} className="w-full" />
 							</div>
 							<div>
 								<div className="flex flex-row gap-2 justify-between">
-									<h3 className="text-xl lg:text-3xl font-semibold">
+									<h3 className="text-3xl font-semibold w-1/2">
 										Welcome Back
 									</h3>
 									<SecondaryButton
@@ -118,16 +119,21 @@ const TutorSignin = ({ setRole }) => {
 									type="password"
 									placeholder="********"
 								/>
-								<div>
-									<label>
+								<div className="flex items-center justify-between">
+									<label className="flex items-center">
 										<Field
 											type="checkbox"
 											name="rememberme"
-											checked={values.receiveNewsletterUpdate}
 											onChange={handleChange}
 										/>
 										<span className="ml-2">Remember me</span>
 									</label>
+									<Link
+										to="/forgot-password"
+										className="text-primaryBlue underline"
+									>
+										Forgot Password?
+									</Link>
 								</div>
 							</div>
 							<div className="flex flex-col gap-3">
@@ -139,7 +145,10 @@ const TutorSignin = ({ setRole }) => {
 								<Divider />
 								<p className="text-sm">
 									New to Edture?{" "}
-									<a href="/signup" className="text-primaryBlue">
+									<a
+										href="/signup"
+										className="text-primaryBlue underline"
+									>
 										Create an account
 									</a>{" "}
 									for free
