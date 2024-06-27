@@ -138,7 +138,7 @@ const StudentSignin = ({ setRole }) => {
 									</Link>
 								</div>
 							</div>
-							<div className="flex flex-col gap-3 pt-2">
+							<div className="flex flex-col gap-3">
 								<PrimaryButton
 									className={`w-full`}
 									type="submit"
