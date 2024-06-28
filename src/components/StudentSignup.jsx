@@ -101,8 +101,28 @@ const StudentSignup = ({ setRole }) => {
 		}
 	};
 
-	const handleGoogleAuth = (e) => {
+	const handleGoogleAuth = async (e) => {
 		e.preventDefault();
+		try {
+			const response = await fetch(
+				"https://edture.onrender.com/auth/google",
+				{
+					method: "GET",
+					headers: {
+						"Content-Type": "application/json",
+					},
+				}
+			);
+
+			if (!response.ok) {
+				throw new Error("Failed to sign in with Google");
+			}
+
+			const data = await response.json();
+			console.log("Google Sign-in success:", data);
+		} catch (error) {
+			console.error("Error signing in with Google:", error.message);
+		}
 	};
 
 	const nextStep = (formikProps) => {
