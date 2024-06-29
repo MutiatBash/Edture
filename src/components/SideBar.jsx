@@ -20,7 +20,7 @@ import edture from "/edture-logo.svg";
 
 const SideBar = () => {
 	return (
-		<div className="bg-white flex flex-col p-10 pr-5 border-r-[0.5px] border-r-lightGray w-1/5 h-full gap-12 min-h-screen sticky top-0">
+		<div className="bg-white flex flex-col p-10 pr-5 border-r-[0.5px] border-r-lightGray w-1/5 h-full gap-12 min-h-screen sticky top-0 z-10">
 			<div><img src={edture}/></div>
 			<div className="flex flex-col gap-16">
 				<div className="flex flex-col gap-4">

@@ -71,6 +71,9 @@ span,h5 {
 	overflow: hidden;
 	position: relative;
 }
+.chat-history{
+	position: sticky !important;
+}
 
 .carousel-container .img-container {
 	width: 100%;

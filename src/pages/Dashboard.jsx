@@ -2,18 +2,13 @@ import React from "react";
 import SideBar from "../components/SideBar";
 import DashboardBanner from "../components/DashboardBanner";
 import DashHeader from "../components/DashHeader";
+import DashboardLayout from "../layouts/DashboardLayout";
 
 const Dashboard = () => {
 	return (
-		<div className="flex">
-			<SideBar />
-			<div className="flex flex-col gap-6 w-full flex-grow">
-				<DashHeader />
-				<div className="p-6 pt-0 pr-12">
-					<DashboardBanner />
-				</div>
-			</div>
-		</div>
+		<DashboardLayout>
+			<DashboardBanner className="pt-6"/>
+		</DashboardLayout>
 	);
 };
 

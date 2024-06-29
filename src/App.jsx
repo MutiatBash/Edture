@@ -8,6 +8,7 @@ import ResetPassword from "./pages/ResetPassword";
 import ForgotPassword from "./pages/ForgotPassword";
 import GoogleAuth from "./pages/GoogleAuth";
 import Dashboard from "./pages/Dashboard";
+import Inbox from "./pages/Inbox";
 
 const App = () => {
 	return (
@@ -19,6 +20,7 @@ const App = () => {
 				<Route path="/forgot-password" element={<ForgotPassword />} />
 				<Route path="/google-auth" element={<GoogleAuth />} />
 				<Route path="/dashboard" element={<Dashboard />} />
+				<Route path="/inbox" element={<Inbox />} />
 			</Routes>
 		</Router>
 	);

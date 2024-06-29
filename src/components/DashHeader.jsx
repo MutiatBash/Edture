@@ -6,7 +6,7 @@ import notification from "/icons/notification.svg";
 
 const DashHeader = () => {
 	return (
-		<div className="flex justify-between gap-3 border-b-[0.5px] border-b-lightGray p-6 pr-12">
+		<div className="flex justify-between gap-3 bg-white border-b-[0.5px] border-b-lightGray p-6 pr-12 sticky z-30 top-0">
 			<div className="flex gap-3 border p-2 border-lightGray rounded-lg w-[78%]">
         <img src={search}/>
 				<input className="text-darkGray placeholder:text-lightGray w-full focus:border-none focus:outline-none" placeholder="Search for anything"/>
