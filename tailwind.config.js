@@ -22,6 +22,7 @@ export default {
 			secondaryHoverBlue: "#D9DDFF",
 			gray: "#C0C0C0",
 			primaryBlack: "#191919",
+			lighterGray: "#D5D5D5",
 			lightGray: "#B3B3B3",
 			darkGray: "#2C2C2C",
 			white: "#ffffff",
