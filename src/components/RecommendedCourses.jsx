@@ -1,18 +1,20 @@
-import React from 'react'
-import CourseCard from './CourseCard';
+import React from "react";
+import {CourseCard} from "./CourseCard";
+import CourseCarousel from "./CourseCarousel";
 
-const RecommendedCourses = () => {
-  return (
-		<div className="pt-6">
-			<h3 className="font-semibold text-lg">Recommended Courses</h3>
-			<div className="grid grid-cols-4 gap-4 py-4">
+const RecommendedCourses = ({ heading }) => {
+	return (
+		<div className="flex flex-col gap-4">
+			<h3 className="font-semibold text-2xl">{heading}</h3>
+			<CourseCarousel>
 				<CourseCard />
 				<CourseCard />
 				<CourseCard />
 				<CourseCard />
-			</div>
+				<CourseCard />
+			</CourseCarousel>
 		</div>
-  );
-}
+	);
+};
 
-export default RecommendedCourses
+export default RecommendedCourses;

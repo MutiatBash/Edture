@@ -12,18 +12,20 @@ import Courses from "./pages/Courses";
 
 const App = () => {
 	return (
-		<Router>
-			<Routes>
-				<Route path="/signin" element={<SignIn />} />
-				<Route path="/signup" element={<SignUp />} />
-				<Route path="/reset-password" element={<ResetPassword />} />
-				<Route path="/forgot-password" element={<ForgotPassword />} />
-				<Route path="/google-auth" element={<GoogleAuth />} />
-				<Route path="/dashboard" element={<Dashboard />} />
-				<Route path="/inbox" element={<Inbox />} />
-				<Route path="/courses" element={<Courses />} />
-			</Routes>
-		</Router>
+		<div className="max-w-[1440px] mx-auto">
+			<Router>
+				<Routes>
+					<Route path="/signin" element={<SignIn />} />
+					<Route path="/signup" element={<SignUp />} />
+					<Route path="/reset-password" element={<ResetPassword />} />
+					<Route path="/forgot-password" element={<ForgotPassword />} />
+					<Route path="/google-auth" element={<GoogleAuth />} />
+					<Route path="/dashboard" element={<Dashboard />} />
+					<Route path="/inbox" element={<Inbox />} />
+					<Route path="/courses" element={<Courses />} />
+				</Routes>
+			</Router>
+		</div>
 	);
 };
 
