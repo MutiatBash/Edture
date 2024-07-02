@@ -6,7 +6,7 @@ import linkedin from "/icons/IN.svg";
 
 const DashFooter = () => {
 	return (
-		<div className="border-t border-t-lightGray z-20">
+		<div className="border-t-[0.4px] border-t-lightGray z-20">
 			<div className="flex justify-between items-center p-6 pr-12 bg-white">
 				<p className="text-lightGray">© 2024-Edture. All rights reserved.</p>
 				<div className="flex gap-4 items-center">
