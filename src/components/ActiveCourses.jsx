@@ -7,7 +7,7 @@ const ActiveCourses = ({ heading }) => {
 	return (
 		<section className="flex flex-col gap-4">
 			<div>
-				<h3 className="text-2xl font-semibold">{heading}</h3>
+				<h3 className="text-2xl font-medium">{heading}</h3>
 			</div>
 			<div className="flex gap-6">
 				<ActiveCourseCard progress={68} />

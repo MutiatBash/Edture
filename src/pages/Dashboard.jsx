@@ -9,6 +9,7 @@ import active from "/icons/active-course.svg";
 import completed from "/icons/completed-course.svg";
 import ActiveCourses from "../components/ActiveCourses";
 import RecommendedCourses from "../components/RecommendedCourses";
+import DashFooter from "../components/DashFooter";
 
 const Dashboard = () => {
 	return (

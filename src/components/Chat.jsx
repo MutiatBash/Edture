@@ -4,7 +4,7 @@ import NewChat from './NewChat'
 
 const Chat = () => {
   return (
-    <div className="flex min-h-screen top-0">
+    <div className="flex min-h-screen top-0 relative">
       <ChatHistory/>
       <NewChat/>
     </div>

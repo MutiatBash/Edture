@@ -2,6 +2,7 @@
 import React from "react";
 import SideBar from "../components/SideBar";
 import DashHeader from "../components/DashHeader";
+import DashFooter from "../components/DashFooter";
 
 const DashboardLayout = ({ children }) => {
 	return (
@@ -9,9 +10,10 @@ const DashboardLayout = ({ children }) => {
 			<SideBar />
 			<div className="flex flex-col w-full flex-grow">
 				<DashHeader />
-				<div className="p-6 pt-0 pr-12 flex flex-col gap-8">
+				<div className="p-6 pr-12 flex flex-col gap-8">
 					{children}
 				</div>
+				<DashFooter/>
 			</div>
 		</div>
 	);
