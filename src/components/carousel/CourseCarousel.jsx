@@ -28,7 +28,7 @@ const CourseCarousel = ({ children }) => {
 	const settings = {
 		infinite: false,
 		speed: 500,
-		slidesToShow: 3.5,
+		slidesToShow: 3.25,
 		slidesToScroll: 1,
 		nextArrow: <NextArrow />,
 		prevArrow: <PrevArrow />,
@@ -36,7 +36,7 @@ const CourseCarousel = ({ children }) => {
 			{
 				breakpoint: 1024,
 				settings: {
-					slidesToShow: 3.5,
+					slidesToShow: 3.25,
 					slidesToScroll: 1,
 				},
 			},

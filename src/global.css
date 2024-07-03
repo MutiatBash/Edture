@@ -132,6 +132,9 @@ h5 {
 .carousel-container .slick-dots li.slick-active:before {
 	background: #fff;
 }
+.course-carousel{
+	/* min-width:1200px; */
+}
 .course-carousel .slick-slider {
 	width: 1000px;
 	margin: 0 auto;
@@ -139,32 +142,13 @@ h5 {
 	/* max-width: 1200px !important;  */
 }
 .course-carousel .slick-track {
-	display: flex;
-	justify-content: space-between;
-}
-/* .custom-arrow {
-  z-index: 1;
-  width: 30px;
-  height: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+	/* display: flex; */
+	/* justify-content: space-between; */
+	/* gap:12px; */
 }
 
-.next-arrow {
-  right: -35px;
-}
-
-.prev-arrow {
-  left: -35px;
-} */
-
-.custom-arrow:hover {
-	background-color: rgba(0, 0, 0, 0.2);
-	border-radius: 50%;
-}
 .course-carousel .slick-slide {
-	width: 280px !important;
+	width: 300px !important;
 	/* margin: 0 20px; */
 }
 
@@ -172,19 +156,3 @@ h5 {
   overflow: hidden !important;
   padding: 0 20px !important; 
 }  */
-
-/* .course-carousel .slick-prev,
-.course-carousel .slick-next {
-  width: auto;
-  height: auto;
-  font-size: 20px;
-  z-index: 10;
-}
-
-.course-carousel .slick-prev {
-  left: -40px; 
-}
-
-.course-carousel .slick-next {
-  right: -40px; 
-} */

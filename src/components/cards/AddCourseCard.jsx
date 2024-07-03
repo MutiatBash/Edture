@@ -3,7 +3,7 @@ import add from "/icons/add.svg";
 
 const AddCourseCard = () => {
 	return (
-		<div className="flex flex-col justify-center items-center text-center gap-2 border border-lighterGray p-4 rounded-lg w-64 hover:border-hoverBlue hover:shadow-md">
+		<div className="flex flex-col justify-center items-center text-center gap-2 border border-lighterGray p-4 rounded-lg w-72 hover:border-hoverBlue hover:shadow-md">
 			<div className="cursor-pointer bg-lighterGray p-7 rounded-full">
                 <img src={add}/>
             </div>

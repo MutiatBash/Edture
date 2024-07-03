@@ -5,7 +5,7 @@ import ratings from "/icons/ratings.svg";
 
 export const ActiveCourseCard = ({ progress }) => {
 	return (
-		<div className="flex flex-col gap-2 border border-lighterGray p-4 rounded-lg w-64 font-trap-grotesk hover:border-hoverBlue hover:shadow-md">
+		<div className="flex flex-col gap-2 border border-lighterGray p-4 rounded-lg w-72 font-trap-grotesk hover:border-hoverBlue hover:shadow-md">
 			<div className="w-full">
 				<img src={ai} />
 			</div>
@@ -39,7 +39,7 @@ export const ActiveCourseCard = ({ progress }) => {
 
 export const CourseCard = () => {
 	return (
-		<div className="flex flex-col gap-2 border border-lighterGray p-4 rounded-lg w-64 font-trap-grotesk hover:border-hoverBlue hover:shadow-md">
+		<div className="flex flex-col gap-2 border border-lighterGray p-4 rounded-lg w-72 font-trap-grotesk hover:border-hoverBlue hover:shadow-md">
 			<div className="w-full">
 				<img src={ai} />
 			</div>

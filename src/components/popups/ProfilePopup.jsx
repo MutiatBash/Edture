@@ -11,7 +11,7 @@ import wallet from "/icons/wallet.svg";
 const ProfilePopup = () => {
 	return (
 		<div className="fixed shadow bg-white rounded-lg top-24 right-[3%] w-72">
-			<div className="flex justify-start items-center p-4 pb-0 gap-4">
+			<div className="flex justify-start items-center p-4 pb-2 gap-4">
 				<div className="bg-primaryBlue rounded-full p-2 text-white uppercase w-10 h-10 text-center">
 					hh
 				</div>
@@ -22,12 +22,16 @@ const ProfilePopup = () => {
 			</div>
 			<Divider />
 			<div className="p-4 pt-0">
-				<ProfileLink icon={profile} label={"Profile"} />
-				<ProfileLink icon={certificate} label={"Certificates"} />
-				<ProfileLink icon={wallet} label={"My Purchases"} />
-				<ProfileLink icon={settings} label={"Settings"} />
-				<ProfileLink icon={help} label={"Help"} />
-				<ProfileLink icon={logout} label={"Logout"} />
+				<ProfileLink icon={profile} label={"Profile"} to="/profile" />
+				<ProfileLink
+					icon={certificate}
+					label={"Certificates"}
+					to="/profile"
+				/>
+				<ProfileLink icon={wallet} label={"My Purchases"} to="/profile" />
+				<ProfileLink icon={settings} label={"Settings"} to="/settings" />
+				<ProfileLink icon={help} label={"Help"} to="/profile" />
+				<ProfileLink icon={logout} label={"Logout"} to="/logout" />
 			</div>
 		</div>
 	);
