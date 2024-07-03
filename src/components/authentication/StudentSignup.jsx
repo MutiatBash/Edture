@@ -99,12 +99,28 @@ const StudentSignup = ({ setRole }) => {
 
 			if (!response.ok) {
 				const messages = result.message;
-				let errorMessage = "Failed to submit data";
+				let errorMessage = "";
 
 				if (typeof messages === "string") {
 					errorMessage = messages;
 				} else if (typeof messages === "object") {
-					errorMessage = Object.values(messages).join(" ");
+					const usernameError =
+						messages.username ===
+						"A user with this username already exists";
+					const emailError =
+						messages.email === "A user with this email already exists";
+
+					if (usernameError && emailError) {
+						errorMessage =
+							"A user with this email and username already exists.";
+					} else if (usernameError) {
+						errorMessage = messages.username;
+					} else if (emailError) {
+						errorMessage = messages.email;
+					} else {
+						// Handle any other unexpected error structure
+						errorMessage = "An unexpected error occurred.";
+					}
 				}
 
 				setError(errorMessage);
@@ -116,7 +132,6 @@ const StudentSignup = ({ setRole }) => {
 			setError(null);
 			navigate("/signin");
 		} catch (error) {
-			// Set a fallback error message for unexpected errors
 			setLoading(false);
 			setError(error.message || "An unexpected error occurred.");
 			console.error("Error submitting data:", error.message);
