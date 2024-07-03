@@ -1,8 +1,8 @@
 import React from 'react'
 import DashboardLayout from '../layouts/DashboardLayout'
-import RecentCourses from '../components/RecentCourses'
-import RecommendedCourses from '../components/RecommendedCourses'
-import ActiveCourses from '../components/ActiveCourses'
+import RecentCourses from '../components/courses/RecentCourses'
+import RecommendedCourses from '../components/courses/RecommendedCourses'
+import ActiveCourses from '../components/courses/ActiveCourses'
 
 const Courses = () => {
   return (

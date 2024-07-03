@@ -1,7 +1,7 @@
 import React from "react";
-import { ActiveCourseCard } from "./CourseCard";
-import CourseCarousel from "./CourseCarousel";
-import AddCourseCard from "./AddCourseCard";
+import { ActiveCourseCard } from "../cards/CourseCard";
+import CourseCarousel from "../carousel/CourseCarousel";
+import AddCourseCard from "../cards/AddCourseCard";
 
 const ActiveCourses = ({ heading }) => {
 	return (

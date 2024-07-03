@@ -1,6 +1,6 @@
 import React from "react";
 import ai from "/ai-course.svg";
-import ProgressBar from "./ProgressBar";
+import ProgressBar from "../../components/ProgressBar";
 import ratings from "/icons/ratings.svg";
 
 export const ActiveCourseCard = ({ progress }) => {

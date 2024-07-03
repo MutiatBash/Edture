@@ -1,5 +1,5 @@
 import React from "react";
-import Chat from "../components/Chat";
+import Chat from "../components/inbox/Chat";
 import DashboardLayout from "../layouts/DashboardLayout";
 
 const Inbox = () => {

@@ -1,14 +1,14 @@
 import React, { useState, useContext } from "react";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
-import { PrimaryButton, SecondaryButton, IconButton } from "./Button";
-import AuthCarousel from "./AuthCarousel";
-import InputField from "./Input";
+import { PrimaryButton, SecondaryButton, IconButton } from "../Button";
+import AuthCarousel from "../carousel/AuthCarousel";
+import InputField from "../inputs/Input";
 import google from "/google.png";
 import logo from "/edture-logo.svg";
-import { DividerWithText, Divider } from "./Dividers";
+import { DividerWithText, Divider } from "../Dividers";
 import { Link, useNavigate } from "react-router-dom";
-import { userContext } from "../context/UserContext";
+import { userContext } from "../../context/UserContext";
 
 const StudentSignin = ({ setRole }) => {
 	const navigate = useNavigate();

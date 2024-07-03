@@ -1,8 +1,8 @@
 // DashboardLayout.js
 import React from "react";
-import SideBar from "../components/SideBar";
-import DashHeader from "../components/DashHeader";
-import DashFooter from "../components/DashFooter";
+import SideBar from "../components/dashboard/SideBar";
+import DashHeader from "../components/dashboard/DashHeader";
+import DashFooter from "../components/dashboard/DashFooter";
 
 const DashboardLayout = ({ children, showFooter = true }) => {
 	return (

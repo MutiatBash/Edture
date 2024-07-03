@@ -1,16 +1,16 @@
 import React, { useContext, useState } from "react";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
-import InputField from "./Input";
-import { PrimaryButton } from "./Button";
+import InputField from "../inputs/Input";
+import { PrimaryButton } from "../Button";
 import { Link, useLocation } from "react-router-dom";
-import { Divider } from "./Dividers";
+import { Divider } from "../Dividers";
 import logo from "/edture-logo.svg";
 import resetpassword from "/reset-password-icon.svg";
 import unlock from "/unlock.svg";
 import lock from "/lock.svg";
-import { userContext } from "../context/UserContext";
-import ValidationIndicator from "./ValidationIndicator";
+import { userContext } from "../../context/UserContext";
+import ValidationIndicator from "../inputs/ValidationIndicator";
 
 export const ForgotPasswordModal = () => {
 	const { success, setSuccess, loading, setLoading, error, setError } =

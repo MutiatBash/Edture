@@ -1,15 +1,15 @@
 import React from "react";
-import SideBar from "../components/SideBar";
-import DashboardBanner from "../components/DashboardBanner";
-import DashHeader from "../components/DashHeader";
+import SideBar from "../components/dashboard/SideBar";
+import DashboardBanner from "../components/dashboard/DashboardBanner";
+import DashHeader from "../components/dashboard/DashHeader";
 import DashboardLayout from "../layouts/DashboardLayout";
-import CourseStatusCard from "../components/CourseStatusCard";
+import CourseStatusCard from "../components/cards/CourseStatusCard";
 import enrolled from "/icons/enrolled-course.svg";
 import active from "/icons/active-course.svg";
 import completed from "/icons/completed-course.svg";
-import ActiveCourses from "../components/ActiveCourses";
-import RecommendedCourses from "../components/RecommendedCourses";
-import DashFooter from "../components/DashFooter";
+import ActiveCourses from "../components/courses/ActiveCourses";
+import RecommendedCourses from "../components/courses/RecommendedCourses";
+import DashFooter from "../components/dashboard/DashFooter";
 
 const Dashboard = () => {
 	return (

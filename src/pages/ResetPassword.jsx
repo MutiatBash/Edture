@@ -1,5 +1,5 @@
 import React from "react";
-import { ResetPasswordModal } from "../components/PasswordModal";
+import { ResetPasswordModal } from "../components/authentication/PasswordModal";
 
 const ResetPassword = () => {
 	return (

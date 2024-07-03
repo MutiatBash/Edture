@@ -1,17 +1,17 @@
 import React, { useState, useContext } from "react";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
-import { PrimaryButton, SecondaryButton, IconButton } from "./Button";
-import AuthCarousel from "./AuthCarousel";
-import InputField from "./Input";
+import { PrimaryButton, SecondaryButton, IconButton } from "../Button";
+import AuthCarousel from "../carousel/AuthCarousel";
+import InputField from "../inputs/Input";
 import google from "/google.png";
 import logo from "/edture-logo.svg";
-import { DividerWithText, Divider } from "./Dividers";
+import { DividerWithText, Divider } from "../Dividers";
 import { Link, useNavigate } from "react-router-dom";
-import ValidationIndicator from "./ValidationIndicator";
-import { userContext } from "../context/UserContext";
+import ValidationIndicator from "../inputs/ValidationIndicator";
+import { userContext } from "../../context/UserContext";
 
-const StudentSignup = ({ setRole }) => {
+const TutorSignup = ({ setRole }) => {
 	const navigate = useNavigate();
 	const {
 		firstName,
@@ -26,11 +26,11 @@ const StudentSignup = ({ setRole }) => {
 		setError,
 	} = useContext(userContext);
 
-	const studentImages = [
-		"/signup-carousel/student1.png",
-		"/signup-carousel/student2.png",
-		"/signup-carousel/student3.png",
-		"/signup-carousel/student4.png",
+	const tutorImages = [
+		"/signup-carousel/tutor1.png",
+		"/signup-carousel/tutor2.png",
+		"/signup-carousel/tutor3.png",
+		"/signup-carousel/tutor4.png",
 	];
 
 	const [step, setStep] = useState(1);
@@ -76,7 +76,8 @@ const StudentSignup = ({ setRole }) => {
 	const onSubmit = async (values) => {
 		try {
 			setLoading(true);
-			const role = "STUDENT";
+
+			const role = "TUTOR";
 			const data = {
 				...values,
 				role: role,
@@ -101,30 +102,6 @@ const StudentSignup = ({ setRole }) => {
 		}
 	};
 
-	const handleGoogleAuth = async (e) => {
-		e.preventDefault();
-		try {
-			const response = await fetch(
-				"https://edture.onrender.com/auth/google",
-				{
-					method: "GET",
-					headers: {
-						"Content-Type": "application/json",
-					},
-				}
-			);
-
-			if (!response.ok) {
-				throw new Error("Failed to sign in with Google");
-			}
-
-			const data = await response.json();
-			console.log("Google Sign-in success:", data);
-		} catch (error) {
-			console.error("Error signing in with Google:", error.message);
-		}
-	};
-
 	const nextStep = (formikProps) => {
 		if (step === 1) {
 			formikProps.validateForm().then((errors) => {
@@ -143,7 +120,7 @@ const StudentSignup = ({ setRole }) => {
 	return (
 		<section className="flex flex-col lg:flex-row items-center p-5 lg:pr-[120px] lg:pl-8 lg:py-6">
 			<div className="hidden md:block fixed left-0 top-0 bottom-0 w-[45%] bg-white z-0">
-				<AuthCarousel images={studentImages} className="" />
+				<AuthCarousel images={tutorImages} className="" />
 			</div>
 			<div className="flex flex-row justify-center items-center lg:w-1/2 w-full lg:ml-auto">
 				<Formik
@@ -167,8 +144,8 @@ const StudentSignup = ({ setRole }) => {
 									</h3>
 									{step !== 2 && (
 										<SecondaryButton
-											text={"Tutor Sign up"}
-											onClick={() => setRole("TUTOR")}
+											text={"Student Sign up"}
+											onClick={() => setRole("STUDENT")}
 										/>
 									)}
 								</div>
@@ -199,8 +176,6 @@ const StudentSignup = ({ setRole }) => {
 										icon={google}
 										text={"Sign up with Google"}
 										className="w-full"
-										type="button"
-										onClick={handleGoogleAuth}
 									/>
 									<DividerWithText />
 									<InputField
@@ -353,4 +328,4 @@ const StudentSignup = ({ setRole }) => {
 	);
 };
 
-export default StudentSignup;
+export default TutorSignup;

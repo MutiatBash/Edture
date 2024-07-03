@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import TutorSignin from "../components/TutorSignin";
-import StudentSignin from "../components/StudentSignin";
+import TutorSignin from "../components/authentication/TutorSignin";
+import StudentSignin from "../components/authentication/StudentSignin";
 
 const SignIn = () => {
 	const [role, setRole] = useState("STUDENT");
