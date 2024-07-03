@@ -99,9 +99,11 @@ const StudentSignup = ({ setRole }) => {
 				throw new Error("Failed to submit data");
 			}
 			setLoading(false);
+			setError(null);
 			navigate("/signin");
 		} catch (error) {
 			setLoading(false);
+			setError(error.message);
 			console.error("Error submitting data:", error.message);
 		}
 	};
@@ -296,6 +298,11 @@ const StudentSignup = ({ setRole }) => {
 							<div className="flex flex-col gap-3 text-center">
 								{step === 1 && (
 									<>
+										{error && (
+											<div className="text-red text-sm text-left">
+												{error}
+											</div>
+										)}
 										<PrimaryButton
 											className={`w-full`}
 											onClick={() => nextStep(formikProps)}
@@ -307,6 +314,11 @@ const StudentSignup = ({ setRole }) => {
 								)}
 								{step === 2 && (
 									<>
+										{error && (
+											<div className="text-red text-sm text-left">
+												{error}
+											</div>
+										)}
 										<PrimaryButton
 											className={`w-full`}
 											type="submit"
