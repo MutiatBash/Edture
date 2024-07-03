@@ -4,12 +4,28 @@ import search from "/icons/search.svg";
 import cart from "/icons/shopping-cart.svg";
 import notification from "/icons/notification.svg";
 import ProfilePopup from "../popups/ProfilePopup";
+import NotificationPopup from "../popups/NotificationPopup";
+import InboxPopup from "../popups/InboxPopup";
+import CartPopup from "../popups/CartPopup";
 
 const DashHeader = () => {
-	const [profile, setProfile] = useState(false);
-	const handlePopup = () => {
-		setProfile(!profile);
+	const [popups, setPopups] = useState({
+		profile: false,
+		notification: false,
+		inbox: false,
+		cart: false,
+	});
+
+	const handlePopup = (popupName) => {
+		setPopups((prevPopups) => {
+			const newPopups = Object.keys(prevPopups).reduce((acc, key) => {
+				acc[key] = key === popupName ? !prevPopups[key] : false;
+				return acc;
+			}, {});
+			return newPopups;
+		});
 	};
+
 
 	return (
 		<div className="flex justify-between gap-3 bg-white border-b-[0.5px] border-b-lightGray p-6 pr-12 sticky z-30 top-0">
@@ -21,14 +37,32 @@ const DashHeader = () => {
 				/>
 			</div>
 			<div className="flex gap-5 items-center">
-				<img src={inbox} />
-				<img src={notification} />
-				<img src={cart} />
+				<img
+					src={inbox}
+					onClick={() => handlePopup("inbox")}
+					className="cursor-pointer"
+				/>
+				<img
+					src={notification}
+					onClick={() => handlePopup("notification")}
+					className="cursor-pointer"
+				/>
+				<img
+					src={cart}
+					onClick={() => handlePopup("cart")}
+					className="cursor-pointer"
+				/>
 				<div className="h-5 w-[1px] bg-darkGray"></div>
-				<div className="bg-primaryBlue rounded-full p-2 text-white uppercase w-10 h-10 text-center" onClick={handlePopup}>
+				<div
+					className="bg-primaryBlue rounded-full p-2 text-white uppercase w-10 h-10 text-center cursor-pointer"
+					onClick={() => handlePopup("profile")} 
+				>
 					hh
 				</div>
-				{profile && <ProfilePopup />}
+				{popups.profile && <ProfilePopup />}
+				{popups.notification && <NotificationPopup />}
+				{popups.inbox && <InboxPopup />}
+				{popups.cart && <CartPopup />}
 			</div>
 		</div>
 	);

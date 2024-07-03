@@ -118,7 +118,6 @@ const StudentSignup = ({ setRole }) => {
 					} else if (emailError) {
 						errorMessage = messages.email;
 					} else {
-						// Handle any other unexpected error structure
 						errorMessage = "An unexpected error occurred.";
 					}
 				}

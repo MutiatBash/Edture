@@ -91,15 +91,44 @@ const TutorSignup = ({ setRole }) => {
 				body: JSON.stringify(data),
 			});
 
+			const result = await response.json();
+
 			if (!response.ok) {
-				throw new Error("Failed to submit data");
+				const messages = result.message;
+				let errorMessage = "";
+
+				if (typeof messages === "string") {
+					errorMessage = messages;
+				} else if (typeof messages === "object") {
+					const usernameError =
+						messages.username ===
+						"A user with this username already exists";
+					const emailError =
+						messages.email === "A user with this email already exists";
+
+					if (usernameError && emailError) {
+						errorMessage =
+							"A user with this email and username already exists.";
+					} else if (usernameError) {
+						errorMessage = messages.username;
+					} else if (emailError) {
+						errorMessage = messages.email;
+					} else {
+						errorMessage = "An unexpected error occurred.";
+					}
+				}
+
+				setError(errorMessage);
+				setLoading(false);
+				return;
 			}
+
 			setLoading(false);
 			setError(null);
 			navigate("/signin");
 		} catch (error) {
 			setLoading(false);
-			setError(error.message);
+			setError(error.message || "An unexpected error occurred.");
 			console.error("Error submitting data:", error.message);
 		}
 	};
