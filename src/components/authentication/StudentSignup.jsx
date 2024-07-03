@@ -95,15 +95,30 @@ const StudentSignup = ({ setRole }) => {
 				body: JSON.stringify(data),
 			});
 
+			const result = await response.json();
+
 			if (!response.ok) {
-				throw new Error("Failed to submit data");
+				const messages = result.message;
+				let errorMessage = "Failed to submit data";
+
+				if (typeof messages === "string") {
+					errorMessage = messages;
+				} else if (typeof messages === "object") {
+					errorMessage = Object.values(messages).join(" ");
+				}
+
+				setError(errorMessage);
+				setLoading(false);
+				return;
 			}
+
 			setLoading(false);
 			setError(null);
 			navigate("/signin");
 		} catch (error) {
+			// Set a fallback error message for unexpected errors
 			setLoading(false);
-			setError(error.message);
+			setError(error.message || "An unexpected error occurred.");
 			console.error("Error submitting data:", error.message);
 		}
 	};
