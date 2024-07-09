@@ -1,6 +1,6 @@
 import React from "react";
 
-const CourseStatusCard = ({icon,number,status}) => {
+const CourseStatusCard = ({ icon, number, status }) => {
 	return (
 		<div className="flex flex-col gap-6 border justify-center items-center text-center border-lighterGray p-x-6 py-10 rounded-lg w-full font-trap-grotesk">
 			<div className="">

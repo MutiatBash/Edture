@@ -18,6 +18,7 @@ export default {
 		},
 		colors: {
 			primaryBlue: "#4356FF",
+			darkBlue: "#2D39AA",
 			hoverBlue: "#6272FF",
 			secondaryHoverBlue: "#D9DDFF",
 			gray: "#C0C0C0",

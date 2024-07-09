@@ -1,13 +1,15 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import ai from "/ai-course.svg";
 import ProgressBar from "../../components/ProgressBar";
 import ratings from "/icons/ratings.svg";
+import { truncateString } from "../../utils";
 
 export const ActiveCourseCard = ({ progress }) => {
 	return (
 		<div className="flex flex-col gap-2 border border-lighterGray p-4 rounded-lg w-72 font-trap-grotesk hover:border-hoverBlue hover:shadow-md">
 			<div className="w-full">
-				<img src={ai} />
+				<img src={ai} className="w-full" />
 			</div>
 			<h5 className="font-trap-grotesk font-bold leading-6 text-lg">
 				Artificial Intelligence A-Z 2024: Build 7 AI + LLM &...
@@ -37,38 +39,49 @@ export const ActiveCourseCard = ({ progress }) => {
 	);
 };
 
-export const CourseCard = () => {
+export const CourseCard = ({ course }) => {
+	const navigate = useNavigate();
+
+	const handleClick = () => {
+		navigate(`/course/${course.id}`);
+	};
 	return (
-		<div className="flex flex-col gap-2 border border-lighterGray p-4 rounded-lg w-72 font-trap-grotesk hover:border-hoverBlue hover:shadow-md">
+		<div
+			className="flex flex-col gap-2 border border-lighterGray p-4 rounded-lg w-72 font-trap-grotesk hover:border-hoverBlue hover:shadow-md"
+			onClick={handleClick}
+		>
 			<div className="w-full">
-				<img src={ai} />
+				<img src={course.image} className="w-full" alt="Course" />
 			</div>
 			<h5 className="font-trap-grotesk font-bold leading-6 text-lg">
-				Artificial Intelligence A-Z 2024: Build 7 AI + LLM &...
+				{truncateString(course.title, 38)}
 			</h5>
 			<div className="flex flex-col">
 				<p className="font-trap-grotesk text-lightGray text-sm">
-					Learners hub inc.
+					{course.provider}
 				</p>
 				<p className="text-lightGray items-center">
 					<span className="font-trap-grotesk text-[10px]">
-						4 total hours •
+						{course.totalHours} total hours •
 					</span>
 					<span className="font-trap-grotesk text-[10px]">
-						20 lectures •
+						{course.lectures} lectures •
 					</span>
-					<span className="font-trap-grotesk text-[10px]"> Beginner</span>
+					<span className="font-trap-grotesk text-[10px]">
+						{" "}
+						{course.level}
+					</span>
 				</p>
 			</div>
 			<div className="flex justify-between">
 				<p className="font-trap-grotesk font-semibold">
-					N4,900{" "}
+					{course.price}{" "}
 					<span className="text-lightGray line-through text-xs font-normal">
-						N10,000
+						{course.originalPrice}
 					</span>
 				</p>
 				<div>
-					<img src={ratings} />
+					<img src={course.ratings} alt="Ratings" />
 				</div>
 			</div>
 		</div>

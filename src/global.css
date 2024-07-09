@@ -52,6 +52,10 @@
 	box-sizing: border-box;
 }
 
+.content-wrapper {
+	max-width: 1440px;
+}
+
 h1,
 h2,
 h3,
@@ -132,7 +136,7 @@ h5 {
 .carousel-container .slick-dots li.slick-active:before {
 	background: #fff;
 }
-.course-carousel{
+.course-carousel {
 	/* min-width:1200px; */
 }
 .course-carousel .slick-slider {

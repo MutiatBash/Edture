@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import edture from "/edture-logo.svg";
 import inbox from "/inbox.svg";
 import search from "/icons/search.svg";
 import cart from "/icons/shopping-cart.svg";
@@ -8,7 +9,7 @@ import NotificationPopup from "../popups/NotificationPopup";
 import InboxPopup from "../popups/InboxPopup";
 import CartPopup from "../popups/CartPopup";
 
-const DashHeader = () => {
+const CourseHeader = () => {
 	const [popups, setPopups] = useState({
 		profile: false,
 		notification: false,
@@ -27,8 +28,11 @@ const DashHeader = () => {
 	};
 
 	return (
-		<div className="bg-white border-b-[0.5px] border-b-lightGray p-6 pr-12 sticky z-30 top-0">
-			<div className="flex justify-between gap-3">
+		<div className="flex justify-between gap-6 items-center bg-white border-b-[0.5px] border-b-lightGray px-12 py-6 sticky z-30 top-0">
+			<div className="">
+				<img src={edture} />
+			</div>
+			<div className="flex justify-between gap-4 w-4/5">
 				<div className="flex gap-3 border p-2 border-lightGray rounded-lg w-[78%]">
 					<img src={search} />
 					<input
@@ -69,4 +73,4 @@ const DashHeader = () => {
 	);
 };
 
-export default DashHeader;
+export default CourseHeader;

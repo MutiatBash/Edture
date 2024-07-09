@@ -1,4 +1,3 @@
-// DashboardLayout.js
 import React from "react";
 import SideBar from "../components/dashboard/SideBar";
 import DashHeader from "../components/dashboard/DashHeader";

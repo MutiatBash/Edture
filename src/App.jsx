@@ -9,10 +9,11 @@ import GoogleAuth from "./pages/GoogleAuth";
 import Dashboard from "./pages/Dashboard";
 import Inbox from "./pages/Inbox";
 import Courses from "./pages/Courses";
+import CourseDetails from "./pages/CourseDetails";
 
 const App = () => {
 	return (
-		<div className="max-w-[1440px] mx-auto">
+		<div className="mx-auto content-wrapper">
 			<Router>
 				<Routes>
 					<Route path="/signin" element={<SignIn />} />
@@ -23,6 +24,7 @@ const App = () => {
 					<Route path="/dashboard" element={<Dashboard />} />
 					<Route path="/inbox" element={<Inbox />} />
 					<Route path="/courses" element={<Courses />} />
+					<Route path="/course/:id" element={<CourseDetails />} />
 				</Routes>
 			</Router>
 		</div>

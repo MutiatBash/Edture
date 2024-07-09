@@ -27,7 +27,6 @@ const Dashboard = () => {
 			<ActiveCourses heading={"Continue learning"} />
 			<RecommendedCourses heading={"Recently viewed"} />
 			<RecommendedCourses heading={"Recommended courses"} />
-			{/* <MultipleItems/> */}
 		</DashboardLayout>
 	);
 };
