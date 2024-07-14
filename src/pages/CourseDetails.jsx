@@ -42,7 +42,7 @@ const CourseDetails = () => {
 	return (
 		<CourseDetailsLayout>
 			<div className="bg-darkBlue text-white pt-8 font-trap-grotesk">
-				<div className="flex relative font-trap-grotesk">
+				<div className="flex relative container-wrapper font-trap-grotesk">
 					<div className="w-3/5 flex flex-col p-12">
 						<h1 className="font-bold text-5xl mb-4">
 							{selectedCourse?.title}
