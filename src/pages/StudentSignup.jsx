@@ -96,7 +96,6 @@ const StudentSignup = ({ setRole }) => {
 					"Content-Type": "application/json",
 				},
 				body: JSON.stringify(data),
-				signal: controller.signal,
 			});
 
 			const result = await response.json();
