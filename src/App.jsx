@@ -20,12 +20,10 @@ const App = () => {
 		<div className="mx-auto container-wrapper">
 			<Router>
 				<Routes>
-					<Route path="/signin" element={<SignIn />} />
 					<Route path="/student-signin" element={<StudentSignin />} />
 					<Route path="/student-signup" element={<StudentSignup />} />
 					<Route path="/tutor-signin" element={<TutorSignin />} />
 					<Route path="/tutor-signup" element={<TutorSignup />} />
-					<Route path="/signup" element={<SignUp />} />
 					<Route path="/reset-password" element={<ResetPassword />} />
 					<Route path="/forgot-password" element={<ForgotPassword />} />
 					<Route path="/google-auth" element={<GoogleAuth />} />
