@@ -1,18 +1,25 @@
 import React, { useState, useContext } from "react";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
-import { PrimaryButton, SecondaryButton, IconButton } from "../Button";
-import AuthCarousel from "../carousel/AuthCarousel";
-import InputField from "../inputs/Input";
+import {
+	PrimaryButton,
+	SecondaryButton,
+	IconButton,
+	GoogleButton,
+} from "../components/Button";
+import AuthCarousel from "../components/carousel/AuthCarousel";
+import InputField from "../components/inputs/Input";
 import google from "/google.png";
 import logo from "/edture-logo.svg";
-import { DividerWithText, Divider } from "../Dividers";
+import { DividerWithText, Divider } from "../components/Dividers";
 import { Link, useNavigate } from "react-router-dom";
-import ValidationIndicator from "../inputs/ValidationIndicator";
-import { userContext } from "../../context/UserContext";
+import ValidationIndicator from "../components/inputs/ValidationIndicator";
+import { userContext } from "../context/UserContext";
 
-const TutorSignup = ({ setRole }) => {
+const StudentSignup = ({ setRole }) => {
 	const navigate = useNavigate();
+	const [role, setRoleState] = useState("STUDENT");
+
 	const {
 		firstName,
 		setFirstName,
@@ -26,11 +33,11 @@ const TutorSignup = ({ setRole }) => {
 		setError,
 	} = useContext(userContext);
 
-	const tutorImages = [
-		"/signup-carousel/tutor1.png",
-		"/signup-carousel/tutor2.png",
-		"/signup-carousel/tutor3.png",
-		"/signup-carousel/tutor4.png",
+	const studentImages = [
+		"/signup-carousel/student1.png",
+		"/signup-carousel/student2.png",
+		"/signup-carousel/student3.png",
+		"/signup-carousel/student4.png",
 	];
 
 	const [step, setStep] = useState(1);
@@ -73,11 +80,11 @@ const TutorSignup = ({ setRole }) => {
 		username: Yup.string().required("Username is required"),
 	});
 
+
 	const onSubmit = async (values) => {
 		try {
 			setLoading(true);
-
-			const role = "TUTOR";
+			const role = "STUDENT";
 			const data = {
 				...values,
 				role: role,
@@ -89,6 +96,7 @@ const TutorSignup = ({ setRole }) => {
 					"Content-Type": "application/json",
 				},
 				body: JSON.stringify(data),
+				signal: controller.signal,
 			});
 
 			const result = await response.json();
@@ -125,11 +133,35 @@ const TutorSignup = ({ setRole }) => {
 
 			setLoading(false);
 			setError(null);
-			navigate("/signin");
+			navigate("/student-signin");
 		} catch (error) {
+			if (error.name === "AbortError") {
+				setError("Request timed out. Please try again.");
+			} else {
+				setError(error.message || "An unexpected error occurred.");
+			}
 			setLoading(false);
-			setError(error.message || "An unexpected error occurred.");
 			console.error("Error submitting data:", error.message);
+		}
+	};
+
+	const handleGoogleAuth = async (e) => {
+		e.preventDefault();
+		try {
+			const response = await fetch(
+				"https://edture.onrender.com/auth/google",
+				{
+					method: "GET",
+					credentials: "include",
+				}
+			);
+
+			if (response.redirected) {
+				window.location.href = response.url;
+			}
+			console.log("Google Sign-in success:", response);
+		} catch (error) {
+			console.error("Error signing in with Google:", error.message);
 		}
 	};
 
@@ -151,7 +183,7 @@ const TutorSignup = ({ setRole }) => {
 	return (
 		<section className="flex flex-col lg:flex-row items-center p-5 lg:pr-[120px] lg:pl-8 lg:py-6">
 			<div className="hidden md:block fixed left-0 top-0 bottom-0 w-[45%] bg-white z-0">
-				<AuthCarousel images={tutorImages} className="" />
+				<AuthCarousel images={studentImages} className="" />
 			</div>
 			<div className="flex flex-row justify-center items-center lg:w-1/2 w-full lg:ml-auto">
 				<Formik
@@ -175,8 +207,11 @@ const TutorSignup = ({ setRole }) => {
 									</h3>
 									{step !== 2 && (
 										<SecondaryButton
-											text={"Student Sign up"}
-											onClick={() => setRole("STUDENT")}
+											text={"Tutor Sign up"}
+											onClick={() => {
+												setRole("TUTOR");
+												setRoleState("TUTOR");
+											}}
 										/>
 									)}
 								</div>
@@ -203,10 +238,11 @@ const TutorSignup = ({ setRole }) => {
 							</div>
 							{step === 1 && (
 								<div className="flex flex-col gap-6">
-									<IconButton
+									<GoogleButton
 										icon={google}
 										text={"Sign up with Google"}
 										className="w-full"
+										onClick={handleGoogleAuth}
 									/>
 									<DividerWithText />
 									<InputField
@@ -340,7 +376,7 @@ const TutorSignup = ({ setRole }) => {
 									<p className="self-start text-left text-sm">
 										Already have an account?{" "}
 										<Link
-											to="/signin"
+											to="/student-signin"
 											className="text-primaryBlue underline"
 										>
 											Sign in
@@ -369,4 +405,4 @@ const TutorSignup = ({ setRole }) => {
 	);
 };
 
-export default TutorSignup;
+export default StudentSignup;

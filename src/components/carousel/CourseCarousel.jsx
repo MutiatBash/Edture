@@ -24,11 +24,11 @@ const PrevArrow = ({ onClick }) => (
 	</div>
 );
 
-const CourseCarousel = ({ children }) => {
+const CourseCarousel = ({ children, className }) => {
 	const settings = {
 		infinite: false,
 		speed: 500,
-		slidesToShow: 3.25,
+		slidesToShow: 3.5,
 		slidesToScroll: 1,
 		nextArrow: <NextArrow />,
 		prevArrow: <PrevArrow />,
@@ -51,7 +51,7 @@ const CourseCarousel = ({ children }) => {
 	};
 
 	return (
-		<div className="course-carousel">
+		<div className={`course-carousel ${className}`}>
 			<Slider {...settings}>{children}</Slider>
 		</div>
 	);

@@ -5,27 +5,38 @@ import ProgressBar from "../../components/ProgressBar";
 import ratings from "/icons/ratings.svg";
 import { truncateString } from "../../utils";
 
-export const ActiveCourseCard = ({ progress }) => {
+export const ActiveCourseCard = ({ progress, course }) => {
+	const navigate = useNavigate();
+
+	const handleClick = () => {
+		navigate(`/course/${course.id}`);
+	};
 	return (
-		<div className="flex flex-col gap-2 border border-lighterGray p-4 rounded-lg w-72 font-trap-grotesk hover:border-hoverBlue hover:shadow-md">
+		<div
+			className="flex flex-col gap-2 border border-lighterGray p-4 rounded-lg w-72 font-trap-grotesk hover:border-hoverBlue hover:shadow-md"
+			onClick={handleClick}
+		>
 			<div className="w-full">
-				<img src={ai} className="w-full" />
+				<img src={course.image} className="w-full" />
 			</div>
 			<h5 className="font-trap-grotesk font-bold leading-6 text-lg">
-				Artificial Intelligence A-Z 2024: Build 7 AI + LLM &...
+				{truncateString(course.title, 38)}
 			</h5>
 			<div className="flex flex-col">
 				<p className="font-trap-grotesk text-lightGray text-sm">
-					Learners hub inc.
+					{course.provider}
 				</p>
 				<p className="text-lightGray items-center">
 					<span className="font-trap-grotesk text-[10px]">
-						4 total hours •
+						{course.totalHours} total hours •
 					</span>
 					<span className="font-trap-grotesk text-[10px]">
-						20 lectures •
+						{course.lectures} lectures •
 					</span>
-					<span className="font-trap-grotesk text-[10px]"> Beginner</span>
+					<span className="font-trap-grotesk text-[10px]">
+						{" "}
+						{course.level}
+					</span>
 				</p>
 			</div>
 			<ProgressBar progress={progress} />

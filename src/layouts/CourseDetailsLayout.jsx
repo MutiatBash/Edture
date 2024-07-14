@@ -7,7 +7,7 @@ const CourseDetailsLayout = ({ children, showFooter = true }) => {
 			
 			<div className="flex flex-col w-full flex-grow">
 				<CourseHeader />
-				<div className="flex flex-col gap-8">{children}</div>
+				<div className="flex flex-col gap-8 mx-auto">{children}</div>
 				{showFooter && <DashFooter />}
 			</div>
 	);
