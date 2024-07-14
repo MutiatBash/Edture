@@ -266,7 +266,7 @@ const StudentSignup = ({ setRole }) => {
 											validatePassword(e.target.value);
 										}}
 									/>
-									{passwordFocused && (
+									{passwordTouched && (
 										<>
 											<div>
 												<p className="text-darkGray text-sm pb-1">
