@@ -42,9 +42,9 @@ export const IconButton = ({ text, className, onClick, icon }) => {
 	);
 };
 
-export const GoogleButton = ({ text, className, onClick, icon }) => {
+export const GoogleButton = ({ text, className, onClick, icon, id }) => {
 	return (
-		<div>
+		<div id={id}>
 			<a
 				onClick={onClick}
 				className={`gap-2 flex justify-center items-center rounded-lg p-2 py-3 md:py-4 md:px-5 text-base bg-transparent hover:border-primaryBlue border border-lightGray text-darkGray cursor-pointer transition-all ease-in ${className}`}

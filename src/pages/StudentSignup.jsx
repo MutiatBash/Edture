@@ -15,6 +15,7 @@ import { DividerWithText, Divider } from "../components/Dividers";
 import { Link, useNavigate } from "react-router-dom";
 import ValidationIndicator from "../components/inputs/ValidationIndicator";
 import { userContext } from "../context/UserContext";
+import { GoogleSignUp } from "../components/authentication/GoogleAuth";
 
 const StudentSignup = ({ setRole }) => {
 	const navigate = useNavigate();
@@ -41,7 +42,6 @@ const StudentSignup = ({ setRole }) => {
 	];
 
 	const [step, setStep] = useState(1);
-
 	const [passwordTouched, setPasswordTouched] = useState(false);
 	const [passwordFocused, setPasswordFocused] = useState(false);
 	const [passwordValidations, setPasswordValidations] = useState({
@@ -79,7 +79,6 @@ const StudentSignup = ({ setRole }) => {
 		lastname: Yup.string().required("Last name is required"),
 		username: Yup.string().required("Username is required"),
 	});
-
 
 	const onSubmit = async (values) => {
 		try {
@@ -144,25 +143,28 @@ const StudentSignup = ({ setRole }) => {
 		}
 	};
 
-	const handleGoogleAuth = async (e) => {
-		e.preventDefault();
-		try {
-			const response = await fetch(
-				"https://edture.onrender.com/auth/google",
-				{
-					method: "GET",
-					credentials: "include",
-				}
-			);
-
-			if (response.redirected) {
-				window.location.href = response.url;
-			}
-			console.log("Google Sign-in success:", response);
-		} catch (error) {
-			console.error("Error signing in with Google:", error.message);
-		}
-	};
+	// const handleGoogleAuth = async (res) => {
+	// 	if (!res.clientId || !res.credential) {
+	// 		return setUser(val.data?.login.user);
+	// 	}
+	// 	// Process the Google sign-in response
+	// 	console.log("Google Sign-in successful:", res);
+	// 	const { clientId, credential } = res;
+	// 	const data = {
+	// 		token: credential,
+	// 		role: "STUDENT",
+	// 	};
+	// 	const response = await fetch(
+	// 		"https://edture.onrender.com/auth/google-token-verify",
+	// 		{
+	// 			method: "POST",
+	// 			headers: {
+	// 				"Content-Type": "application/json",
+	// 			},
+	// 			body: JSON.stringify(data),
+	// 		}
+	// 	);
+	// };
 
 	const nextStep = (formikProps) => {
 		if (step === 1) {
@@ -205,13 +207,19 @@ const StudentSignup = ({ setRole }) => {
 										Create an Account
 									</h3>
 									{step !== 2 && (
-										<SecondaryButton
-											text={"Tutor Sign up"}
-											onClick={() => {
-												setRole("TUTOR");
-												setRoleState("TUTOR");
-											}}
-										/>
+										<Link
+											to="/tutor-signup"
+											className="rounded-lg text-base bg-transparent border border-bg-primaryBlue text-primaryBlue p-2 md:py-3 md:px-5 hover:bg-secondaryHoverBlue cursor-pointer transition-all ease-in font-trap-grotesk font-medium tracking-tight"
+										>
+											Tutor Sign up
+										</Link>
+										// <SecondaryButton
+										// 	text={""}
+										// 	onClick={() => {
+										// 		setRole("TUTOR");
+										// 		setRoleState("TUTOR");
+										// 	}}
+										// />
 									)}
 								</div>
 								<div className="flex mt-3 mb-6 md:mb-0">
@@ -237,12 +245,14 @@ const StudentSignup = ({ setRole }) => {
 							</div>
 							{step === 1 && (
 								<div className="flex flex-col gap-6">
-									<GoogleButton
+									{/* <GoogleButton
 										icon={google}
 										text={"Sign up with Google"}
 										className="w-full"
 										onClick={handleGoogleAuth}
-									/>
+										id="googleSignUpButton"
+									/> */}
+									<GoogleSignUp text={"Sign Up with google"} />
 									<DividerWithText />
 									<InputField
 										label="Email Address"

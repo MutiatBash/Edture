@@ -104,18 +104,24 @@ const StudentSignin = ({ setRole }) => {
 									<h3 className="text-3xl font-semibold w-1/2">
 										Welcome Back
 									</h3>
-									<SecondaryButton
+									<Link
+										to="/tutor-signin"
+										className="rounded-lg text-base bg-transparent border border-bg-primaryBlue text-primaryBlue p-2 md:py-3 md:px-5 hover:bg-secondaryHoverBlue cursor-pointer transition-all ease-in font-trap-grotesk font-medium tracking-tight"
+									>
+										Tutor Sign in
+									</Link>
+									{/* <SecondaryButton
 										text={"Tutor Sign in"}
 										onClick={() => setRole("TUTOR")}
-									/>
+									/> */}
 								</div>
 							</div>
 							<div className="flex flex-col gap-6">
-								<IconButton
+								{/* <IconButton
 									icon={google}
 									text={"Sign in with Google"}
 									className="w-full"
-								/>
+								/> */}
 								<DividerWithText />
 								<InputField
 									label="Email Address"
