@@ -13,6 +13,7 @@ import logo from "/edture-logo.svg";
 import { DividerWithText, Divider } from "../components/Dividers";
 import { Link, useNavigate } from "react-router-dom";
 import { userContext } from "../context/UserContext";
+import { GoogleSignIn } from "../components/authentication/GoogleAuth";
 
 const StudentSignin = ({ setRole }) => {
 	const navigate = useNavigate();
@@ -117,6 +118,7 @@ const StudentSignin = ({ setRole }) => {
 								</div>
 							</div>
 							<div className="flex flex-col gap-6">
+								<GoogleSignIn />
 								{/* <IconButton
 									icon={google}
 									text={"Sign in with Google"}

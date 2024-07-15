@@ -252,7 +252,7 @@ const StudentSignup = ({ setRole }) => {
 										onClick={handleGoogleAuth}
 										id="googleSignUpButton"
 									/> */}
-									<GoogleSignUp text={"Sign Up with google"} />
+									<GoogleSignUp/>
 									<DividerWithText />
 									<InputField
 										label="Email Address"
