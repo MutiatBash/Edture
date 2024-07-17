@@ -8,16 +8,16 @@ import help from "/icons/help.svg";
 import certificate from "/icons/certificate.svg";
 import wallet from "/icons/wallet.svg";
 
-const ProfilePopup = () => {
+const ProfilePopup = ({initials, firstName, lastName, email}) => {
 	return (
 		<div className="fixed shadow bg-white rounded-lg top-24 right-[3%] w-72">
 			<div className="flex justify-start items-center p-4 pb-2 gap-4">
 				<div className="bg-primaryBlue rounded-full p-2 text-white uppercase w-10 h-10 text-center">
-					hh
+					{initials}
 				</div>
 				<div>
-					<p className="font-trap-grotesk font-semibold">Hamzat Habibat</p>
-					<p className="text-lightGray">hamzat@email.com</p>
+					<p className="font-trap-grotesk font-semibold">{`${firstName} ${lastName}`}</p>
+					<p className="text-lightGray">{email}</p>
 				</div>
 			</div>
 			<Divider />
