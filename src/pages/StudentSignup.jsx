@@ -143,29 +143,6 @@ const StudentSignup = ({ setRole }) => {
 		}
 	};
 
-	// const handleGoogleAuth = async (res) => {
-	// 	if (!res.clientId || !res.credential) {
-	// 		return setUser(val.data?.login.user);
-	// 	}
-	// 	// Process the Google sign-in response
-	// 	console.log("Google Sign-in successful:", res);
-	// 	const { clientId, credential } = res;
-	// 	const data = {
-	// 		token: credential,
-	// 		role: "STUDENT",
-	// 	};
-	// 	const response = await fetch(
-	// 		"https://edture.onrender.com/auth/google-token-verify",
-	// 		{
-	// 			method: "POST",
-	// 			headers: {
-	// 				"Content-Type": "application/json",
-	// 			},
-	// 			body: JSON.stringify(data),
-	// 		}
-	// 	);
-	// };
-
 	const nextStep = (formikProps) => {
 		if (step === 1) {
 			formikProps.validateForm().then((errors) => {

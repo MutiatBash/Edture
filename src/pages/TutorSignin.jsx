@@ -1,7 +1,11 @@
 import React, { useState, useContext } from "react";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
-import { IconButton, PrimaryButton, SecondaryButton } from "../components/Button";
+import {
+	IconButton,
+	PrimaryButton,
+	SecondaryButton,
+} from "../components/Button";
 import AuthCarousel from "../components/carousel/AuthCarousel";
 import InputField from "../components/inputs/Input";
 import google from "/google.png";
@@ -73,7 +77,9 @@ const TutorSignin = ({ setRole }) => {
 			setError(null);
 			setLoading(false);
 			console.log("Data submitted successfully:", dataFetched);
-			navigate("/dashboard");
+			localStorage.setItem("authToken", dataFetched.data.token);
+
+			navigate("/tutor-dashboard");
 		} catch (error) {
 			setLoading(false);
 			console.error("Error submitting data:", error.message);

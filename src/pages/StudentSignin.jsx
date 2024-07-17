@@ -77,6 +77,8 @@ const StudentSignin = ({ setRole }) => {
 			setError(null);
 			setLoading(false);
 			console.log("Data submitted successfully:", dataFetched);
+
+			localStorage.setItem("authToken", dataFetched.data.token);
 			navigate("/student-dashboard");
 		} catch (error) {
 			setLoading(false);
@@ -111,10 +113,6 @@ const StudentSignin = ({ setRole }) => {
 									>
 										Tutor Sign in
 									</Link>
-									{/* <SecondaryButton
-										text={"Tutor Sign in"}
-										onClick={() => setRole("TUTOR")}
-									/> */}
 								</div>
 							</div>
 							<div className="flex flex-col gap-6">
