@@ -145,7 +145,7 @@ h5 {
 	flex: 1;
 	/* margin: 0 auto; */
 	/* overflow: hidden !important;  */
-	max-width: 1000px !important; 
+	max-width: 1000px !important;
 }
 .course-carousel .slick-track {
 	/* display: flex; */
@@ -158,7 +158,36 @@ h5 {
 	/* margin: 0 20px; */
 }
 
+/* Loader.css */
 .loader {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 100vh; 
+	position: fixed;
+	width: 100%;
+	background: rgba(31, 31, 31, 0.91); 
+	top: 0;
+	left: 0;
+	z-index: 1000;
+}
+
+.spinner {
+	border: 4px solid rgba(0, 0, 0, 0.1);
+	border-left-color: #4356FF;
+	border-radius: 50%;
+	width: 40px;
+	height: 40px;
+	animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+/* .loader {
   border: 4px solid rgba(0, 0, 0, 0.1);
   width: 36px;
   height: 36px;
@@ -171,8 +200,7 @@ h5 {
   to {
     transform: rotate(360deg);
   }
-}
-
+} */
 
 /* .course-carousel .slick-list {
   overflow: hidden !important;

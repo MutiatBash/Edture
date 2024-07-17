@@ -10,7 +10,7 @@ import { DividerWithText, Divider } from "../components/Dividers";
 import { Link, useNavigate } from "react-router-dom";
 import ValidationIndicator from "../components/inputs/ValidationIndicator";
 import { userContext } from "../context/UserContext";
-import { GoogleSignUp } from "../components/authentication/GoogleAuth";
+import { TutorGoogleSignUp } from "../components/authentication/GoogleAuth";
 
 const TutorSignup = ({ setRole }) => {
 	const navigate = useNavigate();
@@ -215,12 +215,7 @@ const TutorSignup = ({ setRole }) => {
 							</div>
 							{step === 1 && (
 								<div className="flex flex-col gap-6">
-									<GoogleSignUp />
-									{/* <IconButton
-										icon={google}
-										text={"Sign up with Google"}
-										className="w-full"
-									/> */}
+									<TutorGoogleSignUp />
 									<DividerWithText />
 									<InputField
 										label="Email Address"

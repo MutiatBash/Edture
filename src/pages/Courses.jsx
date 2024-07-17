@@ -1,15 +1,15 @@
 import React from 'react'
-import DashboardLayout from '../layouts/DashboardLayout'
+import {StudentDashboardLayout} from '../layouts/DashboardLayout'
 import RecentCourses from '../components/courses/RecentCourses'
 import RecommendedCourses from '../components/courses/RecommendedCourses'
 import ActiveCourses from '../components/courses/ActiveCourses'
 
 const Courses = () => {
   return (
-		<DashboardLayout>
+		<StudentDashboardLayout>
 			<ActiveCourses heading={"Your Courses"} />
 			<RecommendedCourses heading={"Recommended for you"} />
-		</DashboardLayout>
+		</StudentDashboardLayout>
   );
 }
 

@@ -1,154 +1,105 @@
-import { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { userContext } from "../../context/UserContext";
+import { SpinnerLoader } from "../Loader";
 
-export const GoogleSignIn = () => {
-	const [gsiScriptLoaded, setGsiScriptLoaded] = useState(false);
-	const [user, setUser] = useState(undefined);
-	const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+const handleStudentGoogleAuth = async (res, setLoading, navigate) => {
+	if (!res.clientId || !res.credential) return;
 
-	useEffect(() => {
-		console.log("Client ID from .env:", clientId);
-	}, [clientId]);
+	const { credential } = res;
+	const data = {
+		token: credential,
+		role: "STUDENT",
+	};
 
-	const handleGoogleSignIn = async (res) => {
-		if (!res.clientId || !res.credential) {
-			console.error(
-				"Google Sign-in response is missing clientId or credential"
-			);
-			return;
-		}
+	setLoading(true);
 
-		console.log("Google Sign-in successful:", res);
-		const { credential } = res;
-		const data = {
-			token: credential,
-			role: "STUDENT",
-		};
-
-		try {
-			const response = await fetch(
-				"https://edture.onrender.com/auth/google-token-verify",
-				{
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-					},
-					body: JSON.stringify(data),
-				}
-			);
-
-			if (!response.ok) {
-				throw new Error(
-					`Network response was not ok: ${response.statusText}`
-				);
+	try {
+		const response = await fetch(
+			"https://edture.onrender.com/auth/google-token-verify",
+			{
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(data),
 			}
-
-			const result = await response.json();
-			setUser(result.user); // Adjust according to your backend response
-			console.log("User set successfully:", result.user);
-		} catch (error) {
-			console.error("Error verifying Google token:", error);
-		}
-	};
-
-	const initializeGsi = () => {
-		if (!window.google || gsiScriptLoaded) return;
-
-		setGsiScriptLoaded(true);
-		window.google.accounts.id.initialize({
-			client_id: clientId,
-			callback: handleGoogleSignIn,
-		});
-		window.google.accounts.id.renderButton(
-			document.getElementById("googleSignInButton"),
-			{ theme: "outline", size: "large" }
 		);
-	};
 
-	useEffect(() => {
-		if (user?._id || gsiScriptLoaded) return;
-
-		const script = document.createElement("script");
-		script.src = "https://accounts.google.com/gsi/client";
-		script.onload = initializeGsi;
-		script.async = true;
-		script.id = "google-client-script";
-		document.querySelector("body")?.appendChild(script);
-
-		return () => {
-			window.google?.accounts.id.cancel();
-			document.getElementById("google-client-script")?.remove();
-		};
-	}, [gsiScriptLoaded, user?._id]);
-	return <div id="googleSignInButton" className="g_id_signin"></div>;
+		const result = await response.json();
+		localStorage.setItem("token", result.data.token);
+		setLoading(false);
+		navigate("/student-dashboard");
+	} catch (error) {
+		console.error("Error during Google authentication:", error);
+	} finally {
+		setLoading(false);
+	}
 };
 
+const handleTutorGoogleAuth = async (res, setLoading, navigate) => {
+	if (!res.clientId || !res.credential) return;
 
-export const GoogleSignUp = () => {
-	const [gsiScriptLoaded, setGsiScriptLoaded] = useState(false);
-	const [user, setUser] = useState(undefined);
-	const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
-
-	useEffect(() => {
-		console.log("Client ID from .env:", clientId);
-	}, [clientId]);
-
-	const handleGoogleSignUp = async (res) => {
-		if (!res.clientId || !res.credential) {
-			console.error(
-				"Google Sign-in response is missing clientId or credential"
-			);
-			return;
-		}
-
-		console.log("Google Sign-in successful:", res);
-		const { credential } = res;
-		const data = {
-			token: credential,
-			role: "STUDENT", 
-		};
-
-		try {
-			const response = await fetch(
-				`https://edture.onrender.com/auth/google-token-verify/`,
-				{
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-					},
-					body: JSON.stringify(data),
-				}
-			);
-
-			if (!response.ok) {
-				throw new Error(
-					`Network response was not ok: ${response.statusText}`
-				);
-			}
-
-			const result = await response.json();
-			setUser(result.user); // Adjust according to your backend response
-			console.log("User set successfully:", result.user);
-		} catch (error) {
-			console.error("Error verifying Google token:", error);
-		}
+	const { credential } = res;
+	const data = {
+		token: credential,
+		role: "TUTOR",
 	};
+
+	setLoading(true);
+
+	try {
+		const response = await fetch(
+			"https://edture.onrender.com/auth/google-token-verify",
+			{
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(data),
+			}
+		);
+
+		const result = await response.json();
+		console.log(result.data.token);
+		localStorage.setItem("token", result.data.token);
+		setLoading(false);
+		navigate("/tutor-dashboard");
+	} catch (error) {
+		console.error("Error during Google authentication:", error);
+	} finally {
+		setLoading(false);
+	}
+};
+
+// STUDENT GOOGLE AUTHENTICATION
+export const StudentGoogleSignUp = () => {
+	const [gsiScriptLoaded, setGsiScriptLoaded] = useState(false);
+	const [loading, setLoading] = useState(false);
+	const [user, setUser] = useState(undefined);
+	const navigate = useNavigate();
+
+	const handleGoogleSignUp = (res) =>
+		handleStudentGoogleAuth(res, setLoading, navigate);
 
 	const initializeGsi = () => {
 		if (!window.google || gsiScriptLoaded) return;
 
 		setGsiScriptLoaded(true);
 		window.google.accounts.id.initialize({
-			client_id: clientId,
+			client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
 			callback: handleGoogleSignUp,
+			ux_mode: "popup",
+			context: "signup",
 		});
 		window.google.accounts.id.renderButton(
 			document.getElementById("googleSignUpButton"),
-			{ theme: "outline", size: "large" }
+			{ theme: "outline", size: "large", text: "signup_with" }
 		);
 	};
 
 	useEffect(() => {
-		if (user?._id || gsiScriptLoaded) return;
+		if (gsiScriptLoaded) return;
 
 		const script = document.createElement("script");
 		script.src = "https://accounts.google.com/gsi/client";
@@ -161,7 +112,160 @@ export const GoogleSignUp = () => {
 			window.google?.accounts.id.cancel();
 			document.getElementById("google-client-script")?.remove();
 		};
-	}, [gsiScriptLoaded, user?._id]);
+	}, [gsiScriptLoaded]);
 
-	return <div id="googleSignUpButton" className="g_id_signup"></div>;
+	return (
+		<>
+			{loading && <SpinnerLoader />}
+			<div id="googleSignUpButton" className="g_id_signup"></div>
+		</>
+	);
+};
+
+export const StudentGoogleSignIn = () => {
+	const [gsiScriptLoaded, setGsiScriptLoaded] = useState(false);
+	const navigate = useNavigate();
+	const [loading, setLoading] = useState(false);
+	const [user, setUser] = useState(undefined);
+
+	const handleGoogleSignIn = (res) =>
+		handleStudentGoogleAuth(res, setLoading, navigate);
+
+	const initializeGsi = () => {
+		if (!window.google || gsiScriptLoaded) return;
+
+		setGsiScriptLoaded(true);
+		window.google.accounts.id.initialize({
+			client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
+			callback: handleGoogleSignIn,
+			ux_mode: "popup",
+			context: "signin",
+		});
+		window.google.accounts.id.renderButton(
+			document.getElementById("googleSignInButton"),
+			{ theme: "outline", size: "large", text: "signin_with" }
+		);
+	};
+
+	useEffect(() => {
+		if (gsiScriptLoaded) return;
+
+		const script = document.createElement("script");
+		script.src = "https://accounts.google.com/gsi/client";
+		script.onload = initializeGsi;
+		script.async = true;
+		script.id = "google-client-script";
+		document.querySelector("body")?.appendChild(script);
+
+		return () => {
+			window.google?.accounts.id.cancel();
+			document.getElementById("google-client-script")?.remove();
+		};
+	}, [gsiScriptLoaded]);
+
+	return (
+		<>
+			{loading && <SpinnerLoader />}
+			<div id="googleSignInButton" className="g_id_signin"></div>
+		</>
+	);
+};
+
+// TUTOR GOOGLE AUTHENTICATION
+export const TutorGoogleSignUp = () => {
+	const [gsiScriptLoaded, setGsiScriptLoaded] = useState(false);
+	const navigate = useNavigate();
+	const [loading, setLoading] = useState(false);
+	const [user, setUser] = useState(undefined);
+
+	const handleGoogleSignUp = (res) =>
+		handleTutorGoogleAuth(res, setLoading, navigate);
+
+	const initializeGsi = () => {
+		if (!window.google || gsiScriptLoaded) return;
+
+		setGsiScriptLoaded(true);
+		window.google.accounts.id.initialize({
+			client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
+			callback: handleGoogleSignUp,
+			ux_mode: "popup",
+			context: "signup",
+		});
+		window.google.accounts.id.renderButton(
+			document.getElementById("googleSignUpButton"),
+			{ theme: "outline", size: "large", text: "signup_with" }
+		);
+	};
+
+	useEffect(() => {
+		if (gsiScriptLoaded) return;
+
+		const script = document.createElement("script");
+		script.src = "https://accounts.google.com/gsi/client";
+		script.onload = initializeGsi;
+		script.async = true;
+		script.id = "google-client-script";
+		document.querySelector("body")?.appendChild(script);
+
+		return () => {
+			window.google?.accounts.id.cancel();
+			document.getElementById("google-client-script")?.remove();
+		};
+	}, [gsiScriptLoaded]);
+
+	return (
+		<>
+			{loading && <SpinnerLoader />}
+			<div id="googleSignUpButton" className="g_id_signup"></div>
+		</>
+	);
+};
+
+export const TutorGoogleSignIn = () => {
+	const [gsiScriptLoaded, setGsiScriptLoaded] = useState(false);
+	const navigate = useNavigate();
+	const [loading, setLoading] = useState(false);
+	const [user, setUser] = useState(undefined);
+
+	const handleGoogleSignIn = (res) =>
+		handleTutorGoogleAuth(res, setLoading, navigate);
+
+	const initializeGsi = () => {
+		if (!window.google || gsiScriptLoaded) return;
+
+		setGsiScriptLoaded(true);
+		window.google.accounts.id.initialize({
+			client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
+			callback: handleGoogleSignIn,
+			ux_mode: "popup",
+			context: "signin",
+		});
+		window.google.accounts.id.renderButton(
+			document.getElementById("googleSignInButton"),
+			{ theme: "outline", size: "large", text: "signin_with" }
+		);
+	};
+
+	useEffect(() => {
+		if (gsiScriptLoaded) return;
+
+		const script = document.createElement("script");
+		script.src = "https://accounts.google.com/gsi/client";
+		script.onload = initializeGsi;
+		script.async = true;
+		script.id = "google-client-script";
+		document.querySelector("body")?.appendChild(script);
+
+		return () => {
+			window.google?.accounts.id.cancel();
+			document.getElementById("google-client-script")?.remove();
+		};
+	}, [gsiScriptLoaded]);
+
+	return (
+		<>
+			{loading && <SpinnerLoader />}
+			<div id="googleSignInButton" className="g_id_signin"></div>
+		</>
+	);
 };

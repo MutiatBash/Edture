@@ -18,7 +18,7 @@ import community from "/community.svg";
 import communityactive from "/community-active.svg";
 import edture from "/edture-logo.svg";
 
-const SideBar = () => {
+export const StudentSideBar = () => {
 	return (
 		<div className="bg-white flex flex-col p-10 pr-5 border-r-[0.5px] border-r-lightGray w-1/5 h-full gap-12 min-h-screen sticky top-0 z-10">
 			<div>
@@ -30,7 +30,7 @@ const SideBar = () => {
 					<div>
 						<ul className="flex flex-col gap-2">
 							<SidebarLink
-								to="/dashboard"
+								to="/student-dashboard"
 								icon={dashboard}
 								activeIcon={dashboardactive}
 								label="Dashboard"
@@ -78,7 +78,7 @@ const SideBar = () => {
 							label="Settings"
 						/>
 						<SidebarLink
-							to="/settings"
+							to="/student-signin"
 							icon={logout}
 							activeIcon={logoutactive}
 							label="Logout"
@@ -90,4 +90,75 @@ const SideBar = () => {
 	);
 };
 
-export default SideBar;
+export const TutorSideBar = () => {
+	return (
+		<div className="bg-white flex flex-col p-10 pr-5 border-r-[0.5px] border-r-lightGray w-1/5 h-full gap-12 min-h-screen sticky top-0 z-10">
+			<div>
+				<img src={edture} />
+			</div>
+			<div className="flex flex-col gap-16">
+				<div className="flex flex-col gap-4">
+					<h5 className="uppercase text-lightGray text-sm">Overview</h5>
+					<div>
+						<ul className="flex flex-col gap-2">
+							<SidebarLink
+								to="/tutor-dashboard"
+								icon={dashboard}
+								activeIcon={dashboardactive}
+								label="Dashboard"
+							/>
+							<SidebarLink
+								to="/inbox"
+								icon={inbox}
+								activeIcon={inboxactive}
+								label="Inbox"
+							/>
+							<SidebarLink
+								to="/courses"
+								icon={courses}
+								activeIcon={coursesactive}
+								label="Courses"
+							/>
+							<SidebarLink
+								to="/quizzes"
+								icon={quiz}
+								activeIcon={quizactive}
+								label="Quizzes"
+							/>
+							<SidebarLink
+								to="/community"
+								icon={community}
+								activeIcon={communityactive}
+								label="Community"
+							/>
+						</ul>
+					</div>
+				</div>
+				<div className="flex flex-col gap-4">
+					<h5 className="uppercase text-lightGray text-sm">Settings</h5>
+					<ul className="flex flex-col gap-2">
+						<SidebarLink
+							to="/profile"
+							icon={profile}
+							activeIcon={profileactive}
+							label="Profile"
+						/>
+						<SidebarLink
+							to="/settings"
+							icon={settings}
+							activeIcon={settingsactive}
+							label="Settings"
+						/>
+						<SidebarLink
+							to="/tutor-signin"
+							icon={logout}
+							activeIcon={logoutactive}
+							label="Logout"
+						/>
+					</ul>
+				</div>
+			</div>
+		</div>
+	);
+};
+
