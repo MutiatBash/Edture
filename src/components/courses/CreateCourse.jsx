@@ -97,7 +97,7 @@ const CreateCourse = () => {
 			{step === 3 && (
 				<div className="flex flex-col gap-4">
 					<InputField
-						title="Add lessons."
+						title="Add lessons"
 						label="Lesson Title"
 						placeholder="Enter lesson title"
 					/>

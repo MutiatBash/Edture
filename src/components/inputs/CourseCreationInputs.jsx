@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 
+// General Input Field Component
 export const InputField = ({ title, label, subtitle, ...props }) => {
 	return (
 		<div className="flex flex-col mb-4">
@@ -9,7 +10,9 @@ export const InputField = ({ title, label, subtitle, ...props }) => {
 				</h3>
 			)}
 			{subtitle && (
-				<p className="text-lg mb-2 text-primaryBlack font-trap-grotesk font-medium">{subtitle}</p>
+				<p className="text-lg mb-2 text-primaryBlack font-medium">
+					{subtitle}
+				</p>
 			)}
 			<label className="sr-only">{label}</label>
 			<input
@@ -20,6 +23,7 @@ export const InputField = ({ title, label, subtitle, ...props }) => {
 	);
 };
 
+// Text Area Input Field Component
 export const TextAreaField = ({ title, subtitle, label, ...props }) => {
 	return (
 		<div className="flex flex-col mb-4">
@@ -29,7 +33,9 @@ export const TextAreaField = ({ title, subtitle, label, ...props }) => {
 				</h3>
 			)}
 			{subtitle && (
-				<p className="text-lg mb-2 text-primaryBlack">{subtitle}</p>
+				<p className="text-lg mb-2 text-primaryBlack font-medium">
+					{subtitle}
+				</p>
 			)}
 			<label className="sr-only">{label}</label>
 			<textarea
@@ -40,7 +46,7 @@ export const TextAreaField = ({ title, subtitle, label, ...props }) => {
 	);
 };
 
-// Select Field Component
+// Select Input Field Component
 export const SelectField = ({ title, label, options, ...props }) => {
 	return (
 		<div className="flex flex-col mb-4">
@@ -64,8 +70,16 @@ export const SelectField = ({ title, label, options, ...props }) => {
 	);
 };
 
-// File Upload Field Component
+// File Upload Input Field Component
 export const FileUploadField = ({ title, label, ...props }) => {
+	const [fileName, setFileName] = useState("");
+
+	const handleFileChange = (e) => {
+		if (e.target.files.length > 0) {
+			setFileName(e.target.files[0].name);
+		}
+	};
+
 	return (
 		<div className="flex flex-col mb-4">
 			{title && (
@@ -77,8 +91,14 @@ export const FileUploadField = ({ title, label, ...props }) => {
 			<input
 				type="file"
 				{...props}
+				onChange={handleFileChange}
 				className="border border-lightGray rounded-lg p-4 px-5 file:border-none file:py-1 file:px-2 file:bg-blue-500 file:text-primaryBlue file:rounded-md file:cursor-pointer focus:outline-none"
 			/>
+			{fileName && (
+				<p className="text-lg mt-2 text-primaryBlack">
+					Uploaded file: {fileName}
+				</p>
+			)}
 		</div>
 	);
 };
