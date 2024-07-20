@@ -56,12 +56,6 @@ export const StudentSideBar = () => {
 								label="Courses"
 							/>
 							<SidebarLink
-								to="/quizzes"
-								icon={quiz}
-								activeIcon={quizactive}
-								label="Quizzes"
-							/>
-							<SidebarLink
 								to="/community"
 								icon={community}
 								activeIcon={communityactive}
@@ -128,12 +122,6 @@ export const TutorSideBar = ({}) => {
 								icon={courses}
 								activeIcon={coursesactive}
 								label="Courses"
-							/>
-							<SidebarLink
-								to="/quizzes"
-								icon={quiz}
-								activeIcon={quizactive}
-								label="Quizzes"
 							/>
 							<SidebarLink
 								to="/community"

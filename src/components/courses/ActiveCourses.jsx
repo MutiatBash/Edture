@@ -16,7 +16,6 @@ const ActiveCourses = ({ heading }) => {
 				{coursesToShow.map((course, index) => (
 					<ActiveCourseCard progress={course.progress} course={course} key={index}/>
 				))}
-				<AddCourseCard />
 			</div>
 		</section>
 	);

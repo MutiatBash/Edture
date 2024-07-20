@@ -1,7 +1,7 @@
 import React from "react";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
-import InputField from "../components/inputs/Input";
+import InputField from "../components/inputs/AuthInputs";
 import { PrimaryButton } from "../components/Button";
 import { Link } from "react-router-dom";
 import { Divider } from "../components/Dividers";

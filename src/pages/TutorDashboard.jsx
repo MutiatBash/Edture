@@ -51,7 +51,7 @@ const TutorDashboard = () => {
 			{(userLoading || tutorLoading) && <SpinnerLoader />}
 			<TutorDashboardLayout>
 				<DashboardBanner className="pt-6" isNewUser={isNewUser} />
-				<div className="grid grid-cols-3 gap-6">
+				<div className="grid grid-cols-2 gap-6">
 					<CourseStatusCard
 						number={tutorDashboardData?.totalActiveCourses || 0}
 						status={"Courses"}
@@ -64,9 +64,18 @@ const TutorDashboard = () => {
 					/>
 				</div>
 				{showAddCourse ? (
-					<AddCourseCard text={"Create New Course"} heading={"My Courses"}/>
+					<AddCourseCard
+						text={"Create New Course"}
+						heading={"My Courses"}
+					/>
 				) : (
-					<ActiveCourses heading={"Continue teaching"} />
+					<div className="flex">
+						<ActiveCourses heading={"Continue teaching"} />
+						<AddCourseCard
+							text={"Create New Course"}
+							heading={"My Courses"}
+						/>
+					</div>
 				)}
 			</TutorDashboardLayout>
 			{showLogoutModal && (

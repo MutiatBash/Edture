@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
-import InputField from "../inputs/Input";
+import InputField from "../inputs/AuthInputs";
 import { PrimaryButton } from "../Button";
 import { Link, useLocation } from "react-router-dom";
 import { Divider } from "../Dividers";

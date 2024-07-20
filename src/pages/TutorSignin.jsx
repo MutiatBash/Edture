@@ -7,7 +7,7 @@ import {
 	SecondaryButton,
 } from "../components/Button";
 import AuthCarousel from "../components/carousel/AuthCarousel";
-import InputField from "../components/inputs/Input";
+import InputField from "../components/inputs/AuthInputs";
 import logo from "/edture-logo.svg";
 import { DividerWithText, Divider } from "../components/Dividers";
 import { userContext } from "../context/UserContext";
