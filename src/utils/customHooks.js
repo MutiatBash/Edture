@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import axios from "axios";
 
 const useApi = (url, token) => {
 	const [data, setData] = useState(null);
@@ -6,22 +7,21 @@ const useApi = (url, token) => {
 	const [error, setError] = useState(null);
 
 	useEffect(() => {
+		if (!token) return;
+
 		const fetchData = async () => {
+			setLoading(true);
+
 			try {
-				const response = await fetch(url, {
-					method: "GET",
+				const response = await axios.get(url, {
 					headers: {
 						Authorization: `Bearer ${token}`,
 						"Content-Type": "application/json",
 					},
 				});
 
-				if (!response.ok) {
-					throw new Error("Failed to fetch data");
-				}
-				const result = await response.json();
-				console.log("Fetched data:", result);
-				setData(result.data);
+				console.log("Fetched data:", response.data);
+				setData(response.data.data);
 			} catch (error) {
 				console.error("Error fetching data:", error.message);
 				setError(error.message);
@@ -33,7 +33,11 @@ const useApi = (url, token) => {
 		fetchData();
 	}, [url, token]);
 
-	return { data, loading, error };
+	return {
+		data,
+		loading,
+		error,
+	};
 };
 
 export default useApi;

@@ -63,21 +63,20 @@ const TutorSignin = ({ setRole }) => {
 				throw new Error("Failed to submit data");
 			}
 			const dataFetched = await response.json();
-			setError(null);
-			setLoading(false);
 			console.log("Data submitted successfully:", dataFetched);
 
 			const token = dataFetched.data.token;
-			localStorage.setItem("authToken", token);
 			setToken(token);
 
-			await fetchUserData(token);
+			localStorage.setItem("authToken", token);
+
+			// await fetchUserData(token);
 
 			setTimeout(() => {
-				localStorage.setItem("authToken", token);
 				setToken(token);
+				setError(null);
 				navigate("/tutor-dashboard");
-				window.location.reload();
+				setLoading(false);
 			}, 1000);
 		} catch (error) {
 			setLoading(false);

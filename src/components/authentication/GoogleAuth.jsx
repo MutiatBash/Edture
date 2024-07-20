@@ -96,7 +96,6 @@ export const StudentGoogleSignUp = () => {
 			document.getElementById("googleSignUpButton"),
 			{ theme: "outline", size: "large", text: "signup_with" }
 		);
-		console.log("clientid", import.meta.env.VITE_GOOGLE_CLIENT_ID);
 	};
 
 	useEffect(() => {
@@ -146,7 +145,6 @@ export const StudentGoogleSignIn = () => {
 			document.getElementById("googleSignInButton"),
 			{ theme: "outline", size: "large", text: "signin_with" }
 		);
-		console.log("clientid", import.meta.env.VITE_GOOGLE_CLIENT_ID);
 	};
 
 	useEffect(() => {
@@ -197,7 +195,6 @@ export const TutorGoogleSignUp = () => {
 			document.getElementById("googleSignUpButton"),
 			{ theme: "outline", size: "large", text: "signup_with" }
 		);
-		console.log("clientid", import.meta.env.VITE_GOOGLE_CLIENT_ID);
 	};
 
 	useEffect(() => {
@@ -247,7 +244,6 @@ export const TutorGoogleSignIn = () => {
 			document.getElementById("googleSignInButton"),
 			{ theme: "outline", size: "large", text: "signin_with" }
 		);
-		console.log("clientid", import.meta.env.VITE_GOOGLE_CLIENT_ID);
 	};
 
 	useEffect(() => {

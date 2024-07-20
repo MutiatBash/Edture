@@ -39,83 +39,63 @@ const UserContextProvider = ({ children }) => {
 
 	useEffect(() => {
 		if (token) {
-			fetchUserData(token);
+			localStorage.setItem("authToken", token);
+		} else {
+			localStorage.removeItem("authToken");
 		}
 	}, [token]);
 
-	const logout = () => {
+	useEffect(() => {
+		if (userError || tutorError) {
+			setError(userError || tutorError);
+		} else {
+			setError("");
+		}
+	}, [userError, tutorError]);
+
+	const logout = async () => {
 		setIsLoggingOut(true);
-
-		setTimeout(() => {
-			localStorage.removeItem("authToken");
-			setUser(null);
-			setDashboardData(null);
-			setToken(null);
-			setIsLoggingOut(false);
-			setShowLogoutModal(false);
-		}, 2000);
-	};
-
-	const fetchUserData = async (token) => {
 		try {
-			const profileResponse = await fetch(
-				"https://edture.onrender.com/users/profiles/my-profile",
-				{
-					method: "GET",
-					headers: {
-						Authorization: `Bearer ${token}`,
-						"Content-Type": "application/json",
-					},
-				}
-			);
-
-			const dashboardResponse = await fetch(
-				"https://edture.onrender.com/users/tutor/dashboard",
-				{
-					method: "GET",
-					headers: {
-						Authorization: `Bearer ${token}`,
-						"Content-Type": "application/json",
-					},
-				}
-			);
-
-			if (!profileResponse.ok || !dashboardResponse.ok) {
-				throw new Error("Failed to fetch user data");
-			}
-
-			const profileData = await profileResponse.json();
-			const dashboardData = await dashboardResponse.json();
-
-			setUser(profileData.data);
-			setDashboardData(dashboardData.data);
+			console.log("Logging out...");
+			setTimeout(() => {
+				localStorage.removeItem("authToken");
+				setUser(null);
+				setDashboardData(null);
+				setToken(null);
+				setError("");
+				setSuccess(true);
+				console.log("States cleared");
+			}, 1000);
 		} catch (error) {
-			console.error("Error fetching user data:", error.message);
+			console.error("Error during logout:", error);
+			setError(error.message);
+		} finally {
+			setTimeout(() => {
+				setIsLoggingOut(false);
+				setShowLogoutModal(false);
+			}, 1500);
 		}
 	};
 
 	return (
 		<userContext.Provider
 			value={{
-				fetchUserData,
 				token,
 				setToken,
 				user,
+				setUser,
 				firstName: user ? user.firstname : "",
 				lastName: user ? user.lastname : "",
 				emailAddress: user ? user.email : "",
 				tutorDashboardData,
-				tutorLoading,
-				tutorError,
-				userLoading,
-				userError,
-				setUser,
+				dashboardData,
+				setDashboardData,
 				loading,
 				setLoading,
-				error,
-				setError,
 				success,
 				setSuccess,
+				error,
+				setError,
 				logout,
 				showLogoutModal,
 				setShowLogoutModal,

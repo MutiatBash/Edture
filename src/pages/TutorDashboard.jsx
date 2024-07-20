@@ -36,36 +36,31 @@ const TutorDashboard = () => {
 		}, 2000);
 	};
 
+	if (userError || tutorError) {
+		return <div>Error: {userError || tutorError}</div>;
+	}
 	const isNewUser = tutorDashboardData?.courses?.length === 0;
 	const role = "TUTOR";
 
 	return (
 		<>
-			{userLoading || tutorLoading ? (
-				<SpinnerLoader />
-			) : userError || tutorError ? (
-				<div className="text-center mx-auto">
-					Error: {userError || tutorError}
+			{(userLoading || tutorLoading) && <SpinnerLoader />}
+			<TutorDashboardLayout>
+				<DashboardBanner className="pt-6" isNewUser={isNewUser} />
+				<div className="grid grid-cols-3 gap-6">
+					<CourseStatusCard
+						number={tutorDashboardData?.totalActiveCourses || 0}
+						status={"Courses"}
+						icon={enrolled}
+					/>
+					<CourseStatusCard
+						number={tutorDashboardData?.totalActiveCourses || 0}
+						status={"Active"}
+						icon={active}
+					/>
 				</div>
-			) : (
-				<TutorDashboardLayout>
-					<DashboardBanner className="pt-6" isNewUser={isNewUser} />
-					<div className="grid grid-cols-3 gap-6">
-						<CourseStatusCard
-							number={tutorDashboardData?.totalActiveCourses || 0}
-							status={"Courses"}
-							icon={enrolled}
-						/>
-						<CourseStatusCard
-							number={tutorDashboardData?.totalActiveCourses || 0}
-							status={"Active"}
-							icon={active}
-						/>
-					</div>
-					<ActiveCourses heading={"Continue learning"} />
-				</TutorDashboardLayout>
-			)}
-
+				<ActiveCourses heading={"Continue learning"} />
+			</TutorDashboardLayout>
 			{showLogoutModal && (
 				<LogoutModal
 					show={showLogoutModal}
