@@ -9,7 +9,7 @@ const LogoutModal = ({ show, onClose, onConfirm, isLoading }) => {
 	}
 
 	return (
-		<div className="fixed inset-0 flex items-center justify-center bg-primaryBlack bg-opacity-50 z-50">
+		<div className="fixed inset-0 flex items-center justify-center bg-primaryBlack bg-opacity-50 z-50 backdrop-blur">
 			<div className="bg-white flex flex-col gap-6 rounded-lg overflow-hidden shadow-xl transform transition-all sm:max-w-md sm:w-full p-6 pb-8">
 				<button
 					className="ml-auto bg-transparent border-0 float-right font-semibold outline-none focus:outline-none"

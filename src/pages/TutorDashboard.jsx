@@ -10,6 +10,7 @@ import ActiveCourses from "../components/courses/ActiveCourses";
 import RecommendedCourses from "../components/courses/RecommendedCourses";
 import { SpinnerLoader } from "../components/Loader";
 import LogoutModal from "../components/authentication/LogoutModal";
+import AddCourseCard from "../components/cards/AddCourseCard";
 
 const TutorDashboard = () => {
 	const {
@@ -40,6 +41,9 @@ const TutorDashboard = () => {
 		return <div>Error: {userError || tutorError}</div>;
 	}
 	const isNewUser = tutorDashboardData?.courses?.length === 0;
+	const activeCoursesCount =
+		tutorDashboardData?.totalActiveCourses?.length || 0;
+	const showAddCourse = activeCoursesCount === 0;
 	const role = "TUTOR";
 
 	return (
@@ -59,7 +63,11 @@ const TutorDashboard = () => {
 						icon={active}
 					/>
 				</div>
-				<ActiveCourses heading={"Continue learning"} />
+				{showAddCourse ? (
+					<AddCourseCard text={"Create New Course"} heading={"My Courses"}/>
+				) : (
+					<ActiveCourses heading={"Continue teaching"} />
+				)}
 			</TutorDashboardLayout>
 			{showLogoutModal && (
 				<LogoutModal
