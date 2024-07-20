@@ -1,4 +1,6 @@
-import React from "react";
+import React, { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { userContext } from "../../context/UserContext";
 import SidebarLink from "./SidebarLink";
 import dashboard from "/dashboard.svg";
 import dashboardactive from "/dashboard-active.svg";
@@ -6,7 +8,7 @@ import profile from "/profile.svg";
 import profileactive from "/profile-active.svg";
 import settings from "/settings.svg";
 import settingsactive from "/settings-active.svg";
-import logout from "/logout.svg";
+import logouticon from "/logout.svg";
 import logoutactive from "/logout-active.svg";
 import inbox from "/inbox.svg";
 import inboxactive from "/inbox-active.svg";
@@ -17,8 +19,14 @@ import coursesactive from "/courses-active.svg";
 import community from "/community.svg";
 import communityactive from "/community-active.svg";
 import edture from "/edture-logo.svg";
+import LogoutModal from "../authentication/LogoutModal";
 
 export const StudentSideBar = () => {
+	const { logout } = useContext(userContext);
+	const handleLogout = () => {
+		logout();
+		navigate("/student-signin");
+	};
 	return (
 		<div className="bg-white flex flex-col p-10 pr-5 border-r-[0.5px] border-r-lightGray w-1/5 h-full gap-12 min-h-screen sticky top-0 z-10">
 			<div>
@@ -78,7 +86,7 @@ export const StudentSideBar = () => {
 							label="Settings"
 						/>
 						<SidebarLink
-							to="/student-signin"
+							onClick={handleLogout}
 							icon={logout}
 							activeIcon={logoutactive}
 							label="Logout"
@@ -90,7 +98,9 @@ export const StudentSideBar = () => {
 	);
 };
 
-export const TutorSideBar = () => {
+export const TutorSideBar = ({}) => {
+	const { setShowLogoutModal } = useContext(userContext);
+
 	return (
 		<div className="bg-white flex flex-col p-10 pr-5 border-r-[0.5px] border-r-lightGray w-1/5 h-full gap-12 min-h-screen sticky top-0 z-10">
 			<div>
@@ -150,8 +160,9 @@ export const TutorSideBar = () => {
 							label="Settings"
 						/>
 						<SidebarLink
-							to="/tutor-signin"
-							icon={logout}
+							to="/logout"
+							onClick={() => setShowLogoutModal(true)}
+							icon={logouticon}
 							activeIcon={logoutactive}
 							label="Logout"
 						/>
@@ -161,4 +172,3 @@ export const TutorSideBar = () => {
 		</div>
 	);
 };
-

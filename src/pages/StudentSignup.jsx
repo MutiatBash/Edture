@@ -190,13 +190,6 @@ const StudentSignup = ({ setRole }) => {
 										>
 											Tutor Sign up
 										</Link>
-										// <SecondaryButton
-										// 	text={""}
-										// 	onClick={() => {
-										// 		setRole("TUTOR");
-										// 		setRoleState("TUTOR");
-										// 	}}
-										// />
 									)}
 								</div>
 								<div className="flex mt-3 mb-6 md:mb-0">

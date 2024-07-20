@@ -17,18 +17,9 @@ import { StudentGoogleSignIn } from "../components/authentication/GoogleAuth";
 
 const StudentSignin = ({ setRole }) => {
 	const navigate = useNavigate();
-	const {
-		firstName,
-		setFirstName,
-		lastName,
-		setLastName,
-		emailAddress,
-		setEmailAddress,
-		loading,
-		setLoading,
-		error,
-		setError,
-	} = useContext(userContext);
+	const { setToken, loading, setLoading, error, setError, fetchUserData } =
+		useContext(userContext);
+
 	const studentImages = [
 		"/signup-carousel/student1.png",
 		"/signup-carousel/student2.png",
@@ -78,8 +69,18 @@ const StudentSignin = ({ setRole }) => {
 			setLoading(false);
 			console.log("Data submitted successfully:", dataFetched);
 
-			localStorage.setItem("authToken", dataFetched.data.token);
-			navigate("/student-dashboard");
+			const token = dataFetched.data.token;
+			localStorage.setItem("authToken", token);
+			setToken(token);
+
+			await fetchUserData(token);
+
+			setTimeout(() => {
+				localStorage.setItem("authToken", token);
+				setToken(token);
+				navigate("/student-dashboard");
+				window.location.reload();
+			}, 1000);
 		} catch (error) {
 			setLoading(false);
 			console.error("Error submitting data:", error.message);

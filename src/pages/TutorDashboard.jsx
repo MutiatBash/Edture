@@ -8,35 +8,74 @@ import enrolled from "/icons/enrolled-course.svg";
 import active from "/icons/active-course.svg";
 import ActiveCourses from "../components/courses/ActiveCourses";
 import RecommendedCourses from "../components/courses/RecommendedCourses";
+import { SpinnerLoader } from "../components/Loader";
+import LogoutModal from "../components/authentication/LogoutModal";
 
-const StudentDashboard = () => {
-	const { fetchUserData, setUser } = useContext(userContext);
-	const [userData, setUserData] = useState(null);
+const TutorDashboard = () => {
+	const {
+		tutorDashboardData,
+		tutorLoading,
+		tutorError,
+		userLoading,
+		userError,
+		setShowLogoutModal,
+		showLogoutModal,
+		logout,
+		isLoggingOut,
+		token,
+		user,
+	} = useContext(userContext);
+
 	const navigate = useNavigate();
 
-	useEffect(() => {
-		const getUserData = async () => {
-			const data = await fetchUserData();
-			if (data) {
-				setUserData(data);
-				setUser(data);
-			} else {
-				navigate("/student-signin");
-			}
-		};
+	const handleLogout = async () => {
+		await logout();
 
-		getUserData();
-	}, [navigate, setUser]);
+		setTimeout(() => {
+			navigate("/tutor-signin");
+		}, 2000);
+	};
+
+	const isNewUser = tutorDashboardData?.courses?.length === 0;
+	const role = "TUTOR";
+
 	return (
-		<TutorDashboardLayout>
-			<DashboardBanner className="pt-6" />
-			<div className="grid grid-cols-3 gap-6">
-				<CourseStatusCard number={1} status={"Courses"} icon={enrolled} />
-				<CourseStatusCard number={1} status={"Active"} icon={active} />
-			</div>
-			<ActiveCourses heading={"Continue learning"} />
-		</TutorDashboardLayout>
+		<>
+			{userLoading || tutorLoading ? (
+				<SpinnerLoader />
+			) : userError || tutorError ? (
+				<div className="text-center mx-auto">
+					Error: {userError || tutorError}
+				</div>
+			) : (
+				<TutorDashboardLayout>
+					<DashboardBanner className="pt-6" isNewUser={isNewUser} />
+					<div className="grid grid-cols-3 gap-6">
+						<CourseStatusCard
+							number={tutorDashboardData?.totalActiveCourses || 0}
+							status={"Courses"}
+							icon={enrolled}
+						/>
+						<CourseStatusCard
+							number={tutorDashboardData?.totalActiveCourses || 0}
+							status={"Active"}
+							icon={active}
+						/>
+					</div>
+					<ActiveCourses heading={"Continue learning"} />
+				</TutorDashboardLayout>
+			)}
+
+			{showLogoutModal && (
+				<LogoutModal
+					show={showLogoutModal}
+					onClose={() => setShowLogoutModal(false)}
+					onConfirm={handleLogout}
+					isLoading={isLoggingOut}
+				/>
+			)}
+		</>
 	);
 };
 
-export default StudentDashboard;
+export default TutorDashboard;

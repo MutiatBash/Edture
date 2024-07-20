@@ -3,16 +3,16 @@ import { useNavigate } from "react-router-dom";
 import ai from "/ai-course.svg";
 import ProgressBar from "../../components/ProgressBar";
 import ratings from "/icons/ratings.svg";
-import { truncateString } from "../../utils";
+import { truncateString } from "../../utils/utils";
 
-export const ActiveCourseCard = ({ progress, course }) => {
+export const ActiveCourseCard = ({ progress, course , id}) => {
 	const navigate = useNavigate();
 
 	const handleClick = () => {
 		navigate(`/course/${course.id}`);
 	};
 	return (
-		<div
+		<div id={id}
 			className="flex flex-col gap-2 border border-lighterGray p-4 rounded-lg w-72 font-trap-grotesk hover:border-hoverBlue hover:shadow-md"
 			onClick={handleClick}
 		>

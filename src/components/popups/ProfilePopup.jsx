@@ -16,7 +16,7 @@ const ProfilePopup = ({initials, firstName, lastName, email}) => {
 					{initials}
 				</div>
 				<div>
-					<p className="font-trap-grotesk font-semibold">{`${firstName} ${lastName}`}</p>
+					<p className="font-trap-grotesk font-semibold capitalize">{`${firstName} ${lastName}`}</p>
 					<p className="text-lightGray">{email}</p>
 				</div>
 			</div>

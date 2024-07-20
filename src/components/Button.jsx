@@ -5,7 +5,7 @@ export const PrimaryButton = ({ text, className, onClick, type, disabled }) => {
 				disabled={disabled}
 				type={type}
 				onClick={onClick}
-				className={`rounded-lg text-lg text-white bg-primaryBlue p-2 py-3 md:py-4 md:px-5 hover:bg-hoverBlue transition-all ease-in cursor-pointer font-trap-grotesk font-medium tracking-tight ${className} ${
+				className={`rounded-lg text-lg text-white bg-primaryBlue p-2 py-3 md:py-3 md:px-8 hover:bg-hoverBlue transition-all ease-in cursor-pointer font-trap-grotesk font-medium tracking-tight ${className} ${
 					disabled ? "bg-lightGray text-darkGray cursor-not-allowed" : ""
 				}`}
 			>
@@ -20,7 +20,7 @@ export const SecondaryButton = ({ text, className, onClick, disabled }) => {
 		<div>
 			<button
 				onClick={onClick}
-				className={`rounded-lg text-base bg-transparent border border-bg-primaryBlue text-primaryBlue p-2 md:py-3 md:px-5 hover:bg-secondaryHoverBlue cursor-pointer transition-all ease-in font-trap-grotesk font-medium tracking-tight ${className}`}
+				className={`rounded-lg text-base bg-transparent border border-bg-primaryBlue text-primaryBlue p-2 md:py-3 md:px-8 hover:bg-secondaryHoverBlue cursor-pointer transition-all ease-in font-trap-grotesk font-medium tracking-tight ${className}`}
 			>
 				{text}
 			</button>

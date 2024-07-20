@@ -8,7 +8,6 @@ import {
 } from "../components/Button";
 import AuthCarousel from "../components/carousel/AuthCarousel";
 import InputField from "../components/inputs/Input";
-import google from "/google.png";
 import logo from "/edture-logo.svg";
 import { DividerWithText, Divider } from "../components/Dividers";
 import { userContext } from "../context/UserContext";
@@ -17,18 +16,8 @@ import { TutorGoogleSignIn } from "../components/authentication/GoogleAuth";
 
 const TutorSignin = ({ setRole }) => {
 	const navigate = useNavigate();
-	const {
-		firstName,
-		setFirstName,
-		lastName,
-		setLastName,
-		emailAddress,
-		setEmailAddress,
-		loading,
-		setLoading,
-		error,
-		setError,
-	} = useContext(userContext);
+	const { setToken, loading, setLoading, error, setError, fetchUserData } =
+		useContext(userContext);
 
 	const tutorImages = [
 		"/signup-carousel/tutor1.png",
@@ -77,9 +66,19 @@ const TutorSignin = ({ setRole }) => {
 			setError(null);
 			setLoading(false);
 			console.log("Data submitted successfully:", dataFetched);
-			localStorage.setItem("authToken", dataFetched.data.token);
 
-			navigate("/tutor-dashboard");
+			const token = dataFetched.data.token;
+			localStorage.setItem("authToken", token);
+			setToken(token);
+
+			await fetchUserData(token);
+
+			setTimeout(() => {
+				localStorage.setItem("authToken", token);
+				setToken(token);
+				navigate("/tutor-dashboard");
+				window.location.reload();
+			}, 1000);
 		} catch (error) {
 			setLoading(false);
 			console.error("Error submitting data:", error.message);

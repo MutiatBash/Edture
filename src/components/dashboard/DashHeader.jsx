@@ -10,7 +10,10 @@ import CartPopup from "../popups/CartPopup";
 import { userContext } from "../../context/UserContext";
 
 const DashHeader = () => {
-	const { user } = useContext(userContext);
+	const { firstName, lastName, emailAddress } = useContext(userContext);
+	const initials =
+		firstName && lastName ? `${firstName[0]}${lastName[0]}` : "HH";
+
 	const [popups, setPopups] = useState({
 		profile: false,
 		notification: false,
@@ -28,13 +31,13 @@ const DashHeader = () => {
 		});
 	};
 
-	// Get initials from first and last name
-	const getInitials = (firstName, lastName) => {
-		if (!firstName || !lastName) return "NN";
-		return `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
-	};
+	// // Get initials from first and last name
+	// const getInitials = (firstName, lastName) => {
+	// 	if (!firstName || !lastName) return "NN";
+	// 	return `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
+	// };
 
-	const initials = getInitials(user?.data?.firstname, user?.data?.lastname);
+	// const initials = getInitials(user?.data?.firstname, user?.data?.lastname);
 
 	return (
 		<div className="bg-white border-b-[0.5px] border-b-lightGray p-6 pr-12 sticky z-30 top-0">
@@ -71,9 +74,9 @@ const DashHeader = () => {
 					</div>
 					{popups.profile && (
 						<ProfilePopup
-							firstName={user?.data?.firstname}
-							lastName={user?.data?.lastname}
-							email={user?.data?.email}
+							firstName={firstName}
+							lastName={lastName}
+							email={emailAddress}
 							initials={initials}
 						/>
 					)}

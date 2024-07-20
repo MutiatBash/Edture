@@ -1,7 +1,11 @@
 import React, { useState, useContext } from "react";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
-import { PrimaryButton, SecondaryButton, IconButton } from "../components/Button";
+import {
+	PrimaryButton,
+	SecondaryButton,
+	IconButton,
+} from "../components/Button";
 import AuthCarousel from "../components/carousel/AuthCarousel";
 import InputField from "../components/inputs/Input";
 import google from "/google.png";
@@ -15,7 +19,7 @@ import { TutorGoogleSignUp } from "../components/authentication/GoogleAuth";
 const TutorSignup = ({ setRole }) => {
 	const navigate = useNavigate();
 	const [role, setRoleState] = useState("TUTOR");
-	
+
 	const {
 		firstName,
 		setFirstName,
@@ -183,13 +187,6 @@ const TutorSignup = ({ setRole }) => {
 										>
 											Student Sign up
 										</Link>
-										// <SecondaryButton
-										// 	text={"Student Sign up"}
-										// 	onClick={() => {
-										// 		setRole("STUDENT");
-										// 		setRoleState("STUDENT");
-										// 	}}
-										// />
 									)}
 								</div>
 								<div className="flex mt-3 mb-6 md:mb-0">

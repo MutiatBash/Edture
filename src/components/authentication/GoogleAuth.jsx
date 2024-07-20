@@ -27,7 +27,7 @@ const handleStudentGoogleAuth = async (res, setLoading, navigate) => {
 		);
 
 		const result = await response.json();
-		localStorage.setItem("token", result.data.token);
+		localStorage.setItem("authToken", result.data.token);
 		setLoading(false);
 		navigate("/student-dashboard");
 	} catch (error) {
@@ -62,7 +62,7 @@ const handleTutorGoogleAuth = async (res, setLoading, navigate) => {
 
 		const result = await response.json();
 		console.log(result.data.token);
-		localStorage.setItem("token", result.data.token);
+		localStorage.setItem("authToken", result.data.token);
 		setLoading(false);
 		navigate("/tutor-dashboard");
 	} catch (error) {
@@ -96,6 +96,7 @@ export const StudentGoogleSignUp = () => {
 			document.getElementById("googleSignUpButton"),
 			{ theme: "outline", size: "large", text: "signup_with" }
 		);
+		console.log("clientid", import.meta.env.VITE_GOOGLE_CLIENT_ID);
 	};
 
 	useEffect(() => {
@@ -145,6 +146,7 @@ export const StudentGoogleSignIn = () => {
 			document.getElementById("googleSignInButton"),
 			{ theme: "outline", size: "large", text: "signin_with" }
 		);
+		console.log("clientid", import.meta.env.VITE_GOOGLE_CLIENT_ID);
 	};
 
 	useEffect(() => {
@@ -195,6 +197,7 @@ export const TutorGoogleSignUp = () => {
 			document.getElementById("googleSignUpButton"),
 			{ theme: "outline", size: "large", text: "signup_with" }
 		);
+		console.log("clientid", import.meta.env.VITE_GOOGLE_CLIENT_ID);
 	};
 
 	useEffect(() => {
@@ -244,6 +247,7 @@ export const TutorGoogleSignIn = () => {
 			document.getElementById("googleSignInButton"),
 			{ theme: "outline", size: "large", text: "signin_with" }
 		);
+		console.log("clientid", import.meta.env.VITE_GOOGLE_CLIENT_ID);
 	};
 
 	useEffect(() => {
