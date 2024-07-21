@@ -55,8 +55,11 @@ const CreateCourse = () => {
 			{step === 2 && (
 				<div className="flex flex-col gap-4">
 					<FileUploadField
-						title="Upload course image"
+						title="Course image"
+						subtitle="Upload your course image here"
 						label="Course Image"
+						note="Guide: 750x422 pixels; .jpg, .jpeg,. gif, or .png. no text on the image"
+						accept="image/*"
 					/>
 					<SelectField
 						title="Difficulty Level"
@@ -81,7 +84,7 @@ const CreateCourse = () => {
 							/>
 							<InputField
 								label="Price"
-								placeholder="Enter price"
+								placeholder="0000"
 								type="number"
 							/>
 						</div>
