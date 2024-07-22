@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import imageupload from "/icons/image-upload.svg";
-
 
 const formatNumber = (value) => {
 	if (!value) return "";
@@ -10,26 +9,34 @@ const formatNumber = (value) => {
 	return integerPart + decimalPart;
 };
 
-export const InputField = ({ title, label, subtitle, type, ...props }) => {
-	const [value, setValue] = useState(props.value || "");
+export const InputField = ({
+	title,
+	label,
+	subtitle,
+	type,
+	name,
+	value,
+	onChange,
+}) => {
+	const [inputValue, setInputValue] = useState(value || "");
 
 	const handleChange = (e) => {
 		const { value } = e.target;
 		if (type === "number") {
 			const cleanedValue = value.replace(/[^0-9.]/g, "");
-			setValue(cleanedValue);
-			props.onChange && props.onChange(e);
+			setInputValue(cleanedValue);
+			onChange && onChange({ target: { name, value: cleanedValue } });
 		} else {
-			setValue(value);
-			props.onChange && props.onChange(e);
+			setInputValue(value);
+			onChange && onChange({ target: { name, value } });
 		}
 	};
 
 	const handleBlur = (e) => {
 		if (type === "number") {
-			const formattedValue = formatNumber(value);
-			setValue(formattedValue);
-			props.onBlur && props.onBlur(e);
+			const formattedValue = formatNumber(inputValue);
+			setInputValue(formattedValue);
+			onChange && onChange({ target: { name, value: formattedValue } });
 		}
 	};
 
@@ -48,10 +55,10 @@ export const InputField = ({ title, label, subtitle, type, ...props }) => {
 			<label className="sr-only">{label}</label>
 			<input
 				type={type === "number" ? "text" : type}
-				value={value}
+				name={name}
+				value={inputValue}
 				onChange={handleChange}
 				onBlur={handleBlur}
-				{...props}
 				className="border border-lightGray rounded-lg p-4 px-5 focus:border-primaryBlue focus:outline-none no-arrows"
 			/>
 		</div>
@@ -59,7 +66,14 @@ export const InputField = ({ title, label, subtitle, type, ...props }) => {
 };
 
 // Text Area Input Field Component
-export const TextAreaField = ({ title, subtitle, label, ...props }) => {
+export const TextAreaField = ({
+	title,
+	subtitle,
+	label,
+	value,
+	onChange,
+	...props
+}) => {
 	return (
 		<div className="flex flex-col mb-4">
 			{title && (
@@ -74,6 +88,8 @@ export const TextAreaField = ({ title, subtitle, label, ...props }) => {
 			)}
 			<label className="sr-only">{label}</label>
 			<textarea
+				value={value}
+				onChange={onChange}
 				{...props}
 				className="border border-lightGray rounded-lg p-4 px-5 focus:border-primaryBlue focus:outline-none"
 			/>
@@ -82,7 +98,15 @@ export const TextAreaField = ({ title, subtitle, label, ...props }) => {
 };
 
 // Select Input Field Component
-export const SelectField = ({ title, label, options, ...props }) => {
+export const SelectField = ({
+	title,
+	label,
+	options,
+	value,
+	onChange,
+	placeholder,
+	...props
+}) => {
 	return (
 		<div className="flex flex-col mb-4">
 			{title && (
@@ -92,9 +116,16 @@ export const SelectField = ({ title, label, options, ...props }) => {
 			)}
 			<label className="sr-only">{label}</label>
 			<select
+				value={value}
+				onChange={onChange}
 				{...props}
-				className="border border-lightGray rounded-lg p-4 px-5 focus:border-primaryBlue focus:outline-none"
+				className={`border border-lightGray rounded-lg p-4 px-5 focus:border-primaryBlue focus:outline-none ${
+					!value ? "text-lightGray" : "text-primaryBlack"
+				}`}
 			>
+				<option value="" disabled className="text-lightGray">
+					{placeholder}
+				</option>
 				{options.map((option, index) => (
 					<option key={index} value={option.value}>
 						{option.label}
@@ -105,20 +136,25 @@ export const SelectField = ({ title, label, options, ...props }) => {
 	);
 };
 
+// File Upload Component
+export const FileUploadField = ({
+	title,
+	label,
+	subtitle,
+	note,
+	fileData,
+	handleFileChange,
+	...props
+}) => {
+	const [localFileData, setLocalFileData] = useState(fileData);
 
-export const FileUploadField = ({ title, label, subtitle, note, ...props }) => {
-	const [fileName, setFileName] = useState("");
-	const [fileUrl, setFileUrl] = useState("");
+	useEffect(() => {
+		setLocalFileData(fileData);
+	}, [fileData]);
 
-	const handleFileChange = (e) => {
-		if (e.target.files.length > 0) {
-			const file = e.target.files[0];
-			setFileName(file.name);
-			setFileUrl(URL.createObjectURL(file));
-		} else {
-			setFileName("");
-			setFileUrl("");
-		}
+	const onFileChange = (e) => {
+		const file = e.target.files.length > 0 ? e.target.files[0] : null;
+		handleFileChange(file);
 	};
 
 	return (
@@ -138,17 +174,16 @@ export const FileUploadField = ({ title, label, subtitle, note, ...props }) => {
 				<input
 					type="file"
 					{...props}
-					onChange={handleFileChange}
+					onChange={onFileChange}
 					className="absolute inset-0 opacity-0 w-full h-full cursor-pointer z-10"
 				/>
-				{fileUrl && (
+				{localFileData.fileUrl ? (
 					<img
-						src={fileUrl}
-						alt={fileName}
+						src={localFileData.fileUrl}
+						alt={localFileData.fileName}
 						className="absolute inset-0 w-full h-full object-cover rounded-lg"
 					/>
-				)}
-				{!fileUrl && (
+				) : (
 					<div className="flex flex-col items-center justify-center h-full text-center text-primaryBlack p-4 bg-lighterGray gap-2">
 						<img
 							src={imageupload}
@@ -159,12 +194,11 @@ export const FileUploadField = ({ title, label, subtitle, note, ...props }) => {
 				)}
 			</div>
 			{note && <p className="mt-2 text-lightGray">{note}</p>}
-			{fileName && (
+			{localFileData.fileName && (
 				<p className="text-lg mt-2 text-primaryBlack">
-					Uploaded file: {fileName}
+					Uploaded file: {localFileData.fileName}
 				</p>
 			)}
 		</div>
 	);
 };
-
