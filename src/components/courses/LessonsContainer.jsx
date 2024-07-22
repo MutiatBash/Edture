@@ -1,13 +1,15 @@
-import React , {useState, useEffect} from "react";
+import React, { useState } from "react";
 import Lesson from "./Lesson";
 import { PrimaryButton, SecondaryButton } from "../Button";
+import { InputField } from "../inputs/CourseCreationInputs";
+import addicon from "/icons/add-course.svg";
+
 
 const LessonContainer = () => {
-	// State and handlers for managing lessons
 	const [lessons, setLessons] = useState([]);
 
-	const addLesson = (title) => {
-		setLessons([...lessons, { id: Date.now(), title, items: [] }]);
+	const addLesson = (lessonTitle) => {
+		setLessons([...lessons, { id: Date.now(), lessonTitle, items: [] }]);
 	};
 
 	const updateLesson = (id, updatedLesson) => {
@@ -23,42 +25,53 @@ const LessonContainer = () => {
 	return (
 		<div className="">
 			<div className="flex flex-col gap-5">
-				{lessons.map((lesson) => (
+				{lessons.map((lesson, index) => (
 					<Lesson
 						key={lesson.id}
 						lesson={lesson}
 						updateLesson={updateLesson}
 						deleteLesson={deleteLesson}
+						lessonCount={index + 1}
 					/>
 				))}
 			</div>
-			<AddLessonButton addLesson={addLesson} />
+			<AddLessonButton addLesson={addLesson} lessonCount={lessons.length} />
 		</div>
 	);
 };
 
-const AddLessonButton = ({ addLesson }) => {
+const AddLessonButton = ({ addLesson, lessonCount }) => {
 	const [showInput, setShowInput] = useState(false);
-	const [title, setTitle] = useState("");
+	const [lessonTitle, setLessonTitle] = useState("");
 
 	const handleAdd = () => {
-		if (title) {
-			addLesson(title);
-			setTitle("");
+		if (lessonTitle) {
+			addLesson(lessonTitle);
+			setLessonTitle("");
 			setShowInput(false);
 		}
 	};
 
+    const handleChange = (e) => {
+			setLessonTitle(e.target.value);
+		};
+
 	return (
 		<div>
 			{showInput && (
-				<div className="flex flex-col gap-2 mt-4">
-					<input
+				<div className="flex flex-col gap-3 mt-4 border border-lightGray rounded-lg p-4">
+					<div>
+						<h4 className="font-medium text-lg">
+							Lesson {lessonCount + 1}:
+						</h4>
+					</div>
+					<InputField
+						name="lessonTitle"
+						label="Lesson title"
 						type="text"
-						placeholder="Enter lesson title"
-						value={title}
-						onChange={(e) => setTitle(e.target.value)}
-						className="border border-lightGray rounded-lg p-4 px-5 "
+						placeholder="Enter a title"
+						value={lessonTitle}
+						onChange={handleChange}
 					/>
 					<div className="flex gap-2">
 						<PrimaryButton onClick={handleAdd} text={"Add Lesson"} />
@@ -71,8 +84,9 @@ const AddLessonButton = ({ addLesson }) => {
 			)}
 			<SecondaryButton
 				onClick={() => setShowInput(true)}
-				text={"+ Lesson"}
-                className="mt-4"
+				text={"Lesson"}
+                icon={addicon}
+				className="mt-4 flex gap-2"
 			/>
 		</div>
 	);

@@ -17,6 +17,7 @@ export const InputField = ({
 	name,
 	value,
 	onChange,
+    placeholder
 }) => {
 	const [inputValue, setInputValue] = useState(value || "");
 
@@ -57,6 +58,7 @@ export const InputField = ({
 				type={type === "number" ? "text" : type}
 				name={name}
 				value={inputValue}
+                placeholder={placeholder}
 				onChange={handleChange}
 				onBlur={handleBlur}
 				className="border border-lightGray rounded-lg p-4 px-5 focus:border-primaryBlue focus:outline-none no-arrows"

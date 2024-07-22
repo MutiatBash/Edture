@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from "react";
 import LessonItem from "./LessonItem";
-import { PrimaryButton, SecondaryButton } from "../Button";
+import { IconButton, PrimaryButton, SecondaryButton } from "../Button";
 import { AddTopicInput } from "./LessonItem";
 import arrowup from "/icons/arrow-up.svg";
 import arrowdown from "/icons/arrow-down.svg";
+import { Divider } from "../Dividers";
+import addicon from "/icons/add-course.svg";
+import deleteicon from "/icons/delete.svg";
+import editicon from "/icons/edit.svg";
 
-const Lesson = ({ lesson, updateLesson, deleteLesson }) => {
+const Lesson = ({ lesson, updateLesson, deleteLesson, lessonCount }) => {
 	const [showItems, setShowItems] = useState(true);
 	const [items, setItems] = useState(lesson.items);
 
@@ -35,13 +39,17 @@ const Lesson = ({ lesson, updateLesson, deleteLesson }) => {
 	return (
 		<div className="border border-lightGray rounded-lg p-6 px-4">
 			<div className="flex justify-between items-center">
-				<div className="flex gap-3">
-					<h3 className="text-lg font-bold">{lesson.title}</h3>
+				<div className="flex gap-3 items-center">
+					<h3 className="text-lg font-bold">Lesson {lessonCount}:</h3>
+					<h3 className="">{lesson.lessonTitle}</h3>
+					<button className="">
+						<img src={editicon} />
+					</button>
 					<button
-						className="text-red-500"
-						onClick={() => deleteLesson(lesson.id)}
+						className=""
+						onClick={() => deleteLesson(lesson?.id)}
 					>
-						Delete
+						<img src={deleteicon} />
 					</button>
 				</div>
 				<div className="flex gap-2">
@@ -54,12 +62,14 @@ const Lesson = ({ lesson, updateLesson, deleteLesson }) => {
 					</button>
 				</div>
 			</div>
+			<Divider />
+
 			{showItems && (
 				<div className="mt-4">
-					{items.map((item) => (
+					{items.map((item, index) => (
 						<LessonItem
 							key={item.id}
-							item={item}
+							item={{ ...item, index }}
 							updateLessonItem={updateLessonItem}
 							deleteLessonItem={deleteLessonItem}
 						/>
@@ -85,7 +95,7 @@ const AddLessonItemButton = ({ addItem }) => {
 	};
 
 	return (
-		<div className="mt-4">
+		<div className="mt-4 w-full">
 			{showAddTopicInput ? (
 				<AddTopicInput
 					addTopic={(topic) => {
@@ -99,11 +109,20 @@ const AddLessonItemButton = ({ addItem }) => {
 					}}
 				/>
 			) : showAddTopicButton ? (
-				<PrimaryButton onClick={handleAddTopicClick} text={"Add Topic"} />
+				<div className="mx-auto w-[10%]">
+					<IconButton
+						onClick={handleAddTopicClick}
+						text={"Topic"}
+						className="w-full items-center"
+						icon={addicon}
+					/>
+				</div>
 			) : (
 				<SecondaryButton
+					className="flex gap-2"
+					icon={addicon}
 					onClick={handleAddLessonItemClick}
-					text={"+ Lesson Item"}
+					text={"Lesson item"}
 				/>
 			)}
 		</div>

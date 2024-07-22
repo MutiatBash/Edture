@@ -2,57 +2,114 @@ import React, { useState } from "react";
 import { IconButton, PrimaryButton, SecondaryButton } from "../Button";
 import arrowup from "/icons/arrow-up.svg";
 import arrowdown from "/icons/arrow-down.svg";
+import addicon from "/icons/add-course.svg";
+import check from "/icons/blue-check.svg";
+import deleteicon from "/icons/delete.svg";
+import editicon from "/icons/edit.svg";
+import videoicon from "/icons/video-play.svg";
+import documentfile from "/icons/document-download.svg";
+import documenttext from "/icons/document-text.svg";
+import texticon from "/icons/text-lesson.svg";
+import { InputField } from "../inputs/CourseCreationInputs";
+import { Divider } from "../Dividers";
 
 export const AddTopicInput = ({ addTopic, onCancel }) => {
-	const [title, setTitle] = useState("");
+	const [topicTitle, setTopicTitle] = useState("");
 
 	const handleAdd = () => {
-		if (title) {
-			addTopic({ id: Date.now(), title, content: null });
-			setTitle("");
+		if (topicTitle) {
+			addTopic({ id: Date.now(), topicTitle, content: null });
+			setTopicTitle("");
 			onCancel();
 		}
 	};
 
+	const handleChange = (e) => {
+		setTopicTitle(e.target.value);
+	};
+
 	return (
 		<div className="flex flex-col gap-2">
-			<input
+			<h4 className="font-medium text-lg">New Topic:</h4>
+			<InputField
 				type="text"
-				placeholder="Enter topic title"
-				value={title}
-				onChange={(e) => setTitle(e.target.value)}
+				placeholder="Enter title"
+				value={topicTitle}
+				onChange={handleChange}
 				className="border border-lightGray rounded-lg p-4 px-5"
 			/>
-			<div className="flex gap-2">
-				<PrimaryButton onClick={handleAdd} text="Add" />
+			<div className="flex gap-2 self-end">
+				<PrimaryButton onClick={handleAdd} text="Add topic" />
 				<SecondaryButton onClick={onCancel} text="Cancel" />
 			</div>
 		</div>
 	);
 };
 
-const FileInput = ({ onChange }) => (
-	<div className="border w-full flex justify-between items-center pl-6 border-lightGray rounded-lg">
-		<span>No file selected</span>
-		<label className="flex items-center cursor-pointer">
-			<div className="border p-4 px-5 rounded-tr-md rounded-br-md border-primaryBlue">
-				<input
-					type="file"
-					accept=".pdf"
-					onChange={onChange}
-					className="absolute right-0 hidden"
-				/>
-				<span className="text-primaryBlue font-medium">Select file</span>
-			</div>
-		</label>
+const FileInput = ({ onChange, note }) => (
+	<div>
+		<div className="border w-full flex justify-between items-center pl-6 border-lightGray rounded-lg">
+			<span className="text-lightGray">No file selected</span>
+			<label className="flex items-center cursor-pointer">
+				<div className="border p-4 px-5 rounded-tr-md rounded-br-md border-primaryBlue">
+					<input
+						type="file"
+						accept=".pdf"
+						onChange={onChange}
+						className="absolute right-0 hidden w-full"
+					/>
+					<span className="text-primaryBlue font-medium font-trap-grotesk">
+						Select file
+					</span>
+				</div>
+			</label>
+		</div>
+		<p className="text-lightGray pt-2">
+			<span className="font-semibold">Note: </span>
+			{note}
+		</p>
+	</div>
+);
+
+const VideoInput = ({ onChange, note }) => (
+	<div>
+		<div className="flex justify-between items-center relative pl-5 border border-lightGray rounded-lg">
+			<span className="text-lightGray">No file selected</span>
+			<label className="flex items-center cursor-pointer">
+				<div className="border p-4 px-5 rounded-tr-md rounded-br-md border-primaryBlue">
+					<input
+						type="file"
+						accept="video/*"
+						onChange={onChange}
+						className="absolute right-0 hidden"
+					/>
+					<div className="flex gap-2 items-center">
+						<img src={videoicon} />
+						<span className="text-primaryBlue font-medium font-trap-grotesk">
+							Select Video
+						</span>
+					</div>
+				</div>
+			</label>
+		</div>
+		<p className="text-lightGray pt-2">
+			<span className="font-semibold">Note: </span>
+			{note}
+		</p>
 	</div>
 );
 
 const ResourceItem = ({ file, onDelete }) => (
-	<div className="flex justify-between items-center border border-dashed border-lightGray rounded-lg p-4 px-5 w-full">
-		<div>{file.name}</div>
-		<button className="text-primaryBlue" onClick={onDelete}>
-			Delete
+	<div className="flex justify-between items-center border border-dashed border-lightGray rounded-lg p-3 w-full">
+		<div className="flex gap-2 items-center">
+			<img src={documentfile} />
+			<p className="text-lightGray">{file.name}</p>
+		</div>
+		<button
+			className="text-primaryBlue border border-primaryBlue p-1 rounded"
+			onClick={onDelete}
+		>
+			<img src={deleteicon} />
 		</button>
 	</div>
 );
@@ -79,23 +136,25 @@ const TextContentItem = ({ text, onEdit, onDelete }) => {
 						rows="6"
 						className="border border-lightGray rounded-lg p-4 px-5 w-full"
 					/>
-					<div className="flex gap-2 mt-2">
-						<PrimaryButton onClick={handleEdit} text="Save" />
-						<SecondaryButton
-							onClick={() => setIsEditing(false)}
-							text="Cancel"
-						/>
+					<div className="flex gap-2">
+						<button className="">
+							<img src={editicon} />
+						</button>
+						<button className="" onClick={handleDeleteContent}>
+							<img src={deleteicon} />
+						</button>
 					</div>
 				</>
 			) : (
 				<>
 					<p>{text}</p>
-					<div className="flex gap-2 mt-2">
-						<PrimaryButton
-							onClick={() => setIsEditing(true)}
-							text="Edit"
-						/>
-						<SecondaryButton onClick={onDelete} text="Delete" />
+					<div className="flex gap-2">
+						<button className="">
+							<img src={editicon} />
+						</button>
+						<button className="" onClick={onDelete}>
+							<img src={deleteicon} />
+						</button>
 					</div>
 				</>
 			)}
@@ -168,11 +227,17 @@ const AddContentButton = ({
 								<PrimaryButton onClick={handleAdd} text="Save" />
 								<SecondaryButton onClick={handleCancel} text="Cancel" />
 								{existingContent && (
-									<SecondaryButton
-										onClick={handleDeleteContent}
-										text="Delete"
-										className="text-red-500"
-									/>
+									<div className="flex gap-2">
+										<button className="">
+											<img src={editicon} />
+										</button>
+										<button
+											className=""
+											onClick={handleDeleteContent}
+										>
+											<img src={deleteicon} />
+										</button>
+									</div>
 								)}
 							</div>
 						</>
@@ -185,28 +250,16 @@ const AddContentButton = ({
 									onDelete={handleDeleteVideo}
 								/>
 							) : (
-								<div className="flex justify-between items-center relative pl-5 border border-lightGray rounded-lg">
-									<span>No file selected</span>
-									<label className="flex items-center cursor-pointer">
-										<div className="border p-4 px-5 rounded-tr-md rounded-br-md border-primaryBlue">
-											<input
-												type="file"
-												accept="video/*"
-												onChange={handleFileChange}
-												className="absolute right-0 hidden"
-											/>
-											<span className="text-primaryBlue font-medium">
-												Select Video
-											</span>
-										</div>
-									</label>
-								</div>
+								<VideoInput
+									onChange={handleFileChange}
+									note={"File requirements: 720p minimum, max 1.0 GB"}
+								/>
 							)}
 						</div>
 					)}
 				</div>
 			) : (
-				<div className="flex gap-2 mt-4">
+				<div className="flex gap-2 mt-4 justify-center">
 					<IconButton
 						onClick={() => {
 							setShowInput(true);
@@ -214,6 +267,7 @@ const AddContentButton = ({
 						}}
 						text="Text"
 						className="border-primaryBlue"
+						icon={texticon}
 					/>
 					<IconButton
 						onClick={() => {
@@ -221,6 +275,7 @@ const AddContentButton = ({
 							setContentType("video");
 						}}
 						text="Video"
+						icon={videoicon}
 					/>
 				</div>
 			)}
@@ -236,28 +291,6 @@ const LessonItem = ({ item, updateLessonItem, deleteLessonItem }) => {
 	const [file, setFile] = useState(null);
 	const [inputFields, setInputFields] = useState([]);
 	const [resources, setResources] = useState(item.resources || []);
-	const [editingText, setEditingText] = useState(false);
-	const [newText, setNewText] = useState(item.content?.text || "");
-
-	const addTopic = (topic) => {
-		const updatedItem = { ...item, topics: [...item.topics, topic] };
-		updateLessonItem(item.id, updatedItem);
-		setShowAddTopic(false);
-	};
-
-	const updateTopic = (topicId, updatedTopic) => {
-		const updatedTopics = item.topics.map((topic) =>
-			topic.id === topicId ? updatedTopic : topic
-		);
-		const updatedItem = { ...item, topics: updatedTopics };
-		updateLessonItem(item.id, updatedItem);
-	};
-
-	const deleteTopic = (topicId) => {
-		const updatedTopics = item.topics.filter((topic) => topic.id !== topicId);
-		const updatedItem = { ...item, topics: updatedTopics };
-		updateLessonItem(item.id, updatedItem);
-	};
 
 	const handleAddContent = () => {
 		setShowAddContent(true);
@@ -320,24 +353,25 @@ const LessonItem = ({ item, updateLessonItem, deleteLessonItem }) => {
 	};
 
 	return (
-		<div className="flex flex-col border border-lightGray rounded-lg p-4 px-5 mt-4">
+		<div className="flex flex-col border border-lightGray rounded-lg p-4 mt-4">
 			<div className="flex justify-between items-center">
-				<div className="flex gap-2">
-					<h4 className="text-md font-semibold">{item.title}</h4>
-					<button
-						className="text-red-500"
-						onClick={() => deleteLessonItem(item.id)}
-					>
-						Delete
+				<div className="flex gap-2 items-center">
+					<h4 className="text-lg font-semibold">
+						Topic {item?.index + 1}:
+					</h4>
+					<h4 className="text-md">{item?.topicTitle}</h4>
+					<button className="">
+						<img src={editicon} />
+					</button>
+					<button className="" onClick={() => deleteLessonItem(item?.id)}>
+						<img src={deleteicon} />
 					</button>
 				</div>
 				{!showAddContent && !showContent && !contentAdded && (
 					<SecondaryButton onClick={handleAddContent} text="+ Content" />
 				)}
 				{(showAddContent || showContent || contentAdded) && (
-					<button
-						onClick={() => setShowContent(!showContent)}
-					>
+					<button onClick={() => setShowContent(!showContent)}>
 						{showContent ? (
 							<img src={arrowup} alt="Collapse" />
 						) : (
@@ -349,6 +383,8 @@ const LessonItem = ({ item, updateLessonItem, deleteLessonItem }) => {
 
 			{showContent && (
 				<>
+					<Divider />
+
 					{showAddContent && !contentAdded && (
 						<div className="mt-4">
 							<AddContentButton onContentAdded={handleContentAdded} />
@@ -375,6 +411,7 @@ const LessonItem = ({ item, updateLessonItem, deleteLessonItem }) => {
 
 					{item.content && showAddResource && (
 						<div className="mt-4">
+                            <h3>Downloadable materials</h3>
 							{resources.length > 0 && (
 								<div className="flex flex-col gap-2">
 									{resources.map((resource, index) => (
@@ -390,14 +427,20 @@ const LessonItem = ({ item, updateLessonItem, deleteLessonItem }) => {
 							)}
 							<div className="mt-4">
 								{inputFields.length > 0 && (
-									<FileInput onChange={handleResourceUpload} />
+									<FileInput
+										onChange={handleResourceUpload}
+										note={
+											"A resource refers to any document that supports student learning in the lecture. This file will be treated as supplementary material, so ensure it's clear and concise. Please keep the file size under 1 GB to facilitate easy access."
+										}
+									/>
 								)}
 							</div>
 
 							<SecondaryButton
 								onClick={handleAddResource}
-								text="+ Resources"
-								className="mt-4"
+								text="Resources"
+								className="mt-4 flex"
+								icon={addicon}
 							/>
 						</div>
 					)}

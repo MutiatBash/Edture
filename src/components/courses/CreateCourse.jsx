@@ -161,7 +161,17 @@ const CreateCourse = () => {
 
 			{step === 3 && (
 				<div className="flex flex-col gap-4">
-					<LessonContainer/>
+					<div className="flex flex-col gap-3">
+						<h3 className="text-xl font-semibold mb-2 text-primaryBlack">
+							Course Curriculum
+						</h3>
+						<p className="font-trap-grotesk text-lg">
+							Build your course by creating lessons and topics. <br></br>
+                            Use your outline to structure content and label clearly, create quiz
+							at the end of the course.
+						</p>
+					</div>
+					<LessonContainer />
 					<div className="flex justify-between pt-8">
 						<SecondaryButton onClick={handlePreviousStep} text={"Back"} />
 						<PrimaryButton onClick={handleNextStep} text={"Next"} />
