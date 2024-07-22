@@ -411,18 +411,22 @@ const LessonItem = ({ item, updateLessonItem, deleteLessonItem }) => {
 
 					{item.content && showAddResource && (
 						<div className="mt-4">
-                            <h3>Downloadable materials</h3>
 							{resources.length > 0 && (
-								<div className="flex flex-col gap-2">
-									{resources.map((resource, index) => (
-										<ResourceItem
-											key={index}
-											file={resource}
-											onDelete={() =>
-												handleDeleteResource(resource.name)
-											}
-										/>
-									))}
+								<div className="flex flex-col gap-3">
+									<h3 className="font-semibold text-lg">
+										Downloadable materials
+									</h3>
+									<div className="flex flex-col gap-2">
+										{resources.map((resource, index) => (
+											<ResourceItem
+												key={index}
+												file={resource}
+												onDelete={() =>
+													handleDeleteResource(resource.name)
+												}
+											/>
+										))}
+									</div>
 								</div>
 							)}
 							<div className="mt-4">
