@@ -112,12 +112,6 @@ export const TutorSideBar = ({}) => {
 								label="Dashboard"
 							/>
 							<SidebarLink
-								to="/inbox"
-								icon={inbox}
-								activeIcon={inboxactive}
-								label="Inbox"
-							/>
-							<SidebarLink
 								to="/courses"
 								icon={courses}
 								activeIcon={coursesactive}

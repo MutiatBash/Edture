@@ -11,6 +11,7 @@ import RecommendedCourses from "../components/courses/RecommendedCourses";
 import { SpinnerLoader } from "../components/Loader";
 import LogoutModal from "../components/authentication/LogoutModal";
 import AddCourseCard from "../components/cards/AddCourseCard";
+import CreateCourse from "../components/courses/CreateCourse";
 
 const TutorDashboard = () => {
 	const {
@@ -26,6 +27,16 @@ const TutorDashboard = () => {
 		token,
 		user,
 	} = useContext(userContext);
+
+	const [isCreatingCourse, setIsCreatingCourse] = useState(false);
+
+	const handleAddCourseClick = () => {
+		setIsCreatingCourse(true);
+	};
+
+	const handleCancel = () => {
+		setIsCreatingCourse(false);
+	};
 
 	const navigate = useNavigate();
 
@@ -50,33 +61,43 @@ const TutorDashboard = () => {
 		<>
 			{(userLoading || tutorLoading) && <SpinnerLoader />}
 			<TutorDashboardLayout>
-				<DashboardBanner className="pt-6" isNewUser={isNewUser} />
-				<div className="grid grid-cols-2 gap-6">
-					<CourseStatusCard
-						number={tutorDashboardData?.totalActiveCourses || 0}
-						status={"Courses"}
-						icon={enrolled}
-					/>
-					<CourseStatusCard
-						number={tutorDashboardData?.totalActiveCourses || 0}
-						status={"Active"}
-						icon={active}
-					/>
-				</div>
-				{showAddCourse ? (
-					<AddCourseCard
-						text={"Create New Course"}
-						heading={"My Courses"}
-					/>
-				) : (
-					<div className="flex">
-						<ActiveCourses heading={"Continue teaching"} />
-						<AddCourseCard
-							text={"Create New Course"}
-							heading={"My Courses"}
-						/>
-					</div>
-				)}
+				<>
+					{isCreatingCourse ? (
+						<CreateCourse onCancel={handleCancel} />
+					) : (
+						<>
+							<DashboardBanner className="pt-6" isNewUser={isNewUser} />
+							<div className="grid grid-cols-2 gap-6">
+								<CourseStatusCard
+									number={tutorDashboardData?.totalActiveCourses || 0}
+									status={"Courses"}
+									icon={enrolled}
+								/>
+								<CourseStatusCard
+									number={tutorDashboardData?.totalActiveCourses || 0}
+									status={"Active"}
+									icon={active}
+								/>
+							</div>
+							{showAddCourse ? (
+								<AddCourseCard
+									text={"Create New Course"}
+									heading={"My Courses"}
+									onClick={handleAddCourseClick}
+								/>
+							) : (
+								<div className="flex">
+									<ActiveCourses heading={"Your Courses"} />
+									<AddCourseCard
+										text={"Create New Course"}
+										heading={"My Courses"}
+										onClick={handleAddCourseClick}
+									/>
+								</div>
+							)}
+						</>
+					)}
+				</>
 			</TutorDashboardLayout>
 			{showLogoutModal && (
 				<LogoutModal

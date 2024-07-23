@@ -7,9 +7,15 @@ import {
 } from "../inputs/CourseCreationInputs";
 import { PrimaryButton, SecondaryButton } from "../Button";
 import LessonContainer from "./LessonsContainer";
+import { SuccessModal } from "../popups/Modal";
+import successgif from "/success-gif.gif";
+import { QuizItem } from "./LessonItem";
+import QuizCreation from "./QuizCreation";
 
-const CreateCourse = () => {
+const CreateCourse = ({ onCancel }) => {
 	const [step, setStep] = useState(1);
+	const [showModal, setShowModal] = useState(false);
+
 	const [formData, setFormData] = useState({
 		courseTitle: "",
 		courseDescription: "",
@@ -26,6 +32,8 @@ const CreateCourse = () => {
 		lessonTitle: "",
 	});
 
+	const handleCreationConfirmation = () => setShowModal(true);
+	const handleCloseModal = () => setShowModal(false);
 	const handleNextStep = () => setStep(step + 1);
 	const handlePreviousStep = () => setStep(step - 1);
 
@@ -95,7 +103,7 @@ const CreateCourse = () => {
 						onChange={handleChange}
 					/>
 					<div className="flex justify-between pt-8">
-						<SecondaryButton text={"Cancel"} />
+						<SecondaryButton text={"Cancel"} onClick={onCancel} />
 						<PrimaryButton text={"Next"} onClick={handleNextStep} />
 					</div>
 				</div>
@@ -153,7 +161,10 @@ const CreateCourse = () => {
 					</div>
 
 					<div className="flex justify-between pt-8">
-						<SecondaryButton onClick={handlePreviousStep} text={"Back"} />
+						<SecondaryButton
+							onClick={handlePreviousStep}
+							text={"Previous"}
+						/>
 						<PrimaryButton onClick={handleNextStep} text={"Next"} />
 					</div>
 				</div>
@@ -167,14 +178,60 @@ const CreateCourse = () => {
 						</h3>
 						<p className="font-trap-grotesk text-lg">
 							Build your course by creating lessons and topics. <br></br>
-                            Use your outline to structure content and label clearly, create quiz
-							at the end of the course.
+							Use your outline to structure content and label clearly,
+							create quiz at the end of the course.
 						</p>
 					</div>
 					<LessonContainer />
 					<div className="flex justify-between pt-8">
-						<SecondaryButton onClick={handlePreviousStep} text={"Back"} />
-						<PrimaryButton onClick={handleNextStep} text={"Next"} />
+						<SecondaryButton
+							onClick={handlePreviousStep}
+							text={"Previous"}
+						/>
+						<PrimaryButton
+							onClick={handleCreationConfirmation}
+							text={"Next"}
+						/>
+					</div>
+				</div>
+			)}
+			{showModal && (
+				<SuccessModal
+					heading={"Time to curate your course exercise/quiz"}
+					buttonText={"Continue"}
+					img={successgif}
+					imageStyling="w-[60%]"
+					onClose={handleCloseModal}
+					onConfirm={() => {
+						handleCloseModal();
+						handleNextStep();
+					}}
+				/>
+			)}
+
+			{step === 4 && (
+				<div className="flex flex-col gap-4">
+					<div className="flex flex-col gap-3">
+						<h3 className="text-xl font-semibold mb-2 text-primaryBlack">
+							Course Curriculum
+						</h3>
+						<p className="font-trap-grotesk text-lg">
+							Build your course by creating lessons and topics. <br></br>
+							Use your outline to structure content and label clearly,
+							create quiz at the end of the course.
+						</p>
+					</div>
+					{/* <QuizItem /> */}
+                    <QuizCreation/>
+					<div className="flex justify-between pt-8">
+						<SecondaryButton
+							onClick={handlePreviousStep}
+							text={"Previous"}
+						/>
+						<PrimaryButton
+							onClick={handleCreationConfirmation}
+							text={"Next"}
+						/>
 					</div>
 				</div>
 			)}

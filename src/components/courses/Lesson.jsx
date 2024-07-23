@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import LessonItem from "./LessonItem";
+import { LessonItem } from "./LessonItem";
 import { IconButton, PrimaryButton, SecondaryButton } from "../Button";
 import { AddTopicInput } from "./LessonItem";
 import arrowup from "/icons/arrow-up.svg";
@@ -8,6 +8,7 @@ import { Divider } from "../Dividers";
 import addicon from "/icons/add-course.svg";
 import deleteicon from "/icons/delete.svg";
 import editicon from "/icons/edit.svg";
+import documenttext from "/icons/document-text.svg";
 
 const Lesson = ({ lesson, updateLesson, deleteLesson, lessonCount }) => {
 	const [showItems, setShowItems] = useState(true);
@@ -40,17 +41,19 @@ const Lesson = ({ lesson, updateLesson, deleteLesson, lessonCount }) => {
 		<div className="border border-lightGray rounded-lg p-6 px-4">
 			<div className="flex justify-between items-center">
 				<div className="flex gap-3 items-center">
-					<h3 className="text-lg font-bold">Lesson {lessonCount}:</h3>
-					<h3 className="">{lesson.lessonTitle}</h3>
-					<button className="">
-						<img src={editicon} />
-					</button>
-					<button
-						className=""
-						onClick={() => deleteLesson(lesson?.id)}
-					>
-						<img src={deleteicon} />
-					</button>
+					<h4 className="text-lg font-bold">Lesson {lessonCount}:</h4>
+					<div className="flex gap-2 items-center">
+						<img src={documenttext} />
+						<h4 className="text-md">{lesson?.lessonTitle}</h4>
+					</div>
+					<div className="flex gap-2 items-center">
+						<button className="">
+							<img src={editicon} />
+						</button>
+						<button className="" onClick={() => deleteLesson(lesson?.id)}>
+							<img src={deleteicon} />
+						</button>
+					</div>
 				</div>
 				<div className="flex gap-2">
 					<button onClick={() => setShowItems(!showItems)}>

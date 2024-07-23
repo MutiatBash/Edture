@@ -15,12 +15,17 @@ const Courses = () => {
 	const role = user?.role;
 
 	const [isCreatingCourse, setIsCreatingCourse] = useState(false); 
+
 	const activeCoursesCount =
 		tutorDashboardData?.totalActiveCourses?.length || 0;
 	const showAddCourse = activeCoursesCount === 0;
 
 	const handleAddCourseClick = () => {
-		setIsCreatingCourse(true); // Show CreateCourse component
+		setIsCreatingCourse(true); 
+	};
+
+	const handleCancel = () => {
+		setIsCreatingCourse(false);
 	};
 
 	const studentContent = (
@@ -33,7 +38,7 @@ const Courses = () => {
 	const tutorContent = (
 		<>
 			{isCreatingCourse ? (
-				<CreateCourse /> 
+				<CreateCourse onCancel={handleCancel} /> 
 			) : (
 				<>
 					{showAddCourse ? (
