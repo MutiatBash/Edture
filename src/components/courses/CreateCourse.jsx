@@ -9,10 +9,17 @@ import { PrimaryButton, SecondaryButton } from "../Button";
 import LessonContainer from "./LessonsContainer";
 import { SuccessModal } from "../popups/Modal";
 import successgif from "/success-gif.gif";
-import { QuizItem } from "./LessonItem";
 import QuizCreation from "./QuizCreation";
+import axios from "axios";
+import useApi from "../../utils/customHooks";
+import Select from "react-select";
 
 const CreateCourse = ({ onCancel }) => {
+	const options = [
+		{ value: "programming", label: "Programming" },
+		{ value: "ai", label: "AI" },
+		{ value: "machine learning", label: "Machine Learning" },
+	];
 	const [step, setStep] = useState(1);
 	const [showModal, setShowModal] = useState(false);
 
@@ -20,7 +27,7 @@ const CreateCourse = ({ onCancel }) => {
 		courseTitle: "",
 		courseDescription: "",
 		category: "",
-		tags: "",
+		tags: [],
 		courseImage: {
 			file: null,
 			fileName: "",
@@ -29,7 +36,8 @@ const CreateCourse = ({ onCancel }) => {
 		difficultyLevel: "",
 		currency: "",
 		price: "",
-		lessonTitle: "",
+		instructorsName: "",
+		instructorsBio: "",
 	});
 
 	const handleCreationConfirmation = () => setShowModal(true);
@@ -54,6 +62,59 @@ const CreateCourse = ({ onCancel }) => {
 				fileUrl: file ? URL.createObjectURL(file) : "",
 			},
 		}));
+	};
+
+	const handleSelectChange = (selectedOptions) => {
+		setFormData((prevData) => ({
+			...prevData,
+			tags: selectedOptions,
+		}));
+	};
+
+	const token = localStorage.getItem("authToken");
+
+	if (!token) {
+		console.error("No authentication token found");
+		return;
+	}
+
+	const handleCreateCourse = async () => {
+
+        const cleanedPrice = formData.price.replace(/,/g, "");
+			const price = parseFloat(cleanedPrice);
+
+		const courseData = {
+			title: formData.courseTitle,
+			description: formData.courseDescription,
+			category: formData.category,
+			tags: formData.tags.map((tag) => tag.value),
+			image: formData.courseImage.fileUrl,
+			difficulty: formData.difficultyLevel,
+			status: "Active",
+			price: price,
+			currency: formData.currency,
+			instructorName: formData.instructorsName,
+			instructorBio: formData.instructorsBio,
+		};
+
+		try {
+			const response = await axios.post(
+				"https://edture.onrender.com/courses",
+				courseData,
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+						"Content-Type": "application/json",
+					},
+				}
+			);
+			console.log("Course created successfully:", response.data);
+			console.log("Paylod:", courseData);
+			handleNextStep();
+		} catch (error) {
+			console.error("Error creating course:", error.message);
+			console.log("Paylod:", courseData);
+		}
 	};
 
 	return (
@@ -90,17 +151,14 @@ const CreateCourse = ({ onCancel }) => {
 						value={formData.category}
 						onChange={handleChange}
 					/>
-					<SelectField
-						title="Add search tags"
-						label="Search"
-						placeholder="Select tag"
-						options={[
-							{ value: "programming", label: "Programming" },
-							{ value: "design", label: "Design" },
-						]}
+					<Select
+						isMulti
 						name="tags"
+						options={options}
+						className="basic-multi-select"
+						classNamePrefix="select"
+						onChange={handleSelectChange}
 						value={formData.tags}
-						onChange={handleChange}
 					/>
 					<div className="flex justify-between pt-8">
 						<SecondaryButton text={"Cancel"} onClick={onCancel} />
@@ -125,9 +183,9 @@ const CreateCourse = ({ onCancel }) => {
 						label="Select Difficulty"
 						placeholder="Select difficulty level"
 						options={[
-							{ value: "beginner", label: "Beginner" },
-							{ value: "intermediate", label: "Intermediate" },
-							{ value: "advanced", label: "Advanced" },
+							{ value: "Beginner", label: "Beginner" },
+							{ value: "Intermediate", label: "Intermediate" },
+							{ value: "Advanced", label: "Advanced" },
 						]}
 						name="difficultyLevel"
 						value={formData.difficultyLevel}
@@ -142,8 +200,8 @@ const CreateCourse = ({ onCancel }) => {
 								label="Currency"
 								placeholder="NGN"
 								options={[
-									{ value: "ngn", label: "NGN" },
-									{ value: "usd", label: "USD" },
+									{ value: "NGN", label: "NGN" },
+									{ value: "USD", label: "USD" },
 								]}
 								name="currency"
 								value={formData.currency}
@@ -159,13 +217,35 @@ const CreateCourse = ({ onCancel }) => {
 							/>
 						</div>
 					</div>
+					<div>
+						<h3 className="text-xl font-semibold mb-2 text-primaryBlack">
+							Instructor's profile
+						</h3>
+						<InputField
+							label="Instructor's name"
+							placeholder="Instructor's name"
+							type="text"
+							name="instructorsName"
+							value={formData.instructorsName}
+							onChange={handleChange}
+						/>
+						<TextAreaField
+							label="Instructor's bio"
+							placeholder="Instructor's Bio"
+							type="text"
+							name="instructorsBio"
+							rows="6"
+							value={formData.instructorsBio}
+							onChange={handleChange}
+						/>
+					</div>
 
 					<div className="flex justify-between pt-8">
 						<SecondaryButton
 							onClick={handlePreviousStep}
 							text={"Previous"}
 						/>
-						<PrimaryButton onClick={handleNextStep} text={"Next"} />
+						<PrimaryButton onClick={handleCreateCourse} text={"Next"} />
 					</div>
 				</div>
 			)}
@@ -221,17 +301,13 @@ const CreateCourse = ({ onCancel }) => {
 							create quiz at the end of the course.
 						</p>
 					</div>
-					{/* <QuizItem /> */}
-                    <QuizCreation/>
+					<QuizCreation />
 					<div className="flex justify-between pt-8">
 						<SecondaryButton
 							onClick={handlePreviousStep}
 							text={"Previous"}
 						/>
-						<PrimaryButton
-							onClick={handleCreationConfirmation}
-							text={"Next"}
-						/>
+						<PrimaryButton text={"Create"} />
 					</div>
 				</div>
 			)}

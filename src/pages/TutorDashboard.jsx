@@ -99,14 +99,7 @@ const TutorDashboard = () => {
 					)}
 				</>
 			</TutorDashboardLayout>
-			{showLogoutModal && (
-				<LogoutModal
-					show={showLogoutModal}
-					onClose={() => setShowLogoutModal(false)}
-					onConfirm={handleLogout}
-					isLoading={isLoggingOut}
-				/>
-			)}
+
 		</>
 	);
 };

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import imageupload from "/icons/image-upload.svg";
 
 const formatNumber = (value) => {
@@ -17,7 +17,7 @@ export const InputField = ({
 	name,
 	value,
 	onChange,
-    placeholder
+	placeholder,
 }) => {
 	const [inputValue, setInputValue] = useState(value || "");
 
@@ -58,7 +58,7 @@ export const InputField = ({
 				type={type === "number" ? "text" : type}
 				name={name}
 				value={inputValue}
-                placeholder={placeholder}
+				placeholder={placeholder}
 				onChange={handleChange}
 				onBlur={handleBlur}
 				className="border border-lightGray rounded-lg p-4 px-5 focus:border-primaryBlue focus:outline-none no-arrows"
@@ -201,6 +201,164 @@ export const FileUploadField = ({
 					Uploaded file: {localFileData.fileName}
 				</p>
 			)}
+		</div>
+	);
+};
+
+export const TextEditor = ({ value, onChange, placeholder }) => {
+	const editorRef = useRef(null);
+
+	useEffect(() => {
+		if (editorRef.current) {
+			editorRef.current.innerHTML = value;
+		}
+	}, [value]);
+
+	const handleCommand = (command) => {
+		document.execCommand(command, false, null);
+	};
+
+	const handleInput = () => {
+		if (editorRef.current) {
+			onChange(editorRef.current.innerHTML);
+		}
+	};
+
+	return (
+		<div className="border rounded p-4">
+			<div className="mb-2">
+				<button
+					type="button"
+					onClick={() => handleCommand("bold")}
+					className="mr-2 p-2 bg-gray-200 rounded hover:bg-gray-300"
+				>
+					<b>B</b>
+				</button>
+				<button
+					type="button"
+					onClick={() => handleCommand("italic")}
+					className="p-2 bg-gray-200 rounded hover:bg-gray-300"
+				>
+					<i>I</i>
+				</button>
+			</div>
+			<div
+				ref={editorRef}
+				contentEditable
+				onInput={handleInput}
+				className="min-h-[150px] border border-gray-300 rounded p-2 outline-none"
+				placeholder={placeholder}
+			></div>
+		</div>
+	);
+};
+
+export const RadioTextGroup = ({ data, onDataChange }) => {
+	const [selectedValue, setSelectedValue] = useState(data.selectedValue || "");
+	const [textValues, setTextValues] = useState(data.textValues || {});
+
+	useEffect(() => {
+		onDataChange({ selectedValue, textValues });
+	}, [selectedValue, textValues]);
+
+	const handleRadioChange = (e) => {
+		setSelectedValue(e.target.value);
+	};
+
+	const handleTextChange = (e) => {
+		setTextValues((prevValues) => ({
+			...prevValues,
+			[e.target.dataset.value]: e.target.value,
+		}));
+	};
+
+	const radioOptions = [
+		{ value: "option1", label: "Option 1" },
+		{ value: "option2", label: "Option 2" },
+		{ value: "option3", label: "Option 3" },
+		{ value: "option4", label: "Option 4" },
+	];
+
+	return (
+		<div className="flex flex-col">
+			{radioOptions.map((option) => (
+				<div key={option.value} className="flex items-center gap-2 mb-2">
+					<input
+						type="radio"
+						name="quiz-radio"
+						value={option.value}
+						checked={selectedValue === option.value}
+						onChange={handleRadioChange}
+						className="h-5 w-5 text-primaryBlack border-lightGray rounded-full focus:ring-primaryBlue"
+					/>
+					<input
+						type="text"
+						data-value={option.value}
+						value={textValues[option.value] || ""}
+						onChange={handleTextChange}
+						placeholder="Answer"
+						className="border border-lightGray rounded-lg p-4 py-3 w-full"
+					/>
+				</div>
+			))}
+			<p className="text-lightGray pt-2">
+				<span className="font-semibold">Note: </span>
+				Use the radio button to select the correct answer.
+			</p>
+		</div>
+	);
+};
+
+export const RadioTextTrueFalse = ({ data, onDataChange }) => {
+	const [selectedValue, setSelectedValue] = useState(data.selectedValue || "");
+	const [textValues, setTextValues] = useState(data.textValues || {});
+
+	useEffect(() => {
+		onDataChange({ selectedValue, textValues });
+	}, [selectedValue, textValues]);
+
+	const handleRadioChange = (e) => {
+		setSelectedValue(e.target.value);
+	};
+
+	const handleTextChange = (e) => {
+		setTextValues((prevValues) => ({
+			...prevValues,
+			[e.target.dataset.value]: e.target.value,
+		}));
+	};
+
+	const radioOptions = [
+		{ value: "option1", label: "True" },
+		{ value: "option2", label: "False" },
+	];
+
+	return (
+		<div className="flex flex-col">
+			{radioOptions.map((option) => (
+				<div key={option.value} className="flex items-center gap-2 mb-2">
+					<input
+						type="radio"
+						name="true-false-radio"
+						value={option.value}
+						checked={selectedValue === option.value}
+						onChange={handleRadioChange}
+						className="h-5 w-5 text-primaryBlack border-lightGray rounded-full focus:ring-primaryBlue"
+					/>
+					<input
+						type="text"
+						data-value={option.value}
+						value={textValues[option.value] || ""}
+						onChange={handleTextChange}
+						placeholder="Answer"
+						className="border border-lightGray rounded-lg p-4 py-3 w-full"
+					/>
+				</div>
+			))}
+			<p className="text-lightGray pt-2">
+				<span className="font-semibold">Note: </span>
+				Use the radio button to select the correct answer.
+			</p>
 		</div>
 	);
 };
