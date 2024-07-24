@@ -185,7 +185,7 @@ const TutorSignup = ({ setRole }) => {
 											to="/student-signup"
 											className="rounded-lg text-base bg-transparent border border-bg-primaryBlue text-primaryBlue p-2 md:py-3 md:px-5 hover:bg-secondaryHoverBlue cursor-pointer transition-all ease-in font-trap-grotesk font-medium tracking-tight"
 										>
-											Student Sign up
+											Switch to Student
 										</Link>
 									)}
 								</div>

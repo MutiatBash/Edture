@@ -13,6 +13,8 @@ import { DividerWithText, Divider } from "../components/Dividers";
 import { userContext } from "../context/UserContext";
 import { Link, useNavigate } from "react-router-dom";
 import { TutorGoogleSignIn } from "../components/authentication/GoogleAuth";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const TutorSignin = ({ setRole }) => {
 	const navigate = useNavigate();
@@ -65,19 +67,27 @@ const TutorSignin = ({ setRole }) => {
 			const dataFetched = await response.json();
 			console.log("Data submitted successfully:", dataFetched);
 
-			const token = dataFetched.data.token;
-			setToken(token);
+			const { token, role } = dataFetched.data;
+
+			if (role !== "TUTOR") {
+				toast.error(
+					"This email is associated with a student's account. Please log in with a tutor account."
+				);
+				setLoading(false);
+				return;
+			}
 
 			localStorage.setItem("authToken", token);
+			setToken(token);
 
-			// await fetchUserData(token);
+			navigate("/tutor-dashboard");
 
-			setTimeout(() => {
-				setToken(token);
-				setError(null);
-				navigate("/tutor-dashboard");
-				setLoading(false);
-			}, 1000);
+			// setTimeout(() => {
+			// 	setToken(token);
+			// 	setError(null);
+			// 	navigate("/tutor-dashboard");
+			// 	setLoading(false);
+			// }, 1000);
 		} catch (error) {
 			setLoading(false);
 			console.error("Error submitting data:", error.message);
@@ -109,7 +119,7 @@ const TutorSignin = ({ setRole }) => {
 										to="/student-signin"
 										className="rounded-lg text-base bg-transparent border border-bg-primaryBlue text-primaryBlue p-2 md:py-3 md:px-5 hover:bg-secondaryHoverBlue cursor-pointer transition-all ease-in font-trap-grotesk font-medium tracking-tight"
 									>
-										Student Sign in
+										Switch to Student
 									</Link>
 									{/* <SecondaryButton
 										text={"Student Sign in"}
@@ -175,6 +185,7 @@ const TutorSignin = ({ setRole }) => {
 					)}
 				</Formik>
 			</div>
+			<ToastContainer/>
 		</section>
 	);
 };

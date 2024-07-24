@@ -9,42 +9,99 @@ import active from "/icons/active-course.svg";
 import completed from "/icons/completed-course.svg";
 import ActiveCourses from "../components/courses/ActiveCourses";
 import RecommendedCourses from "../components/courses/RecommendedCourses";
+import { SpinnerLoader } from "../components/Loader";
+import AddCourseCard from "../components/cards/AddCourseCard";
+import CreateCourse from "../components/courses/CreateCourse";
 
 const StudentDashboard = () => {
-	const { fetchUserData, setUser } = useContext(userContext);
-	const [userData, setUserData] = useState(null);
-	const navigate = useNavigate()
+	const {
+		studentDashboardData,
+		studentLoading,
+		studentError,
+		userLoading,
+		userError,
+		setShowLogoutModal,
+		showLogoutModal,
+		logout,
+		isLoggingOut,
+		token,
+		user,
+	} = useContext(userContext);
 
-	useEffect(() => {
-		const getUserData = async () => {
-			const data = await fetchUserData();
-			if (data) {
-				setUserData(data);
-				setUser(data);
-			} else {
-				navigate("/student-signin");
-			}
-		};
+	const [isCreatingCourse, setIsCreatingCourse] = useState(false);
 
-		getUserData();
-	}, [navigate, setUser]);
+	const handleAddCourseClick = () => {
+		setIsCreatingCourse(true);
+	};
+
+	const handleCancel = () => {
+		setIsCreatingCourse(false);
+	};
+
+	const navigate = useNavigate();
+
+	const isNewUser = studentDashboardData?.enrolledCourses?.length === 0;
+	const activeCoursesCount =
+		studentDashboardData?.totalActiveCourses?.length || 0;
+	const showAddCourse = activeCoursesCount === 0;
+	const role = "STUDENT";
 
 	return (
-		<StudentDashboardLayout>
-			<DashboardBanner className="pt-6" role={"STUDENT"} />
-			<div className="grid grid-cols-3 gap-6">
-				<CourseStatusCard number={1} status={"Enrolled"} icon={enrolled} />
-				<CourseStatusCard number={1} status={"Active"} icon={active} />
-				<CourseStatusCard
-					number={0}
-					status={"Completed"}
-					icon={completed}
-				/>
-			</div>
-			<ActiveCourses heading={"Continue learning"} />
-			<RecommendedCourses heading={"Recently viewed"} />
-			<RecommendedCourses heading={"Recommended courses"} />
-		</StudentDashboardLayout>
+		<>
+			{(userLoading || studentLoading) && <SpinnerLoader />}
+			<StudentDashboardLayout>
+				<>
+					{isCreatingCourse ? (
+						<CreateCourse onCancel={handleCancel} />
+					) : (
+						<>
+							<DashboardBanner
+								className="pt-6"
+								isNewUser={isNewUser}
+								role={role}
+							/>
+							<div className="grid grid-cols-3 gap-6">
+								<CourseStatusCard
+									number={
+										studentDashboardData?.totalEnrolledCourses || 0
+									}
+									status={"Enrolled"}
+									icon={enrolled}
+								/>
+								<CourseStatusCard
+									number={
+										studentDashboardData?.totalActiveCourses || 0
+									}
+									status={"Active"}
+									icon={active}
+								/>
+								<CourseStatusCard
+									number={
+										studentDashboardData?.totalCompletedCourses || 0
+									}
+									status={"Completed"}
+									icon={completed}
+								/>
+							</div>
+							{showAddCourse ? (
+								<RecommendedCourses heading={"Recommended"} />
+							) : (
+								<>
+									<div className="flex">
+										<ActiveCourses heading={"Your Courses"} />
+										<AddCourseCard
+											text={"Add Course"}
+											heading={"My Courses"}
+										/>
+									</div>
+									<RecommendedCourses heading={"Recommended"} />
+								</>
+							)}
+						</>
+					)}
+				</>
+			</StudentDashboardLayout>
+		</>
 	);
 };
 

@@ -188,7 +188,7 @@ const StudentSignup = ({ setRole }) => {
 											to="/tutor-signup"
 											className="rounded-lg text-base bg-transparent border border-bg-primaryBlue text-primaryBlue p-2 md:py-3 md:px-5 hover:bg-secondaryHoverBlue cursor-pointer transition-all ease-in font-trap-grotesk font-medium tracking-tight"
 										>
-											Tutor Sign up
+											Switch to Tutor
 										</Link>
 									)}
 								</div>
@@ -215,7 +215,7 @@ const StudentSignup = ({ setRole }) => {
 							</div>
 							{step === 1 && (
 								<div className="flex flex-col gap-6">
-									<StudentGoogleSignUp/>
+									<StudentGoogleSignUp />
 									<DividerWithText />
 									<InputField
 										label="Email Address"

@@ -25,6 +25,12 @@ const UserContextProvider = ({ children }) => {
 		error: tutorError,
 	} = useApi("https://edture.onrender.com/users/tutor/dashboard", token);
 
+	const {
+		data: studentDashboardData,
+		loading: studentLoading,
+		error: studentError,
+	} = useApi("https://edture.onrender.com/users/dashboard/student", token);
+
 	useEffect(() => {
 		if (userData) {
 			setUser(userData);
@@ -38,6 +44,12 @@ const UserContextProvider = ({ children }) => {
 	}, [tutorDashboardData]);
 
 	useEffect(() => {
+		if (studentDashboardData) {
+			setDashboardData(studentDashboardData);
+		}
+	}, [studentDashboardData]);
+
+	useEffect(() => {
 		if (token) {
 			localStorage.setItem("authToken", token);
 		} else {
@@ -46,12 +58,12 @@ const UserContextProvider = ({ children }) => {
 	}, [token]);
 
 	useEffect(() => {
-		if (userError || tutorError) {
-			setError(userError || tutorError);
+		if (userError || tutorError || studentError) {
+			setError(userError || tutorError || studentError);
 		} else {
 			setError("");
 		}
-	}, [userError, tutorError]);
+	}, [userError, tutorError, studentError]);
 
 	const logout = async () => {
 		setIsLoggingOut(true);
@@ -88,6 +100,7 @@ const UserContextProvider = ({ children }) => {
 				lastName: user ? user.lastname : "",
 				emailAddress: user ? user.email : "",
 				tutorDashboardData,
+				studentDashboardData,
 				dashboardData,
 				setDashboardData,
 				loading,

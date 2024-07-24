@@ -22,73 +22,86 @@ import edture from "/edture-logo.svg";
 import LogoutModal from "../authentication/LogoutModal";
 
 export const StudentSideBar = () => {
-	const { logout } = useContext(userContext);
-	const handleLogout = () => {
-		logout();
-		navigate("/student-signin");
+	const { setShowLogoutModal, logout, showLogoutModal, isLoggingOut } =
+		useContext(userContext);
+
+	const navigate = useNavigate();
+
+	const handleLogout = async () => {
+		await logout();
+
+		setTimeout(() => {
+			navigate("/student-signin");
+		}, 2000);
 	};
 	return (
-		<div className="bg-white flex flex-col p-10 pr-5 border-r-[0.5px] border-r-lightGray w-1/5 h-full gap-12 min-h-screen sticky top-0 z-10">
-			<div>
-				<img src={edture} />
-			</div>
-			<div className="flex flex-col gap-16">
-				<div className="flex flex-col gap-4">
-					<h5 className="uppercase text-lightGray text-sm">Overview</h5>
-					<div>
+		<>
+			<div className="bg-white flex flex-col p-10 pr-5 border-r-[0.5px] border-r-lightGray w-1/5 h-full gap-12 min-h-screen sticky top-0 z-10">
+				<div>
+					<img src={edture} />
+				</div>
+				<div className="flex flex-col gap-16">
+					<div className="flex flex-col gap-4">
+						<h5 className="uppercase text-lightGray text-sm">Overview</h5>
+						<div>
+							<ul className="flex flex-col gap-2">
+								<SidebarLink
+									to="/student-dashboard"
+									icon={dashboard}
+									activeIcon={dashboardactive}
+									label="Dashboard"
+								/>
+
+								<SidebarLink
+									to="/courses"
+									icon={courses}
+									activeIcon={coursesactive}
+									label="Courses"
+								/>
+								<SidebarLink
+									to="/community"
+									icon={community}
+									activeIcon={communityactive}
+									label="Community"
+								/>
+							</ul>
+						</div>
+					</div>
+					<div className="flex flex-col gap-4">
+						<h5 className="uppercase text-lightGray text-sm">Settings</h5>
 						<ul className="flex flex-col gap-2">
 							<SidebarLink
-								to="/student-dashboard"
-								icon={dashboard}
-								activeIcon={dashboardactive}
-								label="Dashboard"
+								to="/profile"
+								icon={profile}
+								activeIcon={profileactive}
+								label="Profile"
 							/>
 							<SidebarLink
-								to="/inbox"
-								icon={inbox}
-								activeIcon={inboxactive}
-								label="Inbox"
+								to="/settings"
+								icon={settings}
+								activeIcon={settingsactive}
+								label="Settings"
 							/>
 							<SidebarLink
-								to="/courses"
-								icon={courses}
-								activeIcon={coursesactive}
-								label="Courses"
-							/>
-							<SidebarLink
-								to="/community"
-								icon={community}
-								activeIcon={communityactive}
-								label="Community"
+								to="/logout"
+								onClick={() => setShowLogoutModal(true)}
+								icon={logouticon}
+								activeIcon={logoutactive}
+								label="Logout"
 							/>
 						</ul>
 					</div>
 				</div>
-				<div className="flex flex-col gap-4">
-					<h5 className="uppercase text-lightGray text-sm">Settings</h5>
-					<ul className="flex flex-col gap-2">
-						<SidebarLink
-							to="/profile"
-							icon={profile}
-							activeIcon={profileactive}
-							label="Profile"
-						/>
-						<SidebarLink
-							to="/settings"
-							icon={settings}
-							activeIcon={settingsactive}
-							label="Settings"
-						/>
-						<SidebarLink
-							onClick={handleLogout}
-							icon={logout}
-							activeIcon={logoutactive}
-							label="Logout"
-						/>
-					</ul>
-				</div>
 			</div>
-		</div>
+			{showLogoutModal && (
+				<LogoutModal
+					show={showLogoutModal}
+					onClose={() => setShowLogoutModal(false)}
+					onConfirm={handleLogout}
+					isLoading={isLoggingOut}
+				/>
+			)}
+		</>
 	);
 };
 

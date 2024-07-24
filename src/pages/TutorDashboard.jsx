@@ -7,9 +7,7 @@ import CourseStatusCard from "../components/cards/CourseStatusCard";
 import enrolled from "/icons/enrolled-course.svg";
 import active from "/icons/active-course.svg";
 import ActiveCourses from "../components/courses/ActiveCourses";
-import RecommendedCourses from "../components/courses/RecommendedCourses";
 import { SpinnerLoader } from "../components/Loader";
-import LogoutModal from "../components/authentication/LogoutModal";
 import AddCourseCard from "../components/cards/AddCourseCard";
 import CreateCourse from "../components/courses/CreateCourse";
 
@@ -38,16 +36,6 @@ const TutorDashboard = () => {
 		setIsCreatingCourse(false);
 	};
 
-	const navigate = useNavigate();
-
-	const handleLogout = async () => {
-		await logout();
-
-		setTimeout(() => {
-			navigate("/tutor-signin");
-		}, 2000);
-	};
-
 	if (userError || tutorError) {
 		return <div>Error: {userError || tutorError}</div>;
 	}
@@ -66,7 +54,11 @@ const TutorDashboard = () => {
 						<CreateCourse onCancel={handleCancel} />
 					) : (
 						<>
-							<DashboardBanner className="pt-6" isNewUser={isNewUser} />
+							<DashboardBanner
+								className="pt-6"
+								isNewUser={isNewUser}
+								role={role}
+							/>
 							<div className="grid grid-cols-2 gap-6">
 								<CourseStatusCard
 									number={tutorDashboardData?.totalActiveCourses || 0}
@@ -99,7 +91,6 @@ const TutorDashboard = () => {
 					)}
 				</>
 			</TutorDashboardLayout>
-
 		</>
 	);
 };

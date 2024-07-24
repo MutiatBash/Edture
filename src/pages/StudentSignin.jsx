@@ -14,10 +14,13 @@ import { DividerWithText, Divider } from "../components/Dividers";
 import { Link, useNavigate } from "react-router-dom";
 import { userContext } from "../context/UserContext";
 import { StudentGoogleSignIn } from "../components/authentication/GoogleAuth";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import useApi from "../utils/customHooks";
 
 const StudentSignin = ({ setRole }) => {
 	const navigate = useNavigate();
-	const { setToken, loading, setLoading, error, setError, fetchUserData } =
+	const { setToken, loading, setLoading, error, setError, token } =
 		useContext(userContext);
 
 	const studentImages = [
@@ -69,18 +72,27 @@ const StudentSignin = ({ setRole }) => {
 			setLoading(false);
 			console.log("Data submitted successfully:", dataFetched);
 
-			const token = dataFetched.data.token;
+			const { token, role } = dataFetched.data;
+
+			if (role !== "STUDENT") {
+				toast.error(
+					"This email is associated with a tutor's account. Please log in with a student account."
+				);
+				setLoading(false);
+				return;
+			}
+
 			localStorage.setItem("authToken", token);
 			setToken(token);
 
-			await fetchUserData(token);
+			navigate("/student-dashboard");
 
-			setTimeout(() => {
-				localStorage.setItem("authToken", token);
-				setToken(token);
-				navigate("/student-dashboard");
-				window.location.reload();
-			}, 1000);
+			// setTimeout(() => {
+			// 	setToken(token);
+			// 	setError(null);
+			// 	navigate("/student-dashboard");
+			// 	setLoading(false);
+			// }, 1000);
 		} catch (error) {
 			setLoading(false);
 			console.error("Error submitting data:", error.message);
@@ -112,7 +124,7 @@ const StudentSignin = ({ setRole }) => {
 										to="/tutor-signin"
 										className="rounded-lg text-base bg-transparent border border-bg-primaryBlue text-primaryBlue p-2 md:py-3 md:px-5 hover:bg-secondaryHoverBlue cursor-pointer transition-all ease-in font-trap-grotesk font-medium tracking-tight"
 									>
-										Tutor Sign in
+										Switch to Tutor
 									</Link>
 								</div>
 							</div>
@@ -178,6 +190,7 @@ const StudentSignin = ({ setRole }) => {
 					)}
 				</Formik>
 			</div>
+			<ToastContainer />
 		</section>
 	);
 };

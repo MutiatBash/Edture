@@ -13,6 +13,9 @@ import QuizCreation from "./QuizCreation";
 import axios from "axios";
 import useApi from "../../utils/customHooks";
 import Select from "react-select";
+import makeAnimated from "react-select/animated";
+
+const animatedComponents = makeAnimated();
 
 const CreateCourse = ({ onCancel }) => {
 	const options = [
@@ -79,9 +82,8 @@ const CreateCourse = ({ onCancel }) => {
 	}
 
 	const handleCreateCourse = async () => {
-
-        const cleanedPrice = formData.price.replace(/,/g, "");
-			const price = parseFloat(cleanedPrice);
+		const cleanedPrice = formData.price.replace(/,/g, "");
+		const price = parseFloat(cleanedPrice);
 
 		const courseData = {
 			title: formData.courseTitle,
@@ -153,12 +155,23 @@ const CreateCourse = ({ onCancel }) => {
 					/>
 					<Select
 						isMulti
+						components={animatedComponents}
+						closeMenuOnSelect={false}
 						name="tags"
 						options={options}
 						className="basic-multi-select"
 						classNamePrefix="select"
 						onChange={handleSelectChange}
 						value={formData.tags}
+						theme={(theme) => ({
+							...theme,
+							borderRadius: 8,
+							colors: {
+								...theme.colors,
+								primary25: "#D9DDFF",
+								primary: "white",
+							},
+						})}
 					/>
 					<div className="flex justify-between pt-8">
 						<SecondaryButton text={"Cancel"} onClick={onCancel} />
