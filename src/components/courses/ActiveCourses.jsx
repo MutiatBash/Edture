@@ -4,17 +4,19 @@ import CourseCarousel from "../carousel/CourseCarousel";
 import AddCourseCard from "../cards/AddCourseCard";
 import { coursesInProgress } from "../../data";
 
-const ActiveCourses = ({ heading }) => {
-	const coursesToShow = coursesInProgress.slice(0, 2);
-
+const ActiveCourses = ({ heading, courses }) => {
 	return (
 		<section className="flex flex-col gap-4">
 			<div>
 				<h3 className="text-2xl font-medium">{heading}</h3>
 			</div>
 			<div className="flex gap-3">
-				{coursesToShow.map((course, index) => (
-					<ActiveCourseCard progress={course.progress} course={course} key={index}/>
+				{courses?.map((course, index) => (
+					<ActiveCourseCard
+						progress={course.progress}
+						course={course}
+						key={index}
+					/>
 				))}
 			</div>
 		</section>

@@ -10,7 +10,7 @@ import CartPopup from "../popups/CartPopup";
 import { userContext } from "../../context/UserContext";
 
 const DashHeader = () => {
-	const { firstName, lastName, emailAddress } = useContext(userContext);
+	const { firstName, lastName, emailAddress, user } = useContext(userContext);
 	const initials =
 		firstName && lastName ? `${firstName[0]}${lastName[0]}` : "HH";
 
@@ -21,6 +21,8 @@ const DashHeader = () => {
 		cart: false,
 	});
 
+	const role = user?.role;
+
 	const handlePopup = (popupName) => {
 		setPopups((prevPopups) => {
 			const newPopups = Object.keys(prevPopups).reduce((acc, key) => {
@@ -30,14 +32,6 @@ const DashHeader = () => {
 			return newPopups;
 		});
 	};
-
-	// // Get initials from first and last name
-	// const getInitials = (firstName, lastName) => {
-	// 	if (!firstName || !lastName) return "NN";
-	// 	return `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
-	// };
-
-	// const initials = getInitials(user?.data?.firstname, user?.data?.lastname);
 
 	return (
 		<div className="bg-white border-b-[0.5px] border-b-lightGray p-6 pr-12 sticky z-30 top-0">
@@ -60,11 +54,13 @@ const DashHeader = () => {
 						onClick={() => handlePopup("notification")}
 						className="cursor-pointer"
 					/>
-					<img
-						src={cart}
-						onClick={() => handlePopup("cart")}
-						className="cursor-pointer"
-					/>
+					{role !== "TUTOR" && (
+						<img
+							src={cart}
+							onClick={() => handlePopup("cart")}
+							className="cursor-pointer"
+						/>
+					)}
 					<div className="h-5 w-[1px] bg-darkGray"></div>
 					<div
 						className="bg-primaryBlue rounded-full p-2 text-white uppercase w-10 h-10 text-center cursor-pointer flex items-center justify-center"

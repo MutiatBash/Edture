@@ -6,13 +6,11 @@ import DashFooter from "../components/dashboard/DashFooter";
 const BaseLayout = ({ children, SidebarComponent, showFooter }) => {
 	return (
 		<div className="flex flex-col min-h-screen">
-			<div className="flex flex-grow">
-				<SidebarComponent />
-				<div className="flex flex-col flex-grow">
+			<div className="flex justify-between flex-grow">
+					<SidebarComponent />
+				<div className="flex flex-col flex-grow w-[1200px]">
 					<DashHeader />
-					<div className="p-6 pr-12 flex flex-col gap-8 flex-grow">
-						{children}
-					</div>
+					<div className="p-6 pr-12 flex flex-col gap-8 flex-grow">{children}</div>
 					{showFooter && <DashFooter />}
 				</div>
 			</div>

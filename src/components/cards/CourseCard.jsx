@@ -5,15 +5,16 @@ import ProgressBar from "../../components/ProgressBar";
 import ratings from "/icons/ratings.svg";
 import { truncateString } from "../../utils/utils";
 
-export const ActiveCourseCard = ({ progress, course , id}) => {
+export const ActiveCourseCard = ({ progress, course, id }) => {
 	const navigate = useNavigate();
 
 	const handleClick = () => {
 		navigate(`/course/${course.id}`);
 	};
 	return (
-		<div id={id}
-			className="flex flex-col gap-2 border border-lighterGray p-4 rounded-lg w-72 font-trap-grotesk hover:border-hoverBlue hover:shadow-md"
+		<div
+			id={id}
+			className="flex flex-col gap-2 border border-lighterGray p-4 rounded-lg w-64 font-trap-grotesk hover:border-hoverBlue hover:shadow-md"
 			onClick={handleClick}
 		>
 			<div className="w-full">
@@ -35,7 +36,7 @@ export const ActiveCourseCard = ({ progress, course , id}) => {
 					</span>
 					<span className="font-trap-grotesk text-[10px]">
 						{" "}
-						{course.level}
+						{course.difficulty}
 					</span>
 				</p>
 			</div>
@@ -58,7 +59,7 @@ export const CourseCard = ({ course }) => {
 	};
 	return (
 		<div
-			className="flex flex-col gap-2 border border-lighterGray p-4 rounded-lg w-72 font-trap-grotesk hover:border-hoverBlue hover:shadow-md"
+			className="flex flex-col gap-2 border border-lighterGray p-4 rounded-lg font-trap-grotesk hover:border-hoverBlue hover:shadow-md"
 			onClick={handleClick}
 		>
 			<div className="w-full">
@@ -69,30 +70,31 @@ export const CourseCard = ({ course }) => {
 			</h5>
 			<div className="flex flex-col">
 				<p className="font-trap-grotesk text-lightGray text-sm">
-					{course.provider}
+					{course.instructorName}
 				</p>
 				<p className="text-lightGray items-center">
 					<span className="font-trap-grotesk text-[10px]">
-						{course.totalHours} total hours •
+						{course.totalVideoDurationInSeconds} total hours •
 					</span>
 					<span className="font-trap-grotesk text-[10px]">
-						{course.lectures} lectures •
+						{course.totalNumberOfLessons} lectures •
 					</span>
 					<span className="font-trap-grotesk text-[10px]">
 						{" "}
-						{course.level}
+						{course.difficulty}
 					</span>
 				</p>
 			</div>
 			<div className="flex justify-between">
 				<p className="font-trap-grotesk font-semibold">
-					{course.price}{" "}
+					{course.currency}
+					<span> {course.price} </span>
 					<span className="text-lightGray line-through text-xs font-normal">
 						{course.originalPrice}
 					</span>
 				</p>
 				<div>
-					<img src={course.ratings} alt="Ratings" />
+					<img src={ratings} alt="Ratings" />
 				</div>
 			</div>
 		</div>

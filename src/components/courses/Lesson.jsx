@@ -56,7 +56,7 @@ const Lesson = ({ lesson, updateLesson, deleteLesson, lessonCount }) => {
 					</div>
 				</div>
 				<div className="flex gap-2">
-					<button onClick={() => setShowItems(!showItems)}>
+					<button onClick={() => {setShowItems(!showItems), console.log("show")}}>
 						{showItems ? (
 							<img src={arrowup} alt="Collapse" />
 						) : (

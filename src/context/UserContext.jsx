@@ -7,6 +7,7 @@ const UserContextProvider = ({ children }) => {
 	const [token, setToken] = useState(localStorage.getItem("authToken"));
 	const [user, setUser] = useState(null);
 	const [dashboardData, setDashboardData] = useState(null);
+	const [courses, setCourses] = useState(null);
 	const [loading, setLoading] = useState(false);
 	const [success, setSuccess] = useState(false);
 	const [error, setError] = useState("");
@@ -18,6 +19,12 @@ const UserContextProvider = ({ children }) => {
 		loading: userLoading,
 		error: userError,
 	} = useApi("https://edture.onrender.com/users/profiles/my-profile", token);
+
+	const {
+		data: allCourses,
+		loading: allCoursesLoading,
+		error: allCoursesError,
+	} = useApi("https://edture.onrender.com/courses", token);
 
 	const {
 		data: tutorDashboardData,
@@ -42,6 +49,12 @@ const UserContextProvider = ({ children }) => {
 			setDashboardData(tutorDashboardData);
 		}
 	}, [tutorDashboardData]);
+
+	useEffect(() => {
+		if (allCourses) {
+			setCourses(allCourses);
+		}
+	}, [allCourses]);
 
 	useEffect(() => {
 		if (studentDashboardData) {
@@ -113,6 +126,9 @@ const UserContextProvider = ({ children }) => {
 				showLogoutModal,
 				setShowLogoutModal,
 				isLoggingOut,
+				allCourses,
+				courses,
+				setCourses,
 			}}
 		>
 			{children}

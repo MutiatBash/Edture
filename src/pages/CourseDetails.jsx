@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
+import { userContext } from "../context/UserContext";
 import { useParams } from "react-router-dom";
-import { courseModulesData, courses, coursesInProgress } from "../data";
+import {  coursesInProgress } from "../data";
 import CourseDetailsLayout from "../layouts/CourseDetailsLayout";
 import { PrimaryButton, SecondaryButton } from "../components/Button";
 import lessons from "/icons/lessons.svg";
@@ -18,9 +19,38 @@ import ProgressBar from "../components/ProgressBar";
 
 const CourseDetails = () => {
 	const { id } = useParams();
-	const course = courses.find((course) => course.id === parseInt(id));
+	const {
+		tutorDashboardData,
+		tutorLoading,
+		tutorError,
+		userLoading,
+		userError,
+		setShowLogoutModal,
+		showLogoutModal,
+		logout,
+		isLoggingOut,
+		token,
+		user,
+	} = useContext(userContext);
+
+	console.log("URL Parameter ID:", id);
+
+	const coursesData = tutorDashboardData?.courses || [];
+	console.log("Courses Data:", coursesData);
+
+	const courseModulesData = coursesData?.flatMap((course) =>
+		course.lessons.map((lesson) => ({
+			title: lesson.title,
+			topics: lesson.topics,
+		}))
+	);
+
+
+	const course = coursesData.find((course) => course.id === id);
+	console.log("Found Course:", course);
+
 	const courseInProgress = coursesInProgress.find(
-		(c) => c.id === parseInt(id)
+		(c) => c.id === id
 	);
 
 	const [expandAll, setExpandAll] = useState(false);
@@ -66,7 +96,7 @@ const CourseDetails = () => {
 						</div>
 						<div>
 							<p className="font-trap-grotesk text-sm mb-2">
-								Instructor: {selectedCourse?.provider}
+								Instructor: {selectedCourse?.instructorName}
 							</p>
 						</div>
 					</div>
@@ -138,11 +168,11 @@ const CourseDetails = () => {
 							/>
 						</div>
 						<div className="py-4">
-							{courseModulesData.map((module, index) => (
+							{courseModulesData?.map((module, index) => (
 								<CourseModule
 									key={index}
 									moduleTitle={module.title}
-									submodules={module.submodules}
+									submodules={module.topics}
 									expandAll={expandAll}
 								/>
 							))}
@@ -236,7 +266,6 @@ const CourseModal = ({ course, courseInProgress }) => {
 			</div>
 			{courseInProgress?.progress ? (
 				<div className="py-4 flex flex-col gap-2">
-					{/* <h5 className="text-primaryBlack font-trap-grotesk">Course Progress</h5> */}
 					<ProgressBar progress={courseInProgress?.progress} />
 					<p className="font-trap-grotesk text-lightGray text-sm">
 						{courseInProgress?.progress}% complete

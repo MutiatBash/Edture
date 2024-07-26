@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import edture from "/edture-logo.svg";
 import inbox from "/inbox.svg";
 import search from "/icons/search.svg";
@@ -8,8 +8,10 @@ import ProfilePopup from "../popups/ProfilePopup";
 import NotificationPopup from "../popups/NotificationPopup";
 import InboxPopup from "../popups/InboxPopup";
 import CartPopup from "../popups/CartPopup";
+import { userContext } from "../../context/UserContext";
 
 const CourseHeader = () => {
+	const { user } = useContext(userContext);
 	const [popups, setPopups] = useState({
 		profile: false,
 		notification: false,
@@ -26,6 +28,8 @@ const CourseHeader = () => {
 			return newPopups;
 		});
 	};
+
+	const role = user?.role;
 
 	return (
 		<div className="flex justify-between gap-6 items-center bg-white border-b-[0.5px] border-b-lightGray px-12 py-6 sticky z-30 top-0">
@@ -51,11 +55,13 @@ const CourseHeader = () => {
 						onClick={() => handlePopup("notification")}
 						className="cursor-pointer"
 					/>
-					<img
-						src={cart}
-						onClick={() => handlePopup("cart")}
-						className="cursor-pointer"
-					/>
+					{role !== "TUTOR" && (
+						<img
+							src={cart}
+							onClick={() => handlePopup("cart")}
+							className="cursor-pointer"
+						/>
+					)}
 					<div className="h-5 w-[1px] bg-darkGray"></div>
 					<div
 						className="bg-primaryBlue rounded-full p-2 text-white uppercase w-10 h-10 text-center cursor-pointer"

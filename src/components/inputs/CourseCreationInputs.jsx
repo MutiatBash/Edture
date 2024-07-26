@@ -18,6 +18,7 @@ export const InputField = ({
 	value,
 	onChange,
 	placeholder,
+	error,
 }) => {
 	const [inputValue, setInputValue] = useState(value || "");
 
@@ -61,8 +62,11 @@ export const InputField = ({
 				placeholder={placeholder}
 				onChange={handleChange}
 				onBlur={handleBlur}
-				className="border border-lightGray rounded-lg p-4 px-5 focus:border-primaryBlue focus:outline-none no-arrows"
+				className={`border border-lightGray rounded-lg p-4 px-5 focus:border-primaryBlue focus:outline-none no-arrows ${
+					error ? "border-red" : " border-lightGray"
+				} `}
 			/>
+			{error && <p className="mt-2 text-sm text-red">{error}</p>}
 		</div>
 	);
 };
@@ -74,6 +78,7 @@ export const TextAreaField = ({
 	label,
 	value,
 	onChange,
+	error,
 	...props
 }) => {
 	return (
@@ -93,8 +98,11 @@ export const TextAreaField = ({
 				value={value}
 				onChange={onChange}
 				{...props}
-				className="border border-lightGray rounded-lg p-4 px-5 focus:border-primaryBlue focus:outline-none"
+				className={`border border-lightGray rounded-lg p-4 px-5 focus:border-primaryBlue focus:outline-none ${
+					error ? "border-red" : " border-lightGray"
+				}`}
 			/>
+			{error && <p className="mt-2 text-sm text-red">{error}</p>}
 		</div>
 	);
 };
@@ -107,6 +115,7 @@ export const SelectField = ({
 	value,
 	onChange,
 	placeholder,
+	error,
 	...props
 }) => {
 	return (
@@ -123,7 +132,7 @@ export const SelectField = ({
 				{...props}
 				className={`border border-lightGray rounded-lg p-4 px-5 focus:border-primaryBlue focus:outline-none ${
 					!value ? "text-lightGray" : "text-primaryBlack"
-				}`}
+				} ${error ? "border-red" : " border-lightGray"}`}
 			>
 				<option value="" disabled className="text-lightGray">
 					{placeholder}
@@ -134,6 +143,7 @@ export const SelectField = ({
 					</option>
 				))}
 			</select>
+			{error && <p className="mt-2 text-sm text-red">{error}</p>}
 		</div>
 	);
 };
@@ -146,6 +156,7 @@ export const FileUploadField = ({
 	note,
 	fileData,
 	handleFileChange,
+	error,
 	...props
 }) => {
 	const [localFileData, setLocalFileData] = useState(fileData);
@@ -172,12 +183,16 @@ export const FileUploadField = ({
 				</p>
 			)}
 			<label className="sr-only">{label}</label>
-			<div className="relative h-72 w-[460px] border border-dashed border-lightGray rounded-lg overflow-hidden">
+			<div
+				className={`relative h-72 w-[460px] border border-dashed border-lightGray rounded-lg overflow-hidden ${
+					error ? "border-red" : " border-lightGray"
+				}`}
+			>
 				<input
 					type="file"
 					{...props}
 					onChange={onFileChange}
-					className="absolute inset-0 opacity-0 w-full h-full cursor-pointer z-10"
+					className={`absolute inset-0 opacity-0 w-full h-full cursor-pointer z-10 `}
 				/>
 				{localFileData.fileUrl ? (
 					<img
@@ -201,6 +216,7 @@ export const FileUploadField = ({
 					Uploaded file: {localFileData.fileName}
 				</p>
 			)}
+			{error && <p className="mt-2 text-sm text-red">{error}</p>}
 		</div>
 	);
 };

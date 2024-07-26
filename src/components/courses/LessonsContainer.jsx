@@ -4,24 +4,12 @@ import { PrimaryButton, SecondaryButton } from "../Button";
 import { InputField } from "../inputs/CourseCreationInputs";
 import addicon from "/icons/add-course.svg";
 
-
-const LessonContainer = () => {
-	const [lessons, setLessons] = useState([]);
-
-	const addLesson = (lessonTitle) => {
-		setLessons([...lessons, { id: Date.now(), lessonTitle, items: [] }]);
-	};
-
-	const updateLesson = (id, updatedLesson) => {
-		setLessons(
-			lessons.map((lesson) => (lesson.id === id ? updatedLesson : lesson))
-		);
-	};
-
-	const deleteLesson = (id) => {
-		setLessons(lessons.filter((lesson) => lesson.id !== id));
-	};
-
+const LessonContainer = ({
+	lessons,
+	addLesson,
+	updateLesson,
+	deleteLesson,
+}) => {
 	return (
 		<div className="">
 			<div className="flex flex-col gap-5">
@@ -52,9 +40,9 @@ const AddLessonButton = ({ addLesson, lessonCount }) => {
 		}
 	};
 
-    const handleChange = (e) => {
-			setLessonTitle(e.target.value);
-		};
+	const handleChange = (e) => {
+		setLessonTitle(e.target.value);
+	};
 
 	return (
 		<div>
@@ -85,7 +73,7 @@ const AddLessonButton = ({ addLesson, lessonCount }) => {
 			<SecondaryButton
 				onClick={() => setShowInput(true)}
 				text={"Lesson"}
-                icon={addicon}
+				icon={addicon}
 				className="mt-4 flex gap-2"
 			/>
 		</div>

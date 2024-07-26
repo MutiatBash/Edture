@@ -4,7 +4,6 @@ import arrowup from "/icons/arrow-up.svg";
 import arrowdown from "/icons/arrow-down.svg";
 
 const CourseModule = ({ moduleTitle, submodules, expandAll }) => {
-	// const [isOpen, setIsOpen] = useState(false);
 	const [isOpen, setIsOpen] = useState(expandAll); 
 
 	const toggleModule = () => {
@@ -28,7 +27,7 @@ const CourseModule = ({ moduleTitle, submodules, expandAll }) => {
 			</div>
 			{isOpen || expandAll ? (
 				<div className="submodules bg-white p-3">
-					{submodules.map((submodule, index) => (
+					{submodules?.map((submodule, index) => (
 						<div key={index} className="flex gap-2 pb-2">
 							<img src={video} className="" />
 							<p className="text-darkGray opacity-80">{submodule}</p>

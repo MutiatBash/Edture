@@ -20,12 +20,10 @@ const StudentDashboard = () => {
 		studentError,
 		userLoading,
 		userError,
-		setShowLogoutModal,
-		showLogoutModal,
-		logout,
-		isLoggingOut,
 		token,
 		user,
+		courses,
+		setCourses,
 	} = useContext(userContext);
 
 	const [isCreatingCourse, setIsCreatingCourse] = useState(false);
@@ -39,6 +37,18 @@ const StudentDashboard = () => {
 	};
 
 	const navigate = useNavigate();
+
+	const allCourses = courses?.courses;
+	console.log(allCourses)
+	console.log(courses)
+	const sortedStudentCourses = allCourses?.sort(
+		(a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+	);
+
+	const recentStudentCourses = sortedStudentCourses?.slice(0, 2);
+	const recommendedCourses = sortedStudentCourses?.slice(0, 4);
+
+	const dashboardStudentCourses = sortedStudentCourses?.slice(0, 12);
 
 	const isNewUser = studentDashboardData?.enrolledCourses?.length === 0;
 	const activeCoursesCount =
@@ -84,7 +94,7 @@ const StudentDashboard = () => {
 								/>
 							</div>
 							{showAddCourse ? (
-								<RecommendedCourses heading={"Recommended"} />
+								<RecommendedCourses heading={"Recommended"} courses={recommendedCourses} />
 							) : (
 								<>
 									<div className="flex">
@@ -94,7 +104,7 @@ const StudentDashboard = () => {
 											heading={"My Courses"}
 										/>
 									</div>
-									<RecommendedCourses heading={"Recommended"} />
+									<RecommendedCourses heading={"Recommended"} courses={recommendedCourses}/>
 								</>
 							)}
 						</>

@@ -144,8 +144,11 @@ h5 {
 .carousel-container .slick-dots li.slick-active:before {
 	background: #fff;
 }
+
 .course-carousel {
 	/* min-width:1200px; */
+	/* display: flex;
+	gap:20px; */
 }
 .course-carousel .slick-slider {
 	min-width: 100%;
@@ -162,8 +165,8 @@ h5 {
 }
 
 .course-carousel .slick-slide {
-	width: 300px !important;
-	/* margin: 0 20px; */
+	width: 280px !important;
+	margin: 0 10px;
 }
 
 /* Loader.css */
@@ -196,7 +199,3 @@ h5 {
 	}
 }
 
-/* .course-carousel .slick-list {
-  overflow: hidden !important;
-  padding: 0 20px !important; 
-}  */

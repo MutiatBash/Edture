@@ -10,6 +10,11 @@ import ActiveCourses from "../components/courses/ActiveCourses";
 import { SpinnerLoader } from "../components/Loader";
 import AddCourseCard from "../components/cards/AddCourseCard";
 import CreateCourse from "../components/courses/CreateCourse";
+import {
+	AllTutorCourses,
+	RecentTutorCourses,
+	TutorCourses,
+} from "../components/courses/TutorCourse";
 
 const TutorDashboard = () => {
 	const {
@@ -18,10 +23,6 @@ const TutorDashboard = () => {
 		tutorError,
 		userLoading,
 		userError,
-		setShowLogoutModal,
-		showLogoutModal,
-		logout,
-		isLoggingOut,
 		token,
 		user,
 	} = useContext(userContext);
@@ -39,10 +40,20 @@ const TutorDashboard = () => {
 	if (userError || tutorError) {
 		return <div>Error: {userError || tutorError}</div>;
 	}
+
+	const tutorCourses = tutorDashboardData?.courses;
+	const sortedTutorCourses = tutorCourses?.sort(
+		(a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+	);
+
+	const recentTutorCourses = sortedTutorCourses?.slice(0, 2);
+
+	const dashboardTutorCourses = sortedTutorCourses?.slice(0, 12);
+
 	const isNewUser = tutorDashboardData?.courses?.length === 0;
 	const activeCoursesCount =
 		tutorDashboardData?.totalActiveCourses?.length || 0;
-	const showAddCourse = activeCoursesCount === 0;
+	const showAddCourse = tutorDashboardData?.courses?.length === 0;
 	const role = "TUTOR";
 
 	return (
@@ -61,8 +72,8 @@ const TutorDashboard = () => {
 							/>
 							<div className="grid grid-cols-2 gap-6">
 								<CourseStatusCard
-									number={tutorDashboardData?.totalActiveCourses || 0}
-									status={"Courses"}
+									number={tutorDashboardData?.totalCourses || 0}
+									status={"Total"}
 									icon={enrolled}
 								/>
 								<CourseStatusCard
@@ -78,12 +89,17 @@ const TutorDashboard = () => {
 									onClick={handleAddCourseClick}
 								/>
 							) : (
-								<div className="flex">
-									<ActiveCourses heading={"Your Courses"} />
-									<AddCourseCard
-										text={"Create New Course"}
-										heading={"My Courses"}
-										onClick={handleAddCourseClick}
+								<div className="flex flex-col gap-3">
+									<div className="gap-3 items-center justify-between">
+										<RecentTutorCourses
+											heading={"Your Recent Courses"}
+											courses={recentTutorCourses}
+											onClick={handleAddCourseClick}
+										/>
+									</div>
+									<AllTutorCourses
+										courses={dashboardTutorCourses}
+										heading={"Your Courses"}
 									/>
 								</div>
 							)}

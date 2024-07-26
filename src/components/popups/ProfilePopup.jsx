@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useContext } from "react";
+import { userContext } from "../../context/UserContext";
 import { Divider } from "../Dividers";
 import { NavLink } from "react-router-dom";
 import profile from "/profile.svg";
@@ -8,7 +9,10 @@ import help from "/icons/help.svg";
 import certificate from "/icons/certificate.svg";
 import wallet from "/icons/wallet.svg";
 
-const ProfilePopup = ({initials, firstName, lastName, email}) => {
+const ProfilePopup = ({ initials, firstName, lastName, email }) => {
+	const { user } = useContext(userContext);
+	const role = user?.role;
+
 	return (
 		<div className="fixed shadow bg-white rounded-lg top-24 right-[3%] w-72">
 			<div className="flex justify-start items-center p-4 pb-2 gap-4">
@@ -23,12 +27,20 @@ const ProfilePopup = ({initials, firstName, lastName, email}) => {
 			<Divider />
 			<div className="p-4 pt-0">
 				<ProfileLink icon={profile} label={"Profile"} to="/profile" />
-				<ProfileLink
-					icon={certificate}
-					label={"Certificates"}
-					to="/profile"
-				/>
-				<ProfileLink icon={wallet} label={"My Purchases"} to="/profile" />
+				{role !== "TUTOR" && (
+					<div>
+						<ProfileLink
+							icon={certificate}
+							label={"Certificates"}
+							to="/profile"
+						/>
+						<ProfileLink
+							icon={wallet}
+							label={"My Purchases"}
+							to="/profile"
+						/>
+					</div>
+				)}
 				<ProfileLink icon={settings} label={"Settings"} to="/settings" />
 				<ProfileLink icon={help} label={"Help"} to="/profile" />
 				<ProfileLink icon={logout} label={"Logout"} to="/logout" />

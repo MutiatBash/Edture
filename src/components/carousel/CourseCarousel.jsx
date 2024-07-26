@@ -26,9 +26,11 @@ const PrevArrow = ({ onClick }) => (
 
 const CourseCarousel = ({ children, className }) => {
 	const settings = {
-		infinite: false,
+		infinite: true,
 		speed: 500,
-		slidesToShow: 3.5,
+		autoplay: true,
+		autoplaySpeed: 2500,
+		slidesToShow: 3,
 		slidesToScroll: 1,
 		nextArrow: <NextArrow />,
 		prevArrow: <PrevArrow />,
@@ -36,7 +38,7 @@ const CourseCarousel = ({ children, className }) => {
 			{
 				breakpoint: 1024,
 				settings: {
-					slidesToShow: 3.25,
+					slidesToShow: 3,
 					slidesToScroll: 1,
 				},
 			},

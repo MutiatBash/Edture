@@ -105,7 +105,7 @@ export const StudentSideBar = () => {
 	);
 };
 
-export const TutorSideBar = ({}) => {
+export const TutorSideBar = () => {
 	const { setShowLogoutModal, logout, showLogoutModal, isLoggingOut } =
 		useContext(userContext);
 
@@ -121,7 +121,7 @@ export const TutorSideBar = ({}) => {
 
 	return (
 		<>
-			<div className="bg-white flex flex-col p-10 pr-5 border-r-[0.5px] border-r-lightGray w-1/5 h-full gap-12 min-h-screen sticky top-0 z-10">
+			<div className="bg-white flex flex-col p-10 pr-5 border-r-[0.5px] border-r-lightGray w-64 h-full gap-12 min-h-screen sticky top-0 bottom-0 z-10">
 				<div>
 					<img src={edture} />
 				</div>
