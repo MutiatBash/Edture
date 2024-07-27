@@ -1,6 +1,5 @@
 import React from "react";
 import { CourseCard } from "../cards/CourseCard";
-import { courses } from "../../data";
 
 const RecentCourses = ({ heading, courses }) => {
 	return (

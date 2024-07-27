@@ -16,22 +16,10 @@ import ValidationIndicator from "../components/inputs/ValidationIndicator";
 import { userContext } from "../context/UserContext";
 import { TutorGoogleSignUp } from "../components/authentication/GoogleAuth";
 
-const TutorSignup = ({ setRole }) => {
+const TutorSignup = () => {
 	const navigate = useNavigate();
-	const [role, setRoleState] = useState("TUTOR");
-
-	const {
-		firstName,
-		setFirstName,
-		lastName,
-		setLastName,
-		emailAddress,
-		setEmailAddress,
-		loading,
-		setLoading,
-		error,
-		setError,
-	} = useContext(userContext);
+	const { authError, setAuthError, authLoading, setAuthLoading } =
+		useContext(userContext);
 
 	const tutorImages = [
 		"/signup-carousel/tutor1.png",
@@ -82,7 +70,7 @@ const TutorSignup = ({ setRole }) => {
 
 	const onSubmit = async (values) => {
 		try {
-			setLoading(true);
+			setAuthLoading(true);
 
 			const role = "TUTOR";
 			const data = {
@@ -125,17 +113,17 @@ const TutorSignup = ({ setRole }) => {
 					}
 				}
 
-				setError(errorMessage);
-				setLoading(false);
+				setAuthError(errorMessage);
+				setAuthLoading(false);
 				return;
 			}
 
-			setLoading(false);
-			setError(null);
+			setAuthLoading(false);
+			setAuthError(null);
 			navigate("/tutor-signin");
 		} catch (error) {
-			setLoading(false);
-			setError(error.message || "An unexpected error occurred.");
+			setAuthLoading(false);
+			setAuthError(error.message || "An unexpected error occurred.");
 			console.error("Error submitting data:", error.message);
 		}
 	};
@@ -307,9 +295,9 @@ const TutorSignup = ({ setRole }) => {
 							<div className="flex flex-col gap-3 text-center">
 								{step === 1 && (
 									<>
-										{error && (
+										{authError && (
 											<div className="text-red text-sm text-left">
-												{error}
+												{authError}
 											</div>
 										)}
 										<PrimaryButton
@@ -323,20 +311,20 @@ const TutorSignup = ({ setRole }) => {
 								)}
 								{step === 2 && (
 									<>
-										{error && (
+										{authError && (
 											<div className="text-red text-sm text-left">
-												{error}
+												{authError}
 											</div>
 										)}
 										<PrimaryButton
 											className={`w-full`}
 											type="submit"
 											text={
-												loading
+												authLoading
 													? "Creating account...."
 													: "Create Account"
 											}
-											disabled={loading}
+											disabled={authLoading}
 										/>
 										<Divider />
 									</>

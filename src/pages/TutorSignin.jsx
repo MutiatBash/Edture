@@ -16,9 +16,9 @@ import { TutorGoogleSignIn } from "../components/authentication/GoogleAuth";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const TutorSignin = ({ setRole }) => {
+const TutorSignin = () => {
 	const navigate = useNavigate();
-	const { setToken, loading, setLoading, error, setError, fetchUserData } =
+	const { authError, setAuthError, authLoading, setAuthLoading, setToken } =
 		useContext(userContext);
 
 	const tutorImages = [
@@ -42,7 +42,7 @@ const TutorSignin = ({ setRole }) => {
 
 	const onSubmit = async (values) => {
 		try {
-			setLoading(true);
+			setAuthLoading(true);
 
 			const response = await fetch(
 				"https://edture.onrender.com/auth/login",
@@ -56,8 +56,8 @@ const TutorSignin = ({ setRole }) => {
 			);
 
 			if (response.status === 401) {
-				setError("Email or password is incorrect");
-				setLoading(false);
+				setAuthError("Email or password is incorrect");
+				setAuthLoading(false);
 				return;
 			}
 
@@ -73,7 +73,7 @@ const TutorSignin = ({ setRole }) => {
 				toast.error(
 					"This email is associated with a student's account. Please log in with a tutor account."
 				);
-				setLoading(false);
+				setAuthLoading(false);
 				return;
 			}
 
@@ -81,15 +81,8 @@ const TutorSignin = ({ setRole }) => {
 			setToken(token);
 
 			navigate("/tutor-dashboard");
-
-			// setTimeout(() => {
-			// 	setToken(token);
-			// 	setError(null);
-			// 	navigate("/tutor-dashboard");
-			// 	setLoading(false);
-			// }, 1000);
 		} catch (error) {
-			setLoading(false);
+			setAuthLoading(false);
 			console.error("Error submitting data:", error.message);
 		}
 	};
@@ -159,15 +152,15 @@ const TutorSignin = ({ setRole }) => {
 								</div>
 							</div>
 							<div className="flex flex-col gap-3">
-								{error && (
+								{authError && (
 									<div className="text-red text-sm text-left">
-										{error}
+										{authError}
 									</div>
 								)}
 								<PrimaryButton
 									className={`w-full`}
 									type="submit"
-									text={loading ? "Signing in" : "Sign in"}
+									text={authLoading ? "Signing in" : "Sign in"}
 								/>
 								<Divider />
 								<p className="text-sm">
@@ -185,7 +178,7 @@ const TutorSignin = ({ setRole }) => {
 					)}
 				</Formik>
 			</div>
-			<ToastContainer/>
+			<ToastContainer />
 		</section>
 	);
 };

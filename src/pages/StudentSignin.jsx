@@ -16,11 +16,11 @@ import { userContext } from "../context/UserContext";
 import { StudentGoogleSignIn } from "../components/authentication/GoogleAuth";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import useApi from "../utils/customHooks";
+import { SpinnerLoader } from "../components/Loader";
 
-const StudentSignin = ({ setRole }) => {
+const StudentSignin = () => {
 	const navigate = useNavigate();
-	const { setToken, loading, setLoading, error, setError, token } =
+	const { setToken, authError, setAuthError, authLoading, setAuthLoading } =
 		useContext(userContext);
 
 	const studentImages = [
@@ -44,7 +44,7 @@ const StudentSignin = ({ setRole }) => {
 
 	const onSubmit = async (values) => {
 		try {
-			setLoading(true);
+			setAuthLoading(true);
 
 			const response = await fetch(
 				"https://edture.onrender.com/auth/login",
@@ -58,8 +58,8 @@ const StudentSignin = ({ setRole }) => {
 			);
 
 			if (response.status === 401) {
-				setError("Email or password is incorrect");
-				setLoading(false);
+				setAuthError("Email or password is incorrect");
+				setAuthLoading(false);
 				return;
 			}
 
@@ -68,8 +68,8 @@ const StudentSignin = ({ setRole }) => {
 			}
 
 			const dataFetched = await response.json();
-			setError(null);
-			setLoading(false);
+			setAuthError(null);
+			setAuthLoading(false);
 			console.log("Data submitted successfully:", dataFetched);
 
 			const { token, role } = dataFetched.data;
@@ -78,7 +78,7 @@ const StudentSignin = ({ setRole }) => {
 				toast.error(
 					"This email is associated with a tutor's account. Please log in with a student account."
 				);
-				setLoading(false);
+				setAuthLoading(false);
 				return;
 			}
 
@@ -86,21 +86,15 @@ const StudentSignin = ({ setRole }) => {
 			setToken(token);
 
 			navigate("/student-dashboard");
-
-			// setTimeout(() => {
-			// 	setToken(token);
-			// 	setError(null);
-			// 	navigate("/student-dashboard");
-			// 	setLoading(false);
-			// }, 1000);
 		} catch (error) {
-			setLoading(false);
+			setAuthLoading(false);
 			console.error("Error submitting data:", error.message);
 		}
 	};
 
 	return (
 		<section className="flex flex-col lg:flex-row items-center p-5 lg:pr-[120px] lg:pl-8 lg:py-6">
+			{authLoading && <SpinnerLoader/>}
 			<div className="hidden md:block fixed left-0 top-0 bottom-0 w-[45%] bg-white z-0">
 				<AuthCarousel images={studentImages} className="" />
 			</div>
@@ -160,19 +154,20 @@ const StudentSignin = ({ setRole }) => {
 								</div>
 							</div>
 							<div className="flex flex-col gap-3">
-								{error && (
+								{authError && (
 									<div className="text-red text-sm text-left">
-										{error}
+										{authError}
 									</div>
 								)}
 								<PrimaryButton
 									className={`w-full`}
 									type="submit"
 									text={
-										loading
+										authLoading
 											? "Resuming learning..."
 											: "Resume Learning"
 									}
+									disabled={authLoading}
 								/>
 								<Divider />
 								<p className="text-sm">

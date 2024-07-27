@@ -15,11 +15,14 @@ import StudentSignup from "./pages/StudentSignup";
 import TutorSignup from "./pages/TutorSignup";
 import StudentDashboard from "./pages/StudentDashboard";
 import TutorDashboard from "./pages/TutorDashboard";
+import InactivityTimeout from "./pages/Timeout";
+import Cart from "./pages/Cart";
 
 const App = () => {
 	return (
 		<div className="mx-auto container-wrapper">
 			<Router>
+				<InactivityTimeout />
 				<Routes>
 					<Route path="/student-signin" element={<StudentSignin />} />
 					<Route path="/student-signup" element={<StudentSignup />} />
@@ -27,11 +30,14 @@ const App = () => {
 					<Route path="/tutor-signup" element={<TutorSignup />} />
 					<Route path="/reset-password" element={<ResetPassword />} />
 					<Route path="/forgot-password" element={<ForgotPassword />} />
-					<Route path="/student-dashboard" element={<StudentDashboard />} />
+					<Route
+						path="/student-dashboard"
+						element={<StudentDashboard />}
+					/>
 					<Route path="/tutor-dashboard" element={<TutorDashboard />} />
-					{/* <Route path="/inbox" element={<Inbox />} /> */}
 					<Route path="/courses" element={<Courses />} />
 					<Route path="/course/:id" element={<CourseDetails />} />
+					<Route path="/cart" element={<Cart />} />
 				</Routes>
 			</Router>
 		</div>

@@ -12,7 +12,7 @@ import { SuccessModal } from "../popups/Modal";
 import successgif from "/success-gif.gif";
 import QuizCreation from "./QuizCreation";
 import axios from "axios";
-import useApi from "../../utils/customHooks";
+import { useApi } from "../../utils/customHooks";
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
 import { SpinnerLoader } from "../Loader";

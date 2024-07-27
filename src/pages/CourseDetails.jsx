@@ -1,7 +1,7 @@
-import { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext, useCallback } from "react";
 import { userContext } from "../context/UserContext";
 import { useParams } from "react-router-dom";
-import {  coursesInProgress } from "../data";
+import { coursesInProgress } from "../data";
 import CourseDetailsLayout from "../layouts/CourseDetailsLayout";
 import { PrimaryButton, SecondaryButton } from "../components/Button";
 import lessons from "/icons/lessons.svg";
@@ -16,6 +16,8 @@ import verify from "/icons/verify.svg";
 import RecommendedCourses from "../components/courses/RecommendedCourses";
 import CourseModule from "../components/courses/CourseModule";
 import ProgressBar from "../components/ProgressBar";
+import { useApi } from "../utils/customHooks";
+import { SpinnerLoader } from "../components/Loader";
 
 const CourseDetails = () => {
 	const { id } = useParams();
@@ -25,234 +27,371 @@ const CourseDetails = () => {
 		tutorError,
 		userLoading,
 		userError,
-		setShowLogoutModal,
-		showLogoutModal,
-		logout,
-		isLoggingOut,
+		courses: allCourses,
 		token,
 		user,
 	} = useContext(userContext);
 
-	console.log("URL Parameter ID:", id);
+	const {
+		data: courseDetails,
+		loading: courseDetailsLoading,
+		error: courseDetailsError,
+	} = useApi(`https://edture.onrender.com/courses/${id}`, token);
 
-	const coursesData = tutorDashboardData?.courses || [];
-	console.log("Courses Data:", coursesData);
+	console.log("coursedetails here", courseDetails);
 
-	const courseModulesData = coursesData?.flatMap((course) =>
-		course.lessons.map((lesson) => ({
-			title: lesson.title,
-			topics: lesson.topics,
-		}))
-	);
+	const course = courseDetails || coursesInProgress.find((c) => c.id === id);
+	const courseLessonsData = course?.lessons || [];
+	const recommendedCourses = allCourses?.courses?.slice(0, 4);
+	console.log("rec", recommendedCourses);
 
+	console.log("courselessons here", courseLessonsData);
 
-	const course = coursesData.find((course) => course.id === id);
 	console.log("Found Course:", course);
-
-	const courseInProgress = coursesInProgress.find(
-		(c) => c.id === id
-	);
-
-	const [expandAll, setExpandAll] = useState(false);
 
 	useEffect(() => {
 		window.scrollTo(0, 0);
 	}, []);
 
-	if (!course && !courseInProgress) {
-		return <div>Course not found</div>;
-	}
-
-	const handleExpandAllClick = () => {
-		setExpandAll(!expandAll);
-	};
-
-	const selectedCourse = course || courseInProgress;
+	const isTutor = user?.role === "TUTOR";
 
 	return (
-		<CourseDetailsLayout>
-			<div className="bg-darkBlue text-white pt-8 font-trap-grotesk">
-				<div className="flex relative container-wrapper font-trap-grotesk">
-					<div className="w-3/5 flex flex-col p-12">
-						<h1 className="font-bold text-5xl mb-4">
-							{selectedCourse?.title}
-						</h1>
-						<p className="font-trap-grotesk text-sm mb-2 whitespace-pre-line">
-							{selectedCourse?.description}
-						</p>
-						<div className="flex gap-2 mb-2">
-							<div className="flex gap-1 items-center">
-								<img src={selectedCourse?.ratings} alt="Ratings" />
-								<span className="font-trap-grotesk">4.5 •</span>
-							</div>
-							<span className="font-trap-grotesk">
-								Last updated: {selectedCourse?.lastUpdated} •
-							</span>
-							{selectedCourse?.certificateAvailable && (
-								<span className="font-trap-grotesk">
-									Certificate available
-								</span>
-							)}
-						</div>
-						<div>
-							<p className="font-trap-grotesk text-sm mb-2">
-								Instructor: {selectedCourse?.instructorName}
-							</p>
-						</div>
-					</div>
-
-					<CourseModal
-						course={course}
-						courseInProgress={courseInProgress}
+		<>
+			{courseDetailsLoading && <SpinnerLoader />}
+			{courseDetailsError && <p>{courseDetailsError}</p>}
+			<CourseDetailsLayout>
+				{isTutor ? (
+					<TutorHeader selectedCourse={course} />
+				) : (
+					<StudentHeader selectedCourse={course} />
+				)}
+				{isTutor ? (
+					<TutorContent selectedCourse={courseLessonsData} />
+				) : (
+					<StudentContent
+						selectedCourse={courseLessonsData}
+						recommendedCourse={recommendedCourses}
 					/>
+				)}
+			</CourseDetailsLayout>
+		</>
+	);
+};
+
+const StudentHeader = ({ selectedCourse }) => (
+	<div className="bg-darkBlue text-white pt-8 font-trap-grotesk">
+		<div className="flex relative container-wrapper font-trap-grotesk">
+			<div className="w-3/5 flex flex-col p-12">
+				<h1 className="font-bold text-5xl mb-4">{selectedCourse?.title}</h1>
+				<p className="font-trap-grotesk text-sm mb-2 whitespace-pre-line">
+					{selectedCourse?.description}
+				</p>
+				<div className="flex gap-2 mb-2">
+					<div className="flex gap-1 items-center">
+						<img src={selectedCourse?.ratings} alt="Ratings" />
+						<span className="font-trap-grotesk">4.5 •</span>
+					</div>
+					<span className="font-trap-grotesk">
+						Last updated: {selectedCourse?.lastUpdated} •
+					</span>
+					{selectedCourse?.certificateAvailable && (
+						<span className="font-trap-grotesk">
+							Certificate available
+						</span>
+					)}
+				</div>
+				<div>
+					<p className="font-trap-grotesk text-sm mb-2">
+						Instructor: {selectedCourse?.instructorName}
+					</p>
 				</div>
 			</div>
+			<CourseModal
+				course={selectedCourse}
+				courseInProgress={selectedCourse}
+			/>
+		</div>
+	</div>
+);
+
+const TutorHeader = ({ selectedCourse }) => (
+	<div className="bg-darkBlue text-white pt-8 font-trap-grotesk">
+		<div className="flex relative container-wrapper font-trap-grotesk">
+			<div className="w-3/5 flex flex-col p-12">
+				<h1 className="font-bold text-5xl mb-4">{selectedCourse?.title}</h1>
+				<p className="font-trap-grotesk text-sm mb-2 whitespace-pre-line">
+					{selectedCourse?.description}
+				</p>
+				<div className="flex gap-2 mb-2">
+					<div className="flex gap-1 items-center">
+						<img src={selectedCourse?.ratings} alt="Ratings" />
+						<span className="font-trap-grotesk">4.5 •</span>
+					</div>
+					<span className="font-trap-grotesk">
+						Last updated: {selectedCourse?.lastUpdated} •
+					</span>
+					{selectedCourse?.certificateAvailable && (
+						<span className="font-trap-grotesk">
+							Certificate available
+						</span>
+					)}
+				</div>
+				<div>
+					<p className="font-trap-grotesk text-sm mb-2">
+						Instructor: {selectedCourse?.instructorName}
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+);
+
+const StudentContent = ({ selectedCourse, recommendedCourse }) => {
+	const [expandAll, setExpandAll] = useState(false);
+	const [modulesState, setModulesState] = useState({});
+
+	const handleExpandAllClick = useCallback(() => {
+		const newExpandAll = !expandAll;
+		setExpandAll(newExpandAll);
+		setModulesState(
+			selectedCourse.reduce((acc, _, index) => {
+				acc[index] = newExpandAll;
+				return acc;
+			}, {})
+		);
+	}, [expandAll, selectedCourse]);
+
+	const handleModuleToggle = useCallback((index, isOpen) => {
+		setModulesState((prev) => {
+			const updatedState = { ...prev, [index]: isOpen };
+
+			const allExpanded = Object.values(updatedState).every(
+				(state) => state
+			);
+			const anyExpanded = Object.values(updatedState).some((state) => state);
+
+			setExpandAll(allExpanded || (!anyExpanded && false));
+
+			return updatedState;
+		});
+	}, []);
+
+	const calculateTotalDuration = () => {
+		let totalSeconds = 0;
+
+		selectedCourse?.forEach((lesson) => {
+			lesson.topics.forEach((topic) => {
+				if (topic.contentType === "video" && topic.videoDurationInSeconds) {
+					totalSeconds += topic.videoDurationInSeconds;
+				}
+			});
+		});
+
+		const hours = Math.floor(totalSeconds / 3600);
+		const minutes = Math.floor((totalSeconds % 3600) / 60);
+
+		return { hours, minutes };
+	};
+
+	const { hours, minutes } = calculateTotalDuration();
+
+	return (
+		<>
 			<div className="flex flex-col gap-10 py-8 pl-14 w-3/5">
 				<div className="font-trap-grotesk">
 					<div className="flex flex-col gap-3 border border-lightGray rounded-lg p-4 text-darkGray">
 						<p className="text-xl font-trap-grotesk">What you'll learn</p>
-						<div className="grid grid-cols-2 gap-3">
-							<div className="flex gap-3 items-start">
-								<img src={verify} />
-								Understand the fundamentals of Artificial Intelligence
+						{/* <div className="grid grid-cols-2 gap-3">
+						{selectedCourse?.learnings?.map((learning, index) => (
+							<div key={index} className="flex gap-3 items-start">
+								<img src={verify} alt="Verify Icon" />
+								{learning}
 							</div>
-							<div className="flex gap-3 items-start">
-								<img src={verify} />
-								Understand the fundamentals of Artificial Intelligence
-							</div>
-							<div className="flex gap-3 items-start">
-								<img src={verify} />
-								Understand the fundamentals of Artificial Intelligence
-							</div>
-							<div className="flex gap-3 items-start">
-								<img src={verify} />
-								Understand the fundamentals of Artificial Intelligence
-							</div>
-							<div className="flex gap-3 items-start">
-								<img src={verify} />
-								Understand the fundamentals of Artificial Intelligence
-							</div>
-							<div className="flex gap-3 items-start">
-								<img src={verify} />
-								Understand the fundamentals of Artificial Intelligence
-							</div>
-							<div className="flex gap-3 items-start">
-								<img src={verify} />
-								Understand the fundamentals of Artificial Intelligence
-							</div>
-						</div>
+						))}
+					</div> */}
 					</div>
 				</div>
-
-				<div className="">
+				<div>
 					<h5 className="text-xl font-trap-grotesk font-semibold">
 						Course Content
 					</h5>
-					<div>
+					<div className="flex flex-col gap-3">
 						<div className="flex justify-between items-center">
 							<div>
-								<span className="font-trap-grotesk">9 Lessons •</span>
-								<span className="font-trap-grotesk"> 33 Topics •</span>
+								<span className="font-trap-grotesk">
+									{selectedCourse?.length} Lessons •
+								</span>
 								<span className="font-trap-grotesk">
 									{" "}
-									3h 00m total length
+									{selectedCourse?.reduce(
+										(acc, lesson) => acc + lesson.topics.length,
+										0
+									)}{" "}
+									Topics •
+								</span>
+								<span className="font-trap-grotesk">
+									{" "}
+									{hours > 0 ? `${hours}h ` : ""}
+									{minutes}m total length
 								</span>
 							</div>
 							<SecondaryButton
-								text={
-									expandAll
-										? "Collapse all lessons"
-										: "Expand all lessons"
-								}
 								onClick={handleExpandAllClick}
+								className="font-trap-grotesk text-primary"
+								text={expandAll ? "Collapse All" : "Expand All"}
 							/>
 						</div>
-						<div className="py-4">
-							{courseModulesData?.map((module, index) => (
+						<div>
+							{selectedCourse?.map((lesson, index) => (
 								<CourseModule
 									key={index}
-									moduleTitle={module.title}
-									submodules={module.topics}
-									expandAll={expandAll}
+									lessonTitle={lesson.title}
+									lessonItems={lesson.topics}
+									isExpanded={modulesState[index] || false}
+									onToggle={(isOpen) =>
+										handleModuleToggle(index, isOpen)
+									}
 								/>
 							))}
 						</div>
 					</div>
 				</div>
-
-				{/* REQUIREMENTS */}
-				<div className="">
-					<h5 className="text-xl font-trap-grotesk font-semibold">
-						Requirements
-					</h5>
-					<div className="flex flex-col gap-3">
-						<div>
-							<p>Laptop or desktop with:</p>
-							<ul className="list-disc pl-6 text-sm">
-								<li>Windows 10 or later</li>
-								<li>MacOS</li>
-								<li>Linux</li>
-							</ul>
-						</div>
-						<div>
-							<p>Laptop or desktop with:</p>
-							<ul className="list-disc pl-6 text-sm">
-								<li>Windows 10 or later</li>
-								<li>MacOS</li>
-								<li>Linux</li>
-							</ul>
-						</div>
-						<div>
-							<p>Laptop or desktop with:</p>
-							<ul className="list-disc pl-6 text-sm">
-								<li>Windows 10 or later</li>
-								<li>MacOS</li>
-								<li>Linux</li>
-							</ul>
-						</div>
-						<div>
-							<p>Laptop or desktop with:</p>
-							<ul className="list-disc pl-6 text-sm">
-								<li>Windows 10 or later</li>
-								<li>MacOS</li>
-								<li>Linux</li>
-							</ul>
-						</div>
-					</div>
-				</div>
-
-				<div>
-					<h5 className="text-xl font-semibold font-trap-grotesk">
-						About Instructor
-					</h5>
-					<div className="flex gap-3 items-center py-2">
-						<div className="w-[8%]">
-							<img src={tutor} className="w-full" />
-						</div>
-						<div>
-							<h5 className="font-trap-grotesk font-semibold">
-								{selectedCourse?.provider}
-							</h5>
-							<p className="font-trap-grotesk">
-								By harnessing the power of technology
-							</p>
-						</div>
-					</div>
-				</div>
 			</div>
-			<div className="pl-14 pb-12">
-				{/* <h5>Related Courses</h5> */}
-				<RecommendedCourses
-					heading={"Related Courses"}
-					course={course}
-					className="max-w-[1200px]"
-				/>
-			</div>
-		</CourseDetailsLayout>
+			<RecommendedCourses
+				courses={recommendedCourse}
+				styleClass="px-12 py-10"
+				heading={"Similar Courses"}
+			/>
+		</>
 	);
 };
 
-export default CourseDetails;
+const TutorContent = ({ selectedCourse }) => {
+	const [expandAll, setExpandAll] = useState(false);
+	const [modulesState, setModulesState] = useState({});
+
+	const handleExpandAllClick = useCallback(() => {
+		const newExpandAll = !expandAll;
+		setExpandAll(newExpandAll);
+		setModulesState(
+			selectedCourse.reduce((acc, _, index) => {
+				acc[index] = newExpandAll;
+				return acc;
+			}, {})
+		);
+	}, [expandAll, selectedCourse]);
+
+	const handleModuleToggle = useCallback((index, isOpen) => {
+		setModulesState((prev) => {
+			const updatedState = { ...prev, [index]: isOpen };
+
+			const allExpanded = Object.values(updatedState).every(
+				(state) => state
+			);
+			const anyExpanded = Object.values(updatedState).some((state) => state);
+
+			setExpandAll(allExpanded || (!anyExpanded && false));
+
+			return updatedState;
+		});
+	}, []);
+
+	const calculateTotalDuration = () => {
+		let totalSeconds = 0;
+
+		selectedCourse?.forEach((lesson) => {
+			lesson.topics.forEach((topic) => {
+				if (topic.contentType === "video" && topic.videoDurationInSeconds) {
+					totalSeconds += topic.videoDurationInSeconds;
+				}
+			});
+		});
+
+		const hours = Math.floor(totalSeconds / 3600);
+		const minutes = Math.floor((totalSeconds % 3600) / 60);
+
+		return { hours, minutes };
+	};
+
+	const { hours, minutes } = calculateTotalDuration();
+
+	return (
+		<div className="flex flex-col gap-10 py-8 pl-14 w-3/5">
+			<div className="font-trap-grotesk">
+				<div className="flex flex-col gap-3 border border-lightGray rounded-lg p-4 text-darkGray">
+					<h4 className="text-xl font-trap-grotesk font-semibold">
+						Manage Your Course
+					</h4>
+					<div className="grid grid-cols-2 gap-3">
+						<div className="flex gap-2 items-center">
+							<img src={lessons} alt="Lessons Icon" className="w-5" />
+							<p>Edit Lessons</p>
+						</div>
+						<div className="flex gap-2 items-center">
+							<img src={video} alt="Video Icon" className="w-5" />
+							<p>Upload Videos</p>
+						</div>
+						<div className="flex gap-2 items-center">
+							<img src={quiz} alt="Quiz Icon" className="w-5" />
+							<p>Create Quizzes</p>
+						</div>
+						<div className="flex gap-2 items-center">
+							<img
+								src={certificate}
+								alt="Certificate Icon"
+								className="w-5"
+							/>
+							<p>Manage Certificates</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div>
+				<h5 className="text-xl font-trap-grotesk font-semibold">
+					Course Content
+				</h5>
+				<div className="flex flex-col gap-3">
+					<div className="flex justify-between items-center">
+						<div>
+							<span className="font-trap-grotesk">
+								{selectedCourse?.length} Lessons •
+							</span>
+							<span className="font-trap-grotesk">
+								{" "}
+								{selectedCourse?.reduce(
+									(acc, lesson) => acc + lesson.topics.length,
+									0
+								)}{" "}
+								Topics •
+							</span>
+							<span className="font-trap-grotesk">
+								{" "}
+								{hours > 0 ? `${hours}h ` : ""}
+								{minutes}m total length
+							</span>
+						</div>
+						<SecondaryButton
+							onClick={handleExpandAllClick}
+							className="font-trap-grotesk text-primary"
+							text={expandAll ? "Collapse All" : "Expand All"}
+						/>
+					</div>
+					<div>
+						{selectedCourse?.map((lesson, index) => (
+							<CourseModule
+								key={index}
+								lessonTitle={lesson.title}
+								lessonItems={lesson.topics}
+								isExpanded={modulesState[index] || false}
+								onToggle={(isOpen) => handleModuleToggle(index, isOpen)}
+							/>
+						))}
+					</div>
+				</div>
+			</div>
+		</div>
+	);
+};
 
 const CourseModal = ({ course, courseInProgress }) => {
 	return (
@@ -333,3 +472,5 @@ const CourseModal = ({ course, courseInProgress }) => {
 		</div>
 	);
 };
+
+export default CourseDetails;

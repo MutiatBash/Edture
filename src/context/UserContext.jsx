@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect } from "react";
-import useApi from "../utils/customHooks";
+import { useApi } from "../utils/customHooks";
 
 export const userContext = createContext();
 
@@ -11,6 +11,8 @@ const UserContextProvider = ({ children }) => {
 	const [loading, setLoading] = useState(false);
 	const [success, setSuccess] = useState(false);
 	const [error, setError] = useState("");
+	const [authLoading, setAuthLoading] = useState(false);
+	const [authError, setAuthError] = useState("");
 	const [showLogoutModal, setShowLogoutModal] = useState(false);
 	const [isLoggingOut, setIsLoggingOut] = useState(false);
 
@@ -45,22 +47,16 @@ const UserContextProvider = ({ children }) => {
 	}, [userData]);
 
 	useEffect(() => {
-		if (tutorDashboardData) {
-			setDashboardData(tutorDashboardData);
+		if (tutorDashboardData || studentDashboardData) {
+			setDashboardData(tutorDashboardData || studentDashboardData);
 		}
-	}, [tutorDashboardData]);
+	}, [tutorDashboardData, studentDashboardData]);
 
 	useEffect(() => {
 		if (allCourses) {
 			setCourses(allCourses);
 		}
 	}, [allCourses]);
-
-	useEffect(() => {
-		if (studentDashboardData) {
-			setDashboardData(studentDashboardData);
-		}
-	}, [studentDashboardData]);
 
 	useEffect(() => {
 		if (token) {
@@ -129,6 +125,10 @@ const UserContextProvider = ({ children }) => {
 				allCourses,
 				courses,
 				setCourses,
+				authError,
+				setAuthError,
+				authLoading,
+				setAuthLoading,
 			}}
 		>
 			{children}

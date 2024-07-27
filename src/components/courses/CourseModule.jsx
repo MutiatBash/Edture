@@ -1,17 +1,35 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import video from "/icons/video.svg";
+import book from "/icons/book.svg";
 import arrowup from "/icons/arrow-up.svg";
 import arrowdown from "/icons/arrow-down.svg";
+import { formatVideoDuration } from "../../utils/utils";
 
-const CourseModule = ({ moduleTitle, submodules, expandAll }) => {
-	const [isOpen, setIsOpen] = useState(expandAll); 
+const CourseModule = ({ lessonTitle, lessonItems, isExpanded, onToggle }) => {
+	const [isOpen, setIsOpen] = useState(isExpanded);
+
+	useEffect(() => {
+		setIsOpen(isExpanded);
+	}, [isExpanded]);
 
 	const toggleModule = () => {
-		setIsOpen(!isOpen);
+		setIsOpen((prev) => {
+			const newOpen = !prev;
+			onToggle(newOpen);
+			return newOpen;
+		});
 	};
 
+	const totalTopics = lessonItems.length;
+	const topicLabel = totalTopics === 1 ? "Topic" : "Topics";
+	const totalDurationInSeconds = lessonItems?.reduce((total, item) => {
+		return total + (item.videoDurationInSeconds || 0);
+	}, 0);
+
+	const formattedTotalDuration = formatVideoDuration(totalDurationInSeconds);
+
 	return (
-		<div className="course-module w-full border border-lightGray">
+		<div className=" w-full border border-lightGray">
 			<div
 				className="flex gap-2 bg-nude p-3 cursor-pointer transition-all ease-in duration-300"
 				onClick={toggleModule}
@@ -23,18 +41,41 @@ const CourseModule = ({ moduleTitle, submodules, expandAll }) => {
 						className="w-4 h-4"
 					/>
 				</span>
-				<h3>{moduleTitle}</h3>
+				<div className="flex justify-between w-full">
+					<h3>{lessonTitle}</h3>
+					<p className="text-sm text-darkGray">
+						{totalTopics} {topicLabel} • {formattedTotalDuration}
+					</p>
+				</div>
 			</div>
-			{isOpen || expandAll ? (
+			{isOpen && (
 				<div className="submodules bg-white p-3">
-					{submodules?.map((submodule, index) => (
+					{lessonItems?.map((items, index) => (
 						<div key={index} className="flex gap-2 pb-2">
-							<img src={video} className="" />
-							<p className="text-darkGray opacity-80">{submodule}</p>
+							<img
+								className="w-5"
+								src={items.contentType === "video" ? video : book}
+								alt={
+									items.contentType === "video"
+										? "Video Icon"
+										: "Book Icon"
+								}
+							/>
+							<div className="text-darkGray opacity-80 flex justify-between w-full">
+								<p className="font-semibold">{items.title}</p>
+								{items.contentType === "video" &&
+								items.videoDurationInSeconds ? (
+									<p>
+										{formatVideoDuration(
+											items.videoDurationInSeconds
+										)}
+									</p>
+								) : null}
+							</div>
 						</div>
 					))}
 				</div>
-			) : null}
+			)}
 		</div>
 	);
 };
