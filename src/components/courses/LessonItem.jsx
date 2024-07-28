@@ -12,6 +12,7 @@ import documenttext from "/icons/document-text.svg";
 import texticon from "/icons/text-lesson.svg";
 import { InputField } from "../inputs/CourseCreationInputs";
 import { Divider } from "../Dividers";
+import axios from "axios";
 
 const FileInput = ({ onChange, note }) => {
 	const [file, setFile] = useState(null);
@@ -231,18 +232,62 @@ const AddContentButton = ({
 		}
 	};
 
-	const handleFileChange = (videoDetails) => {
-		const { file, url, duration } = videoDetails;
-		setFile(file);
-		setVideoUrl(url);
-		setVideoDuration(duration);
-		onContentAdded({
-			type: "video",
-			file,
-			url,
-			duration,
-		});
-		resetState();
+	// const handleAddVideo = (videoDetails) => {
+	// 	const { file, url, duration } = videoDetails;
+	// 	setFile(file);
+	// 	setVideoUrl(url);
+	// 	setVideoDuration(duration);
+	// 	onContentAdded({
+	// 		type: "video",
+	// 		file,
+	// 		url,
+	// 		duration,
+	// 	});
+	// 	resetState();
+	// };
+
+	const handleAddVideo = async (videoDetails) => {
+		const { file, duration } = videoDetails;
+
+		if (file) {
+			const formData = new FormData();
+			formData.append("file", file);
+
+			try {
+				const response = await axios.post(
+					"https://edture.onrender.com/cloudinary/upload",
+					formData,
+					{
+						headers: {
+							"Content-Type": "multipart/form-data",
+						},
+					}
+				);
+
+				const data = response.data;
+				const url = data.url;
+				console.log("video",url);
+
+				const updatedVideoDetails = {
+					file,
+					url,
+					duration,
+				};
+
+				setFile(file);
+				setVideoUrl(url);
+				setVideoDuration(duration);
+				onContentAdded({
+					type: "video",
+					file,
+					url,
+					duration,
+				});
+				resetState();
+			} catch (error) {
+				console.error("Error uploading video:", error);
+			}
+		}
 	};
 
 	const handleCancel = () => {
@@ -310,7 +355,7 @@ const AddContentButton = ({
 								/>
 							) : (
 								<VideoInput
-									onChange={handleFileChange}
+									onChange={handleAddVideo}
 									note={"File requirements: 720p minimum, max 1.0 GB"}
 								/>
 							)}
@@ -444,10 +489,10 @@ export const LessonItem = ({ item, updateLessonItem, deleteLessonItem }) => {
 		setShowAddResource(false);
 	};
 
-	 useEffect(() => {
-			setResources(item.resources || []);
-			setShowAddResource(item.content && item.resources?.length);
-		}, [item.resources]);
+	useEffect(() => {
+		setResources(item.resources || []);
+		setShowAddResource(item.content && item.resources?.length);
+	}, [item.resources]);
 
 	return (
 		<div className="flex flex-col border border-lightGray rounded-lg p-4 mt-4">

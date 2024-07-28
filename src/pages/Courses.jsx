@@ -3,9 +3,8 @@ import {
 	StudentDashboardLayout,
 	TutorDashboardLayout,
 } from "../layouts/DashboardLayout";
-import RecentCourses from "../components/courses/RecentCourses";
 import RecommendedCourses from "../components/courses/RecommendedCourses";
-import ActiveCourses from "../components/courses/ActiveCourses";
+import { ActiveStudentCourses } from "../components/courses/StudentCourses";
 import { userContext } from "../context/UserContext";
 import AddCourseCard from "../components/cards/AddCourseCard";
 import CreateCourse from "../components/courses/CreateCourse";
@@ -25,7 +24,8 @@ const Courses = () => {
 	const showTutorAddCourse = tutorDashboardData?.courses?.length === 0;
 
 	const allCourses = courses?.courses;
-	console.log(allCourses);
+
+
 	const sortedStudentCourses = allCourses?.sort(
 		(a, b) => new Date(b.createdAt) - new Date(a.createdAt)
 	);
@@ -51,15 +51,25 @@ const Courses = () => {
 			{showAddCourse ? (
 				<>
 					<AddCourseCard text={"Add Course"} heading={"My Courses"} />
-					<RecommendedCourses heading={"Recommended for you"} courses={recommendedCourses}/>
+					<RecommendedCourses
+						heading={"Recommended for you"}
+						courses={recommendedCourses}
+					/>
+					<RecommendedCourses
+						heading={"Top searches"}
+						courses={recommendedCourses}
+					/>
 				</>
 			) : (
 				<>
 					<div className="flex">
-						<ActiveCourses heading={"Your Courses"} />
+						<ActiveStudentCourses heading={"Your Courses"} />
 						<AddCourseCard text={"Add Course"} heading={"My Courses"} />
 					</div>
-					<RecommendedCourses heading={"Recommended for you"} courses={recommendedCourses}/>
+					<RecommendedCourses
+						heading={"Recommended for you"}
+						courses={recommendedCourses}
+					/>
 				</>
 			)}
 		</>

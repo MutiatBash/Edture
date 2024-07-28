@@ -15,7 +15,7 @@ const CartPopup = () => {
 					Your cart is empty
 				</div>
 				<Link
-					to="/courses"
+					to="/allcourses"
 					className="text-primaryBlue text-center font-trap-grotesk font-medium"
 				>
 					Explore Courses

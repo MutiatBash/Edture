@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext, useCallback } from "react";
 import { userContext } from "../context/UserContext";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { coursesInProgress } from "../data";
 import CourseDetailsLayout from "../layouts/CourseDetailsLayout";
 import { PrimaryButton, SecondaryButton } from "../components/Button";
@@ -18,6 +18,9 @@ import CourseModule from "../components/courses/CourseModule";
 import ProgressBar from "../components/ProgressBar";
 import { useApi } from "../utils/customHooks";
 import { SpinnerLoader } from "../components/Loader";
+import { useCart } from "../context/CartContext";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const CourseDetails = () => {
 	const { id } = useParams();
@@ -394,6 +397,29 @@ const TutorContent = ({ selectedCourse }) => {
 };
 
 const CourseModal = ({ course, courseInProgress }) => {
+	const { addItemToCart } = useCart();
+
+	const navigate = useNavigate();
+
+	const handleAddToCart = async () => {
+		const itemAdded = await addItemToCart(course);
+		console.log("Item added:", itemAdded);
+		if (itemAdded) {
+			toast.success("Course added to cart!");
+		} else {
+			toast.error("This course already in your cart!");
+		}
+	};
+
+	const handleBuyNow = async () => {
+		try {
+			await addItemToCart(course);
+			navigate("/cart");
+		} catch (error) {
+			console.error("Failed to add course to cart:", error);
+			toast.error("Failed to add course to cart!");
+		}
+	};
 	return (
 		<div className="fixed max-h-[40rem] top-32 bottom-5 right-14 p-4 w-full max-w-[400px] bg-white shadow-lg z-20 rounded-lg font-trap-grotesk">
 			<div className="h-[200px]">
@@ -429,8 +455,16 @@ const CourseModal = ({ course, courseInProgress }) => {
 						</span>
 					</p>
 					<div className="flex flex-col gap-4 py-2">
-						<PrimaryButton text={"Add to cart"} className="w-full" />
-						<SecondaryButton text={"Buy Now"} className="w-full" />
+						<PrimaryButton
+							text={"Add to cart"}
+							className="w-full"
+							onClick={handleAddToCart}
+						/>
+						<SecondaryButton
+							text={"Buy Now"}
+							className="w-full"
+							onClick={handleBuyNow}
+						/>
 					</div>
 				</>
 			)}

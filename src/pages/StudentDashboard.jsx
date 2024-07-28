@@ -7,7 +7,7 @@ import CourseStatusCard from "../components/cards/CourseStatusCard";
 import enrolled from "/icons/enrolled-course.svg";
 import active from "/icons/active-course.svg";
 import completed from "/icons/completed-course.svg";
-import ActiveCourses from "../components/courses/ActiveCourses";
+import { ActiveStudentCourses } from "../components/courses/StudentCourses";
 import RecommendedCourses from "../components/courses/RecommendedCourses";
 import { SpinnerLoader } from "../components/Loader";
 import AddCourseCard from "../components/cards/AddCourseCard";
@@ -39,8 +39,8 @@ const StudentDashboard = () => {
 	const navigate = useNavigate();
 
 	const allCourses = courses?.courses;
-	console.log(allCourses)
-	console.log(courses)
+	console.log(allCourses);
+	console.log(courses);
 	const sortedStudentCourses = allCourses?.sort(
 		(a, b) => new Date(b.createdAt) - new Date(a.createdAt)
 	);
@@ -94,17 +94,23 @@ const StudentDashboard = () => {
 								/>
 							</div>
 							{showAddCourse ? (
-								<RecommendedCourses heading={"Recommended"} courses={recommendedCourses} />
+								<RecommendedCourses
+									heading={"Recommended"}
+									courses={recommendedCourses}
+								/>
 							) : (
 								<>
 									<div className="flex">
-										<ActiveCourses heading={"Your Courses"} />
+										<ActiveStudentCourses heading={"Your Courses"} />
 										<AddCourseCard
 											text={"Add Course"}
 											heading={"My Courses"}
 										/>
 									</div>
-									<RecommendedCourses heading={"Recommended"} courses={recommendedCourses}/>
+									<RecommendedCourses
+										heading={"Recommended"}
+										courses={recommendedCourses}
+									/>
 								</>
 							)}
 						</>

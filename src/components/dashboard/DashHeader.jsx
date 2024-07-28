@@ -8,9 +8,12 @@ import NotificationPopup from "../popups/NotificationPopup";
 import InboxPopup from "../popups/InboxPopup";
 import CartPopup from "../popups/CartPopup";
 import { userContext } from "../../context/UserContext";
+import { useCart } from "../../context/CartContext";
 
 const DashHeader = () => {
 	const { firstName, lastName, emailAddress, user } = useContext(userContext);
+	const { cartItems } = useCart();
+
 	const initials =
 		firstName && lastName ? `${firstName[0]}${lastName[0]}` : "HH";
 
@@ -55,11 +58,17 @@ const DashHeader = () => {
 						className="cursor-pointer"
 					/>
 					{role !== "TUTOR" && (
-						<img
-							src={cart}
+						<div
+							className="relative flex items-center cursor-pointer"
 							onClick={() => handlePopup("cart")}
-							className="cursor-pointer"
-						/>
+						>
+							<img src={cart} alt="Cart Icon" />
+							{cartItems && (
+								<span className="absolute top-0 right-0 translate-x-1/2 -translate-y-1/2 bg-primaryBlue min-w-6 min-h-6 max-w-8 max-h-8 rounded-full flex items-center justify-center text-white text-xs sm:text-sm">
+									{cartItems.length}
+								</span>
+							)}
+						</div>
 					)}
 					<div className="h-5 w-[1px] bg-darkGray"></div>
 					<div

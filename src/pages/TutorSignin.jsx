@@ -114,10 +114,6 @@ const TutorSignin = () => {
 									>
 										Switch to Student
 									</Link>
-									{/* <SecondaryButton
-										text={"Student Sign in"}
-										onClick={() => setRole("STUDENT")}
-									/> */}
 								</div>
 							</div>
 							<div className="flex flex-col gap-6">
@@ -160,7 +156,8 @@ const TutorSignin = () => {
 								<PrimaryButton
 									className={`w-full`}
 									type="submit"
-									text={authLoading ? "Signing in" : "Sign in"}
+									text={authLoading ? "Signing in..." : "Sign in"}
+									disabled={authLoading}
 								/>
 								<Divider />
 								<p className="text-sm">
@@ -178,7 +175,6 @@ const TutorSignin = () => {
 					)}
 				</Formik>
 			</div>
-			<ToastContainer />
 		</section>
 	);
 };

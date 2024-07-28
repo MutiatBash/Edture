@@ -6,7 +6,6 @@ import { TutorDashboardLayout } from "../layouts/DashboardLayout";
 import CourseStatusCard from "../components/cards/CourseStatusCard";
 import enrolled from "/icons/enrolled-course.svg";
 import active from "/icons/active-course.svg";
-import ActiveCourses from "../components/courses/ActiveCourses";
 import { SpinnerLoader } from "../components/Loader";
 import AddCourseCard from "../components/cards/AddCourseCard";
 import CreateCourse from "../components/courses/CreateCourse";

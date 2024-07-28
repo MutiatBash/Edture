@@ -17,6 +17,11 @@ import StudentDashboard from "./pages/StudentDashboard";
 import TutorDashboard from "./pages/TutorDashboard";
 import InactivityTimeout from "./pages/Timeout";
 import Cart from "./pages/Cart";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import Checkout from "./pages/Checkout";
+import AllCourses from "./pages/AllCourses";
+import CourseContent from "./pages/CourseContent";
 
 const App = () => {
 	return (
@@ -36,10 +41,14 @@ const App = () => {
 					/>
 					<Route path="/tutor-dashboard" element={<TutorDashboard />} />
 					<Route path="/courses" element={<Courses />} />
-					<Route path="/course/:id" element={<CourseDetails />} />
+					<Route path="/courses/:id" element={<CourseDetails />} />
+					<Route path="/courses/course-content/:id" element={<CourseContent />} />
 					<Route path="/cart" element={<Cart />} />
+					<Route path="/checkout" element={<Checkout />} />
+					<Route path="/allcourses" element={<AllCourses />} />
 				</Routes>
 			</Router>
+			<ToastContainer/>
 		</div>
 	);
 };

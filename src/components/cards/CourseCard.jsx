@@ -9,7 +9,7 @@ export const ActiveCourseCard = ({ progress, course, id }) => {
 	const navigate = useNavigate();
 
 	const handleClick = () => {
-		navigate(`/course/${course.id}`);
+		navigate(`/courses/${course.id}`);
 	};
 	return (
 		<div
@@ -55,15 +55,15 @@ export const CourseCard = ({ course }) => {
 	const navigate = useNavigate();
 
 	const handleClick = () => {
-		navigate(`/course/${course.id}`);
+		navigate(`/courses/${course.id}`);
 	};
 	return (
 		<div
 			className="flex flex-col gap-2 border border-lighterGray p-4 rounded-lg font-trap-grotesk hover:border-hoverBlue hover:shadow-md"
 			onClick={handleClick}
 		>
-			<div className="w-full">
-				<img src={course.image} className="w-full" alt="Course" />
+			<div className="w-full rounded-lg">
+				<img src={course.image} className="w-full rounded-lg" alt="Course" />
 			</div>
 			<h5 className="font-trap-grotesk font-bold leading-6 text-lg">
 				{truncateString(course.title, 38)}

@@ -8,24 +8,32 @@ import {
 import { PrimaryButton, SecondaryButton } from "../Button";
 import { userContext } from "../../context/UserContext";
 import LessonContainer from "./LessonsContainer";
-import { SuccessModal } from "../popups/Modal";
+import { SuccessModal, ConfirmationModal } from "../popups/Modal";
 import successgif from "/success-gif.gif";
 import QuizCreation from "./QuizCreation";
 import axios from "axios";
-import { useApi } from "../../utils/customHooks";
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
 import { SpinnerLoader } from "../Loader";
+import { useNavigate } from "react-router-dom";
 
 const animatedComponents = makeAnimated();
+const capitalize = (string) =>
+	string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
 
 const CreateCourse = ({ onCancel }) => {
+	const navigate = useNavigate();
+
 	const {
 		loading,
 		setLoading,
 		error: courseError,
 		setError,
+		firstName,
+		lastName,
 	} = useContext(userContext);
+
+	const tutorsName = `${capitalize(firstName)} ${capitalize(lastName)}`;
 
 	const options = [
 		{ value: "programming", label: "Programming" },
@@ -65,7 +73,7 @@ const CreateCourse = ({ onCancel }) => {
 		difficultyLevel: "",
 		currency: "",
 		price: "",
-		instructorsName: "",
+		instructorsName: tutorsName,
 		instructorsBio: "",
 	});
 
@@ -82,15 +90,52 @@ const CreateCourse = ({ onCancel }) => {
 		}));
 	};
 
-	const handleFileChange = (file) => {
-		setFormData((prevData) => ({
-			...prevData,
-			courseImage: {
-				file: file,
-				fileName: file ? file.name : "",
-				fileUrl: file ? URL.createObjectURL(file) : "",
-			},
-		}));
+	// const handleFileChange = (file) => {
+	// 	setFormData((prevData) => ({
+	// 		...prevData,
+	// 		courseImage: {
+	// 			file: file,
+	// 			fileName: file ? file.name : "",
+	// 			fileUrl: file ? URL.createObjectURL(file) : "",
+	// 		},
+	// 	}));
+	// };
+
+	const handleFileChange = async (file) => {
+		if (file) {
+			const formData = new FormData();
+			formData.append("file", file);
+
+			try {
+				// Sending the file to the server
+				const response = await axios.post(
+					"https://edture.onrender.com/cloudinary/upload",
+					formData,
+					{
+						headers: {
+							"Content-Type": "multipart/form-data",
+						},
+					}
+				);
+
+				// Extracting the URL from the server response
+				const data = response.data;
+				const fileUrl = data.url;
+				console.log(fileUrl);
+
+				// Updating the form data state with the file details and URL
+				setFormData((prevData) => ({
+					...prevData,
+					courseImage: {
+						file: file,
+						fileName: file.name,
+						fileUrl: fileUrl,
+					},
+				}));
+			} catch (error) {
+				console.error("Error uploading file:", error);
+			}
+		}
 	};
 
 	const handleSelectChange = (selectedOptions) => {
@@ -121,7 +166,6 @@ const CreateCourse = ({ onCancel }) => {
 			if (formData.tags.length === 0)
 				newErrors.tags = "At least one tag is required";
 		} else if (step === 2) {
-			// Step 2 validation
 			if (!formData.courseImage.file)
 				newErrors.courseImage = "Course image is required";
 			if (!formData.difficultyLevel)
@@ -155,6 +199,11 @@ const CreateCourse = ({ onCancel }) => {
 		setError({});
 		setStep(1);
 		onCancel();
+	};
+
+	const navigateToCourses = () => {
+		navigate("/courses");
+		window.location.reload();
 	};
 
 	const handleCreateCourse = async () => {
@@ -199,9 +248,6 @@ const CreateCourse = ({ onCancel }) => {
 			handleNextStep();
 		} catch (err) {
 			setLoading(false);
-			// const errorMessage =
-			// 	err.response?.data?.message || "An error occurred";
-			// setError(errorMessage);
 			console.error("Error creating course:", err.message);
 			console.log(err);
 			console.log("Paylod:", courseData);
@@ -215,7 +261,7 @@ const CreateCourse = ({ onCancel }) => {
 				curriculum: lesson.items.map((item) => item.topicTitle),
 				topics: lesson.items.map((item) => ({
 					title: item.topicTitle,
-					contentType: item.content.type,
+					contentType: item?.content?.type,
 					textDescription:
 						item.content.type === "text" ? item.content.text : "",
 					videoUrl: item.content.type === "video" ? item.content.url : "",
@@ -472,7 +518,7 @@ const CreateCourse = ({ onCancel }) => {
 							/>
 							<PrimaryButton
 								onClick={handleCreateLessons}
-								text={"Next"}
+								text={"Create"}
 							/>
 						</div>
 					</div>
@@ -480,18 +526,16 @@ const CreateCourse = ({ onCancel }) => {
 				{showModal && (
 					<SuccessModal
 						heading={"Time to curate your course exercise/quiz"}
-						buttonText={"Continue"}
+						buttonText={"Go to courses"}
 						img={successgif}
 						imageStyling="w-[60%]"
 						onClose={handleCloseModal}
-						onConfirm={() => {
-							handleCloseModal();
-							handleNextStep();
-						}}
+						allowClose={false}
+						onConfirm={navigateToCourses}
 					/>
 				)}
 
-				{step === 4 && (
+				{/* {step === 4 && (
 					<div className="flex flex-col gap-4">
 						<div className="flex flex-col gap-3">
 							<h3 className="text-xl font-semibold mb-2 text-primaryBlack">
@@ -513,7 +557,7 @@ const CreateCourse = ({ onCancel }) => {
 							<PrimaryButton text={"Create"} />
 						</div>
 					</div>
-				)}
+				)} */}
 			</div>
 		</>
 	);
