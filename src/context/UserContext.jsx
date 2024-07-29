@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect } from "react";
 import { useApi } from "../utils/customHooks";
+import axios from "axios";
 
 export const userContext = createContext();
 
@@ -8,6 +9,7 @@ const UserContextProvider = ({ children }) => {
 	const [user, setUser] = useState(null);
 	const [dashboardData, setDashboardData] = useState(null);
 	const [courses, setCourses] = useState(null);
+	const [courseById, setCourseById] = useState(null);
 	const [loading, setLoading] = useState(false);
 	const [success, setSuccess] = useState(false);
 	const [error, setError] = useState("");
@@ -15,6 +17,7 @@ const UserContextProvider = ({ children }) => {
 	const [authError, setAuthError] = useState("");
 	const [showLogoutModal, setShowLogoutModal] = useState(false);
 	const [isLoggingOut, setIsLoggingOut] = useState(false);
+	const [role, setRole] = useState(() => localStorage.getItem("userRole"));
 
 	const {
 		data: userData,
@@ -43,6 +46,10 @@ const UserContextProvider = ({ children }) => {
 	useEffect(() => {
 		if (userData) {
 			setUser(userData);
+			if (userData?.role) {
+				setRole(userData?.role);
+				localStorage.setItem("userRole", userData?.role);
+			}
 		}
 	}, [userData]);
 
@@ -74,6 +81,21 @@ const UserContextProvider = ({ children }) => {
 		}
 	}, [userError, tutorError, studentError]);
 
+	const fetchCourseById = async (courseId) => {
+		try {
+			const response = await axios.get(
+				`https://edture.onrender.com/courses/${courseId}`,
+				{
+					headers: { Authorization: `Bearer ${token}` },
+				}
+			);
+			setCourseById(response.data);
+		} catch (error) {
+			console.error("Error fetching course by ID:", error);
+			setError(error.message);
+		}
+	};
+
 	const logout = async () => {
 		setIsLoggingOut(true);
 		try {
@@ -104,6 +126,7 @@ const UserContextProvider = ({ children }) => {
 				token,
 				setToken,
 				user,
+				role,
 				setUser,
 				firstName: user ? user.firstname : "",
 				lastName: user ? user.lastname : "",
@@ -129,6 +152,8 @@ const UserContextProvider = ({ children }) => {
 				setAuthError,
 				authLoading,
 				setAuthLoading,
+				fetchCourseById,
+				courseById,
 			}}
 		>
 			{children}

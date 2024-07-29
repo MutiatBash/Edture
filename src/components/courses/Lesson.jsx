@@ -20,15 +20,16 @@ const Lesson = ({ lesson, updateLesson, deleteLesson, lessonCount }) => {
 
 	const addLessonItem = (item) => {
 		const updatedLesson = { ...lesson, items: [...items, item] };
-		updateLesson(lesson.id, updatedLesson);
+		setItems(updatedLesson.items);
+		updateLesson(updatedLesson);
 	};
 
-	const updateLessonItem = (itemId, updatedItem) => {
+	const updateLessonItem = (id, updatedItem) => {
 		const updatedItems = items.map((item) =>
-			item.id === itemId ? updatedItem : item
+			item.id === id ? updatedItem : item
 		);
-		const updatedLesson = { ...lesson, items: updatedItems };
-		updateLesson(lesson.id, updatedLesson);
+		setItems(updatedItems);
+		updateLesson({ ...lesson, items: updatedItems });
 	};
 
 	const deleteLessonItem = (itemId) => {

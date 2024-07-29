@@ -100,3 +100,20 @@ export const ConfirmationModal = ({
 		</div>
 	);
 };
+
+export const SessionTimeoutModal = ({ isOpen, onClose }) => {
+	if (!isOpen) return null;
+
+	return (
+		<div className="fixed inset-0 flex items-center justify-center z-50">
+			<div className="absolute inset-0 bg-black opacity-50"></div>
+			<div className="bg-white p-6 rounded shadow-lg z-10">
+				<h2 className="text-xl font-semibold mb-4">Session Expired</h2>
+				<p>Your session has expired. You will be logged out.</p>
+				<div className="mt-4 flex justify-end">
+					<PrimaryButton text={"Ok"} onClick={onClose} />
+				</div>
+			</div>
+		</div>
+	);
+};

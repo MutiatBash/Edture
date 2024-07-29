@@ -88,7 +88,7 @@ const TutorDashboard = () => {
 									onClick={handleAddCourseClick}
 								/>
 							) : (
-								<div className="flex flex-col gap-3">
+								<div className="flex flex-col gap-10">
 									<div className="gap-3 items-center justify-between">
 										<RecentTutorCourses
 											heading={"Your Recent Courses"}

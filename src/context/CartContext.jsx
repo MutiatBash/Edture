@@ -8,7 +8,6 @@ export const CartProvider = ({ children }) => {
 	const { token } = useContext(userContext);
 	const [cartItems, setCartItems] = useState([]);
 
-	// Fetch cart items from the server
 	const fetchCartItems = async () => {
 		if (!token) return;
 
@@ -19,7 +18,6 @@ export const CartProvider = ({ children }) => {
 				},
 			});
 
-			// Adjust to match actual response structure
 			if (
 				response.data &&
 				response.data.data &&
@@ -38,11 +36,9 @@ export const CartProvider = ({ children }) => {
 		fetchCartItems();
 	}, [token]);
 
-	// Add item to the cart
 	const addItemToCart = async (item) => {
 		if (!token) return false;
 
-		// Check if the item is already in the cart
 		const itemExists = cartItems.some((cartItem) => cartItem.id === item.id);
 
 		if (itemExists) {
@@ -57,7 +53,6 @@ export const CartProvider = ({ children }) => {
 				{ headers: { Authorization: `Bearer ${token}` } }
 			);
 
-			// Fetch updated cart items
 			await fetchCartItems();
 
 			// Log the updated cart items
@@ -89,8 +84,6 @@ export const CartProvider = ({ children }) => {
 		}
 	};
 
-
-	// Clear all cart items
 	const clearCartItems = () => {
 		setCartItems([]);
 	};

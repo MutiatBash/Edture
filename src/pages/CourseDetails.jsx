@@ -13,6 +13,7 @@ import quiz from "/quiz.svg";
 import tutor from "/tutor-profile.svg";
 import certificate from "/icons/certificate.svg";
 import verify from "/icons/verify.svg";
+import ratingsicon from "/icons/ratings.svg";
 import RecommendedCourses from "../components/courses/RecommendedCourses";
 import CourseModule from "../components/courses/CourseModule";
 import ProgressBar from "../components/ProgressBar";
@@ -91,7 +92,7 @@ const StudentHeader = ({ selectedCourse }) => (
 				</p>
 				<div className="flex gap-2 mb-2">
 					<div className="flex gap-1 items-center">
-						<img src={selectedCourse?.ratings} alt="Ratings" />
+						<img src={ratingsicon} alt="Ratings" />
 						<span className="font-trap-grotesk">4.5 •</span>
 					</div>
 					<span className="font-trap-grotesk">
@@ -119,7 +120,7 @@ const StudentHeader = ({ selectedCourse }) => (
 
 const TutorHeader = ({ selectedCourse }) => (
 	<div className="bg-darkBlue text-white pt-8 font-trap-grotesk">
-		<div className="flex relative container-wrapper font-trap-grotesk">
+		<div className="flex relative container-wrapper w-full font-trap-grotesk">
 			<div className="w-3/5 flex flex-col p-12">
 				<h1 className="font-bold text-5xl mb-4">{selectedCourse?.title}</h1>
 				<p className="font-trap-grotesk text-sm mb-2 whitespace-pre-line">
@@ -127,11 +128,11 @@ const TutorHeader = ({ selectedCourse }) => (
 				</p>
 				<div className="flex gap-2 mb-2">
 					<div className="flex gap-1 items-center">
-						<img src={selectedCourse?.ratings} alt="Ratings" />
+						<img src={ratingsicon} alt="Ratings" />
 						<span className="font-trap-grotesk">4.5 •</span>
 					</div>
 					<span className="font-trap-grotesk">
-						Last updated: {selectedCourse?.lastUpdated} •
+						Last updated: {selectedCourse?.updatedAt} •
 					</span>
 					{selectedCourse?.certificateAvailable && (
 						<span className="font-trap-grotesk">
@@ -145,6 +146,7 @@ const TutorHeader = ({ selectedCourse }) => (
 					</p>
 				</div>
 			</div>
+			<TutorModal course={selectedCourse} />
 		</div>
 	</div>
 );
@@ -200,7 +202,7 @@ const StudentContent = ({ selectedCourse, recommendedCourse }) => {
 
 	return (
 		<>
-			<div className="flex flex-col gap-10 py-8 pl-14 w-3/5">
+			<div className="flex flex-col gap-10 py-8 pl-14 w-3/5 relative">
 				<div className="font-trap-grotesk">
 					<div className="flex flex-col gap-3 border border-lightGray rounded-lg p-4 text-darkGray">
 						<p className="text-xl font-trap-grotesk">What you'll learn</p>
@@ -328,15 +330,15 @@ const TutorContent = ({ selectedCourse }) => {
 					<div className="grid grid-cols-2 gap-3">
 						<div className="flex gap-2 items-center">
 							<img src={lessons} alt="Lessons Icon" className="w-5" />
-							<p>Edit Lessons</p>
+							<p className="font-trap-grotesk">Edit Lessons</p>
 						</div>
 						<div className="flex gap-2 items-center">
 							<img src={video} alt="Video Icon" className="w-5" />
-							<p>Upload Videos</p>
+							<p className="font-trap-grotesk">Upload Videos</p>
 						</div>
 						<div className="flex gap-2 items-center">
 							<img src={quiz} alt="Quiz Icon" className="w-5" />
-							<p>Create Quizzes</p>
+							<p className="font-trap-grotesk">Create Quizzes</p>
 						</div>
 						<div className="flex gap-2 items-center">
 							<img
@@ -344,7 +346,7 @@ const TutorContent = ({ selectedCourse }) => {
 								alt="Certificate Icon"
 								className="w-5"
 							/>
-							<p>Manage Certificates</p>
+							<p className="font-trap-grotesk">Manage Certificates</p>
 						</div>
 					</div>
 				</div>
@@ -506,5 +508,70 @@ const CourseModal = ({ course, courseInProgress }) => {
 		</div>
 	);
 };
+
+const TutorModal = ({ course }) => {
+	const navigate = useNavigate();
+	return (
+		<div className="fixed top-32 right-14 p-4 w-full max-w-[400px] max-h-[90vh] bg-white shadow-lg z-20 rounded-lg font-trap-grotesk">
+			<div className="mb-4">
+				<img
+					src={course?.image}
+					className="w-full h-[200px] object-cover rounded-md"
+					alt="Course"
+				/>
+			</div>
+			<div className="flex flex-col gap-3">
+				<p className="font-semibold text-2xl pt-2 text-primaryBlack font-trap-grotesk">
+					{course?.price}
+				</p>
+				<PrimaryButton text={"Edit Course"} className="w-full" />
+			</div>
+			<div className="text-primaryBlack pt-3">
+				<h5 className="font-bold font-trap-grotesk text-lg">
+					Course includes:
+				</h5>
+				<div className="flex flex-col gap-2 py-2 text-sm">
+					<div className="flex gap-5 w-4/5 justify-start">
+						<div className="inline-flex gap-3 items-center">
+							<img
+								src={lessons}
+								className="w-4 h-4"
+								alt="Lessons Icon"
+							/>
+							{course?.lectures} lessons
+						</div>
+						<div className="flex gap-3">
+							<img src={topics} className="w-4 h-4" alt="Topics Icon" />
+							{course?.lectures} courses
+						</div>
+					</div>
+					<div className="flex gap-5 w-4/5 justify-start">
+						<div className="flex gap-3">
+							<img src={video} className="w-4 h-4" alt="Video Icon" />
+							Video content
+						</div>
+						<div className="flex gap-3">
+							<img src={book} className="w-4 h-4" alt="Book Icon" />
+							Reading
+						</div>
+					</div>
+					<div className="flex gap-3">
+						<img src={quiz} className="w-4 h-4" alt="Quiz Icon" />
+						Quizzes
+					</div>
+					<div className="flex gap-3">
+						<img
+							src={certificate}
+							className="w-4 h-4"
+							alt="Certificate Icon"
+						/>
+						Certificate of completion
+					</div>
+				</div>
+			</div>
+		</div>
+	);
+};
+
 
 export default CourseDetails;

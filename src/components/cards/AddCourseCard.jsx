@@ -10,7 +10,7 @@ const AddCourseCard = ({ onClick, text, heading }) => {
 				</h3>
 			)}
 			<div
-				className="flex flex-col justify-center items-center text-center gap-4 border border-lighterGray px-8 py-12 rounded-lg w-[280px] flex-grow h-80 hover:border-hoverBlue hover:shadow-md"
+				className="flex flex-col justify-center items-center text-center gap-4 border border-lighterGray px-8 py-12 rounded-lg w-[300px] h-[350px] hover:border-hoverBlue hover:shadow-md"
 				onClick={onClick}
 			>
 				<div className="cursor-pointer bg-lighterGray p-7 rounded-full">

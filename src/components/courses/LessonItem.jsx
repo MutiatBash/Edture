@@ -14,18 +14,18 @@ import { InputField } from "../inputs/CourseCreationInputs";
 import { Divider } from "../Dividers";
 import axios from "axios";
 
-const FileInput = ({ onChange, note }) => {
+const FileInput = ({ onChange, note, loading }) => {
 	const [file, setFile] = useState(null);
 	const [fileUrl, setFileUrl] = useState("");
 
-	const handleFileChange = (event) => {
+	const handleFileChange = async (event) => {
 		const selectedFile = event.target.files[0];
 		if (selectedFile) {
-			const url = URL.createObjectURL(selectedFile);
 			setFile(selectedFile);
+			const url = URL.createObjectURL(selectedFile);
 			setFileUrl(url);
 
-			onChange({
+			await onChange({
 				file: selectedFile,
 				type: "pdf",
 				name: selectedFile.name,
@@ -33,24 +33,31 @@ const FileInput = ({ onChange, note }) => {
 			});
 		}
 	};
-
 	return (
 		<div>
 			<div className="flex justify-between items-center relative pl-5 border border-lightGray rounded-lg">
-				<span className="text-lightGray">No file selected</span>
-				<label className="flex items-center cursor-pointer">
-					<div className="border p-4 px-5 rounded-tr-md rounded-br-md border-primaryBlue">
-						<input
-							type="file"
-							accept=".pdf"
-							onChange={handleFileChange}
-							className="absolute right-0 hidden"
-						/>
-						<span className="text-primaryBlue font-medium font-trap-grotesk">
-							Select file
-						</span>
-					</div>
-				</label>
+				{loading ? (
+					<span className="text-darkGray py-3">
+						Please wait, your file is being uploaded...
+					</span>
+				) : (
+					<>
+						<span className="text-lightGray">No file selected</span>
+						<label className="flex items-center cursor-pointer">
+							<div className="border p-4 px-5 rounded-tr-md rounded-br-md border-primaryBlue">
+								<input
+									type="file"
+									accept=".pdf"
+									onChange={handleFileChange}
+									className="absolute right-0 hidden"
+								/>
+								<span className="text-primaryBlue font-medium font-trap-grotesk">
+									Select file
+								</span>
+							</div>
+						</label>
+					</>
+				)}
 			</div>
 			<p className="text-lightGray pt-2">
 				<span className="font-semibold">Note: </span>
@@ -65,9 +72,16 @@ const VideoInput = ({ onChange, note }) => {
 	const [videoUrl, setVideoUrl] = useState("");
 	const [videoDuration, setVideoDuration] = useState(0);
 
+	const videoSizeLimit = 1 * 1024 * 1024 * 1024; // 1 GB
+
 	const handleVideoChange = (event) => {
 		const file = event.target.files[0];
 		if (file) {
+			if (file.size > videoSizeLimit) {
+				alert("Video size exceeds the limit of 50MB.");
+				return;
+			}
+
 			const url = URL.createObjectURL(file);
 			setVideoFile(file);
 			setVideoUrl(url);
@@ -218,33 +232,9 @@ const AddContentButton = ({
 	const [showInput, setShowInput] = useState(false);
 	const [contentType, setContentType] = useState(null);
 	const [text, setText] = useState(existingContent?.text || "");
-	const [file, setFile] = useState(existingContent?.file || null);
+	const [file, setFile] = useState(null);
 	const [videoUrl, setVideoUrl] = useState("");
 	const [videoDuration, setVideoDuration] = useState(0);
-
-	const handleAddText = () => {
-		if (text) {
-			onContentAdded({
-				type: "text",
-				text,
-			});
-			resetState();
-		}
-	};
-
-	// const handleAddVideo = (videoDetails) => {
-	// 	const { file, url, duration } = videoDetails;
-	// 	setFile(file);
-	// 	setVideoUrl(url);
-	// 	setVideoDuration(duration);
-	// 	onContentAdded({
-	// 		type: "video",
-	// 		file,
-	// 		url,
-	// 		duration,
-	// 	});
-	// 	resetState();
-	// };
 
 	const handleAddVideo = async (videoDetails) => {
 		const { file, duration } = videoDetails;
@@ -266,7 +256,6 @@ const AddContentButton = ({
 
 				const data = response.data;
 				const url = data.url;
-				console.log("video",url);
 
 				const updatedVideoDetails = {
 					file,
@@ -287,6 +276,16 @@ const AddContentButton = ({
 			} catch (error) {
 				console.error("Error uploading video:", error);
 			}
+		}
+	};
+
+	const handleAddText = () => {
+		if (text) {
+			onContentAdded({
+				type: "text",
+				text,
+			});
+			resetState();
 		}
 	};
 
@@ -399,6 +398,7 @@ export const LessonItem = ({ item, updateLessonItem, deleteLessonItem }) => {
 	const [file, setFile] = useState(null);
 	const [inputFields, setInputFields] = useState([]);
 	const [resources, setResources] = useState(item.resources || []);
+	const [uploadLoading, setUploadLoading] = useState(false);
 
 	const handleAddContent = () => {
 		setShowAddContent(true);
@@ -413,42 +413,51 @@ export const LessonItem = ({ item, updateLessonItem, deleteLessonItem }) => {
 		setShowAddResource(true);
 	};
 
-	const handleResourceUpload = ({ type, name, url }) => {
-		setResources((prevResources) => [...prevResources, { type, name, url }]);
+	const handleResourceUpload = async (event) => {
+		const { file } = event;
+		if (file) {
+			setUploadLoading(true);
+			try {
+				const formData = new FormData();
+				formData.append("file", file);
+
+				const response = await axios.post(
+					"https://edture.onrender.com/cloudinary/upload",
+					formData
+				);
+				const { url } = response.data;
+
+				setResources((prevResources) => {
+					const newResource = {
+						type: "pdf",
+						name: file.name,
+						url,
+					};
+
+					const resourceExists = prevResources.some(
+						(res) => res.name === file.name
+					);
+
+					if (!resourceExists) {
+						console.log("New resource to be added:", newResource);
+						return [...prevResources, newResource];
+					}
+
+					console.log("Resource already exists:", newResource);
+					return prevResources;
+				});
+			} catch (error) {
+				console.error("Error uploading file:", error);
+			} finally {
+				setUploadLoading(false);
+			}
+		}
 	};
-	// const handleResourceUpload = (e) => {
-	// 	const uploadedFile = e.target.files[0];
-	// 	if (uploadedFile) {
-	// 		const url = URL.createObjectURL(uploadedFile);
-	// 		if (uploadedFile) {
-	// 			const url = URL.createObjectURL(uploadedFile);
-	// 			const newResource = {
-	// 				type: "pdf",
-	// 				name: uploadedFile.name,
-	// 				url: url,
-	// 			};
-	// 			const updatedResources = [...resources, newResource];
-	// 			setResources(updatedResources);
-	// 			e.target.value = null;
-	// 		}
-	// 	}
-	// };
-	console.log(resources);
-	// const handleResourceUpload = (e) => {
-	// 	const uploadedFile = e.target.files[0];
-	// 	if (uploadedFile) {
-	// 		const url = URL.createObjectURL(uploadedFile);
-	// 		setResources((prevResources) => [
-	// 			...prevResources,
-	// 			{
-	// 				type: "pdf",
-	// 				name: uploadedFile.name,
-	// 				url: url,
-	// 			},
-	// 		]);
-	// 		e.target.value = null;
-	// 	}
-	// };
+
+	useEffect(() => {
+		console.log("Updated resources state:", resources);
+	}, [resources]);
+
 
 	const handleAddResource = () => {
 		if (inputFields.length === 0) {
@@ -488,11 +497,6 @@ export const LessonItem = ({ item, updateLessonItem, deleteLessonItem }) => {
 		setShowAddContent(true);
 		setShowAddResource(false);
 	};
-
-	useEffect(() => {
-		setResources(item.resources || []);
-		setShowAddResource(item.content && item.resources?.length);
-	}, [item.resources]);
 
 	return (
 		<div className="flex flex-col border border-lightGray rounded-lg p-4 mt-4">
@@ -591,6 +595,7 @@ export const LessonItem = ({ item, updateLessonItem, deleteLessonItem }) => {
 										note={
 											"A resource refers to any document that supports student learning in the lecture. This file will be treated as supplementary material, so ensure it's clear and concise. Please keep the file size under 1 GB to facilitate easy access."
 										}
+										loading={uploadLoading}
 									/>
 								)}
 							</div>

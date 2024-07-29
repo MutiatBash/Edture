@@ -90,17 +90,6 @@ const CreateCourse = ({ onCancel }) => {
 		}));
 	};
 
-	// const handleFileChange = (file) => {
-	// 	setFormData((prevData) => ({
-	// 		...prevData,
-	// 		courseImage: {
-	// 			file: file,
-	// 			fileName: file ? file.name : "",
-	// 			fileUrl: file ? URL.createObjectURL(file) : "",
-	// 		},
-	// 	}));
-	// };
-
 	const handleFileChange = async (file) => {
 		if (file) {
 			const formData = new FormData();
@@ -118,12 +107,10 @@ const CreateCourse = ({ onCancel }) => {
 					}
 				);
 
-				// Extracting the URL from the server response
 				const data = response.data;
 				const fileUrl = data.url;
 				console.log(fileUrl);
 
-				// Updating the form data state with the file details and URL
 				setFormData((prevData) => ({
 					...prevData,
 					courseImage: {
@@ -268,7 +255,7 @@ const CreateCourse = ({ onCancel }) => {
 					videoDurationInSeconds:
 						item.content.type === "video" ? item.content.duration : 0,
 					description: item.description || "",
-					downloadableMaterials: (item.resources || []).map(
+					downloadableMaterials: (item.resources).map(
 						(resource) => ({
 							type: "pdf",
 							name: resource.name,

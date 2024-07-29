@@ -62,6 +62,7 @@ select.placeholder-option option[value=""][disabled] {
 
 .container-wrapper {
 	max-width: 1440px;
+	/* position: relative; */
 }
 
 h1,
@@ -198,4 +199,3 @@ h5 {
 		transform: rotate(360deg);
 	}
 }
-

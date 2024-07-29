@@ -22,12 +22,21 @@ import "react-toastify/dist/ReactToastify.css";
 import Checkout from "./pages/Checkout";
 import AllCourses from "./pages/AllCourses";
 import CourseContent from "./pages/CourseContent";
+import { SessionTimeoutModal } from "./components/popups/Modal";
+import { useSessionTimeout } from "./utils/customHooks";
+import Chat from "./pages/Chat";
 
 const App = () => {
+	const { isTimeoutModal, handleCloseModal } = useSessionTimeout();
+
 	return (
 		<div className="mx-auto container-wrapper">
 			<Router>
 				<InactivityTimeout />
+				<SessionTimeoutModal
+					isOpen={isTimeoutModal}
+					onClose={handleCloseModal}
+				/>
 				<Routes>
 					<Route path="/student-signin" element={<StudentSignin />} />
 					<Route path="/student-signup" element={<StudentSignup />} />
@@ -42,13 +51,17 @@ const App = () => {
 					<Route path="/tutor-dashboard" element={<TutorDashboard />} />
 					<Route path="/courses" element={<Courses />} />
 					<Route path="/courses/:id" element={<CourseDetails />} />
-					<Route path="/courses/course-content/:id" element={<CourseContent />} />
+					<Route
+						path="/courses/course-content/:id"
+						element={<CourseContent />}
+					/>
 					<Route path="/cart" element={<Cart />} />
 					<Route path="/checkout" element={<Checkout />} />
 					<Route path="/allcourses" element={<AllCourses />} />
+					<Route path="/courses/:id/chat" element={<Chat />} />
 				</Routes>
 			</Router>
-			<ToastContainer/>
+			<ToastContainer />
 		</div>
 	);
 };

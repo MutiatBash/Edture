@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { userContext } from "../context/UserContext";
 
-const InactivityTimeout = ({ timeout = 15 * 60 * 1000 }) => {
+const InactivityTimeout = ({ timeout = 30 * 60 * 1000 }) => {
 	const navigate = useNavigate();
 	const { user, setUser } = useContext(userContext);
 	const timerRef = useRef(null);

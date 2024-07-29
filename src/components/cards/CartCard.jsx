@@ -12,7 +12,7 @@ const CartCard = ({ course, onRemove }) => {
 
 			
 			<img
-				src={course.imageUrl}
+				src={course.image}
 				alt={course.title}
 				className="w-16 h-16 object-cover rounded-md"
 			/>

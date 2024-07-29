@@ -91,3 +91,39 @@ export const useInactivityTimeout = (timeout = 60000) => {
 
 	return null;
 };
+
+export const useSessionTimeout = () => {
+	const [isTimeoutModal, setIsTimeoutModal] = useState(false);
+
+	useEffect(() => {
+		// Add a response interceptor
+		const interceptor = axios.interceptors.response.use(
+			(response) => response,
+			(error) => {
+				if (error.response && error.response.status === 401) {
+					setIsTimeoutModal(true);
+				}
+				return Promise.reject(error);
+			}
+		);
+
+		return () => {
+			axios.interceptors.response.eject(interceptor);
+		};
+	}, []);
+
+	const handleCloseModal = () => {
+		setIsLogoutModalOpen(false);
+		localStorage.removeItem("authToken");
+
+		const role = localStorage.getItem("userRole");
+
+		if (role === "TUTOR") {
+			window.location.href = "/tutor-signin";
+		} else {
+			window.location.href = "/student-signin";
+		}
+	};
+
+	return { isTimeoutModal, handleCloseModal };
+};
