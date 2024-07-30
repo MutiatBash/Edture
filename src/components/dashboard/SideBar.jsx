@@ -58,12 +58,12 @@ export const StudentSideBar = () => {
 									activeIcon={coursesactive}
 									label="Courses"
 								/>
-								<SidebarLink
+								{/* <SidebarLink
 									to="/community"
 									icon={community}
 									activeIcon={communityactive}
 									label="Community"
-								/>
+								/> */}
 							</ul>
 						</div>
 					</div>
@@ -76,12 +76,12 @@ export const StudentSideBar = () => {
 								activeIcon={profileactive}
 								label="Profile"
 							/>
-							<SidebarLink
+							{/* <SidebarLink
 								to="/settings"
 								icon={settings}
 								activeIcon={settingsactive}
 								label="Settings"
-							/>
+							/> */}
 							<SidebarLink
 								to="/logout"
 								onClick={() => setShowLogoutModal(true)}
@@ -142,12 +142,12 @@ export const TutorSideBar = () => {
 									activeIcon={coursesactive}
 									label="Courses"
 								/>
-								<SidebarLink
+								{/* <SidebarLink
 									to="/community"
 									icon={community}
 									activeIcon={communityactive}
 									label="Community"
-								/>
+								/> */}
 							</ul>
 						</div>
 					</div>
@@ -160,12 +160,12 @@ export const TutorSideBar = () => {
 								activeIcon={profileactive}
 								label="Profile"
 							/>
-							<SidebarLink
+							{/* <SidebarLink
 								to="/settings"
 								icon={settings}
 								activeIcon={settingsactive}
 								label="Settings"
-							/>
+							/> */}
 							<SidebarLink
 								to="/logout"
 								onClick={() => setShowLogoutModal(true)}

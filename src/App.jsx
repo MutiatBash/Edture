@@ -25,7 +25,6 @@ import CourseContent from "./pages/CourseContent";
 import Chat from "./pages/Chat";
 import { SessionTimeoutModal } from "./components/popups/Modal";
 import { useSessionTimeout, useInactivityTimeout } from "./utils/customHooks";
-// import useInactivityTimeout from "./pages/Timeout";
 
 const App = () => {
 	const [isTimeoutModal, setIsTimeoutModal] = useState(null);

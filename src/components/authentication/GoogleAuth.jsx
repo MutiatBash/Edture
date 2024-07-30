@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { userContext } from "../../context/UserContext";
 import { SpinnerLoader } from "../Loader";
+import { toast } from "react-toastify";
 
 const handleStudentGoogleAuth = async (res, setLoading, navigate) => {
 	if (!res.clientId || !res.credential) return;
@@ -27,9 +28,35 @@ const handleStudentGoogleAuth = async (res, setLoading, navigate) => {
 		);
 
 		const result = await response.json();
-		localStorage.setItem("authToken", result.data.token);
+		const { token, role } = result.data;
+
+		if (role !== "STUDENT") {
+			toast.error(
+				"This email is associated with a tutor's account. Please log in with a student account."
+			);
+			setLoading(false);
+			return;
+		}
+
+		localStorage.setItem("authToken", token);
+
+		const lastLocation = localStorage.getItem("lastLocation");
+		if (
+			lastLocation &&
+			![
+				"/student-signin",
+				"/student-signup",
+				"/forgot-password",
+				"/reset-password",
+			].includes(lastLocation)
+		) {
+			navigate(lastLocation);
+		} else {
+			navigate("/student-dashboard");
+		}
+
+		localStorage.removeItem("lastLocation");
 		setLoading(false);
-		navigate("/student-dashboard");
 	} catch (error) {
 		console.error("Error during Google authentication:", error);
 	} finally {
@@ -61,10 +88,35 @@ const handleTutorGoogleAuth = async (res, setLoading, navigate) => {
 		);
 
 		const result = await response.json();
-		console.log(result.data.token);
-		localStorage.setItem("authToken", result.data.token);
+		const { token, role } = result.data;
+
+		if (role !== "TUTOR") {
+			toast.error(
+				"This email is associated with a student's account. Please log in with a tutor account."
+			);
+			setLoading(false);
+			return;
+		}
+
+		localStorage.setItem("authToken", token);
+
+		const lastLocation = localStorage.getItem("lastLocation");
+		if (
+			lastLocation &&
+			![
+				"/tutor-signin",
+				"/tutor-signup",
+				"/forgot-password",
+				"/reset-password",
+			].includes(lastLocation)
+		) {
+			navigate(lastLocation);
+		} else {
+			navigate("/tutor-dashboard");
+		}
 		setLoading(false);
-		navigate("/tutor-dashboard");
+
+		localStorage.removeItem("lastLocation");
 	} catch (error) {
 		console.error("Error during Google authentication:", error);
 	} finally {

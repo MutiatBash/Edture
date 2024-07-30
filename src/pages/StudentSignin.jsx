@@ -88,7 +88,12 @@ const StudentSignin = () => {
 			const lastLocation = localStorage.getItem("lastLocation");
 			if (
 				lastLocation &&
-				!["/student-signin", "/student-signup"].includes(lastLocation)
+				![
+					"/student-signin",
+					"/student-signup",
+					"/forgot-password",
+					"/reset-password",
+				].includes(lastLocation)
 			) {
 				navigate(lastLocation);
 			} else {
