@@ -15,6 +15,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { TutorGoogleSignIn } from "../components/authentication/GoogleAuth";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { SpinnerLoader } from "../components/Loader";
 
 const TutorSignin = () => {
 	const navigate = useNavigate();
@@ -80,7 +81,16 @@ const TutorSignin = () => {
 			localStorage.setItem("authToken", token);
 			setToken(token);
 
-			navigate("/tutor-dashboard");
+			const lastLocation = localStorage.getItem("lastLocation");
+			if (
+				lastLocation &&
+				!["/tutor-signin", "/tutor-signup"].includes(lastLocation)
+			) {
+				navigate(lastLocation);
+			} else {
+				navigate("/tutor-dashboard");
+			}
+			localStorage.removeItem("lastLocation");
 		} catch (error) {
 			setAuthLoading(false);
 			console.error("Error submitting data:", error.message);
@@ -89,6 +99,7 @@ const TutorSignin = () => {
 
 	return (
 		<section className="flex flex-col lg:flex-row items-center p-5 lg:pr-[120px] lg:pl-8 lg:py-6">
+			{authLoading && <SpinnerLoader />}
 			<div className="hidden md:block fixed left-0 top-0 bottom-0 w-[45%] bg-white z-0">
 				<AuthCarousel images={tutorImages} className="" />
 			</div>

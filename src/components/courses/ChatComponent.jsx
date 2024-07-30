@@ -4,20 +4,23 @@ import { PrimaryButton } from "../Button";
 import { userContext } from "../../context/UserContext";
 import { Link } from "react-router-dom";
 import arrowright from "/icons/arrow-right-active.svg";
+import sendicon from "/icons/send.svg";
+import activesendicon from "/icons/send-active.svg";
 
 const ChatUI = ({ courseId, token }) => {
 	const { user, courseById, fetchCourseById } = useContext(userContext);
 	const userId = user?.id;
 	const [messages, setMessages] = useState([]);
+	const [isInputFocused, setIsInputFocused] = useState(false);
 	const [newMessage, setNewMessage] = useState("");
 	const [sendingMessageId, setSendingMessageId] = useState(null);
 	const endOfMessagesRef = useRef(null);
+
 	useEffect(() => {
 		if (courseId) {
 			fetchCourseById(courseId);
 		}
-		console.log("course by id", courseById);
-	}, [courseId, fetchCourseById]);
+	}, []);
 
 	const formatTime = (timestamp) => {
 		const [hour, minute] = timestamp.split(":").map(Number);
@@ -149,9 +152,7 @@ const ChatUI = ({ courseId, token }) => {
 		<div className="px-12">
 			<div className=" flex flex-col gap-3 py-6">
 				<div className="flex gap-1 text-primaryBlue font-trap-grotesk items-center text-sm">
-					<Link className="font-trap-grotesk">
-						Home
-					</Link>
+					<Link className="font-trap-grotesk">Home</Link>
 					<img src={arrowright} />
 					<Link className="font-trap-grotesk">Chat</Link>
 				</div>
@@ -160,7 +161,7 @@ const ChatUI = ({ courseId, token }) => {
 				</h2>
 			</div>
 			<div
-				className="flex flex-col h-[800px] overflow-y-auto bg-gray-100 border border-lightGray rounded-tr-lg rounded-tl-lg bg-center bg-cover bg-nude"
+				className="flex flex-col h-[800px] overflow-y-auto bg-gray-100 border border-b-0 border-lightGray rounded-tr-lg rounded-tl-lg bg-center bg-cover bg-nude"
 				style={{ backgroundImage: "url('/chat-bg.svg')" }}
 			>
 				<div className="flex-1 p-10 overflow-y-auto">
@@ -225,14 +226,29 @@ const ChatUI = ({ courseId, token }) => {
 					<div ref={endOfMessagesRef} />
 				</div>
 				<div className="p-4 border-t border-lightGray bg-white flex items-center">
-					<input
-						type="text"
+					<textarea
 						value={newMessage}
 						onChange={(e) => setNewMessage(e.target.value)}
+						onFocus={() => setIsInputFocused(true)}
+						onBlur={() => setIsInputFocused(false)}
 						placeholder="Type your message..."
 						className="flex-1 border border-lightGray rounded-md p-3 mr-2"
+						rows="1"
 					/>
-					<PrimaryButton onClick={handleSendMessage} text="Send" />
+					<button
+						disabled={!newMessage.trim() && !isInputFocused}
+						onClick={handleSendMessage}
+						className={`rounded-full text-lg p-3 py-3 transition-all ease-in cursor-pointer ${
+							!newMessage.trim() && !isInputFocused
+								? "bg-lighterGray text-lightGray cursor-not-allowed"
+								: "bg-primaryBlue hover:bg-hoverBlue text-white"
+						}`}
+					>
+						<img
+							src={!newMessage.trim() && !isInputFocused ? sendicon : activesendicon}
+							alt="Send"
+						/>
+					</button>
 				</div>
 			</div>
 		</div>

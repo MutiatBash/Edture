@@ -1,38 +1,19 @@
-import React, { useRef, useEffect } from "react";
-import videojs from "video.js";
-import "video.js/dist/video-js.css";
+// VideoComponent.jsx
+import React from "react";
 
-const VideoComponent = ({ url }) => {
-	const videoRef = useRef(null);
-
-	useEffect(() => {
-		if (videoRef.current) {
-			const player = videojs(videoRef.current, {
-				controls: true,
-				autoplay: false,
-				preload: "auto",
-				responsive: true,
-				fluid: true,
-				sources: [{ src: url, type: "video/mp4" }],
-			});
-
-			player.ready(() => {
-				console.log("Player is ready");
-			});
-
-			return () => {
-				if (player) {
-					player.dispose();
-				}
-			};
-		}
-	}, [url, videoRef.current]);
-
+const VideoComponent = React.memo(({ url }) => {
+	const handleContextMenu = (e) => e.preventDefault();
 	return (
-		<div className="video-container">
-			<video ref={videoRef} className="video-js"></video>
+		<div className="w-full py-6">
+			<video
+				controls
+				className="w-full rounded-lg"
+				src={url}
+				type="video/mp4"
+				onContextMenu={handleContextMenu}
+			></video>
 		</div>
 	);
-};
+});
 
 export default VideoComponent;

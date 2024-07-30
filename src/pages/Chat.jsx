@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { useParams } from "react-router-dom";
 import CourseDetailsLayout from "../layouts/CourseDetailsLayout";
-import ChatUI from "../components/courses/ChatUi";
+import ChatUI from "../components/courses/ChatComponent";
 import { userContext } from "../context/UserContext";
 
 const Chat = () => {

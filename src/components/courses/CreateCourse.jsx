@@ -255,13 +255,11 @@ const CreateCourse = ({ onCancel }) => {
 					videoDurationInSeconds:
 						item.content.type === "video" ? item.content.duration : 0,
 					description: item.description || "",
-					downloadableMaterials: (item.resources).map(
-						(resource) => ({
-							type: "pdf",
-							name: resource.name,
-							url: resource.url,
-						})
-					),
+					downloadableMaterials: item.resources.map((resource) => ({
+						type: "pdf",
+						name: resource.name,
+						url: resource.url,
+					})),
 					links: item.links || [],
 				})),
 			})),
@@ -420,10 +418,7 @@ const CreateCourse = ({ onCancel }) => {
 								<SelectField
 									label="Currency"
 									placeholder="NGN"
-									options={[
-										{ value: "NGN", label: "NGN" },
-										{ value: "USD", label: "USD" },
-									]}
+									options={[{ value: "NGN", label: "NGN" }]}
 									name="currency"
 									value={formData.currency}
 									onChange={handleChange}

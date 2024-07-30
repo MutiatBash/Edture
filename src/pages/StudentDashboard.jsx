@@ -23,8 +23,17 @@ const StudentDashboard = () => {
 		token,
 		user,
 		courses,
+		fetchEnrolledStudentCourses,
+		studentCourses,
 		setCourses,
 	} = useContext(userContext);
+
+	useEffect(() => {
+		// Fetch enrolled student courses if not already fetched
+		if (!studentCourses || studentCourses.length === 0) {
+			fetchEnrolledStudentCourses();
+		}
+	}, [studentCourses, fetchEnrolledStudentCourses]);
 
 	const [isCreatingCourse, setIsCreatingCourse] = useState(false);
 
@@ -39,8 +48,15 @@ const StudentDashboard = () => {
 	const navigate = useNavigate();
 
 	const allCourses = courses?.courses;
-	console.log(allCourses);
-	console.log(courses);
+
+	// Debugging logs
+	console.log("All Courses:", allCourses);
+	console.log("Student Courses:", studentCourses);
+	console.log(
+		"Student Dashboard Data Enrolled Courses:",
+		studentDashboardData?.enrolledCourses
+	);
+
 	const sortedStudentCourses = allCourses?.sort(
 		(a, b) => new Date(b.createdAt) - new Date(a.createdAt)
 	);
@@ -49,6 +65,11 @@ const StudentDashboard = () => {
 	const recommendedCourses = sortedStudentCourses?.slice(0, 4);
 
 	const dashboardStudentCourses = sortedStudentCourses?.slice(0, 12);
+
+	const enrolledStudentCourses = studentDashboardData?.enrolledCourses?.slice(
+		0,
+		5
+	);
 
 	const isNewUser = studentDashboardData?.enrolledCourses?.length === 0;
 	const activeCoursesCount =
@@ -93,23 +114,23 @@ const StudentDashboard = () => {
 									icon={completed}
 								/>
 							</div>
-							{showAddCourse ? (
+							{isNewUser ? (
 								<RecommendedCourses
 									heading={"Recommended"}
 									courses={recommendedCourses}
 								/>
 							) : (
 								<>
-									<div className="flex">
-										<ActiveStudentCourses heading={"Your Courses"} />
-										<AddCourseCard
-											text={"Add Course"}
-											heading={"My Courses"}
+									<div className="">
+										<ActiveStudentCourses
+											heading={"Your Courses"}
+											courses={enrolledStudentCourses}
 										/>
+										{/* <AddCourseCard text={"Add Course"} /> */}
 									</div>
 									<RecommendedCourses
 										heading={"Recommended"}
-										courses={recommendedCourses}
+										courses={studentCourses}
 									/>
 								</>
 							)}

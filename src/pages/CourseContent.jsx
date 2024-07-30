@@ -9,7 +9,6 @@ import React, {
 } from "react";
 import { userContext } from "../context/UserContext";
 import { useNavigate, useParams, Link } from "react-router-dom";
-import { coursesInProgress } from "../data";
 import CourseDetailsLayout from "../layouts/CourseDetailsLayout";
 import { PrimaryButton, SecondaryButton } from "../components/Button";
 import chatactive from "/icons/chat-active.svg";
@@ -28,6 +27,7 @@ import { SpinnerLoader } from "../components/Loader";
 import { useCart } from "../context/CartContext";
 import { Divider } from "../components/Dividers";
 import ReactPlayer from "react-player";
+// import VideoComponent from "../components/courses/VideoComponent";
 import VideoComponent from "../components/courses/VideoComponent";
 
 const CourseContent = () => {
@@ -47,9 +47,9 @@ const CourseContent = () => {
 		data: courseContents,
 		loading: courseContentsLoading,
 		error: courseContentsError,
-	} = useApi(`https://edture.onrender.com/courses/${id}`, token);
+	} = useApi(`https://edture.onrender.com/users/student/courses/${id}`, token);
 
-	const course = courseContents || coursesInProgress.find((c) => c.id === id);
+	const course = courseContents
 	const courseLessonsData = course?.lessons || [];
 
 	const videoRef = useRef(null);
@@ -107,10 +107,6 @@ const CourseContent = () => {
 
 	const { hours, minutes } = calculateTotalDuration();
 
-	// const videoContent = courseLessonsData.flatMap((lesson) =>
-	// 	lesson.topics.filter((topic) => topic.contentType === "video")
-	// );
-
 	const videoUrl = courseLessonsData
 		?.flatMap((lesson) => lesson.topics)
 		.find((topic) => topic.contentType === "video")?.videoUrl;
@@ -118,71 +114,6 @@ const CourseContent = () => {
 	const textContent = courseLessonsData.flatMap((lesson) =>
 		lesson.topics.filter((topic) => topic.contentType === "text")
 	);
-
-	// const VideoContent = React.memo(() => {
-	// 	return (
-	// 		<div className="">
-	// 			{videoContent.map((topic, i) => (
-	// 				<div key={i}>
-	// 					<h4>{topic.title}</h4>
-	// 					<div className="w-full py-6">
-	// 						<video
-	// 							ref={videoRef}
-	// 							controls
-	// 							className="w-full rounded-lg"
-	// 							key={topic.videoUrl}
-	// 							src={topic.videoUrl}
-	// 						></video>
-	// 					</div>
-	// 				</div>
-	// 			))}
-	// 		</div>
-	// 	);
-	// });
-
-	// const VideoPlayer = React.memo(({ src, play = false }) => {
-	// 	const ref = useRef(null);
-
-	// 	useEffect(() => {
-	// 		if (ref.current) {
-	// 			if (play) {
-	// 				ref.current.play();
-	// 			} else {
-	// 				ref.current.pause();
-	// 			}
-	// 		}
-	// 	}, [play, src]); // Ensure dependencies include `play` and `src`
-
-	// 	return <video ref={ref} src={src} loop playsInline />;
-	// });
-
-	const VideoComponent = React.memo(function MyVideoComponent({ url }) {
-		return (
-			<div className="w-full py-6">
-				<video
-					controls
-					className="w-full rounded-lg"
-					src={url}
-					type="video/mp4"
-				></video>
-			</div>
-		);
-	});
-
-	// const VideoComponent = ({ url }) => {
-	// 		return (
-	// 			<div className="w-full py-6">
-	// 				<ReactPlayer
-	// 					url={url}
-	// 					controls={true}
-	// 					width="100%"
-	// 					height="auto"
-	// 				/>
-	// 			</div>
-	// 		);
-	// 	};
-
-	// const videoUrl = useMemo(() => videoContent?.videoUrl, [videoContent]);
 
 	const TextContent = ({ textContent }) => {
 		return (
@@ -196,6 +127,21 @@ const CourseContent = () => {
 			</div>
 		);
 	};
+
+	const isFirstRender = useRef(true);
+
+	useEffect(() => {
+		if (isFirstRender.current) {
+			if (videoUrl) {
+				setActiveTab("discuss");
+			} else if (textContent.length > 0) {
+				setActiveTab("study");
+			}
+			isFirstRender.current = false;
+		}
+	}, [videoUrl, textContent]);
+
+
 
 	const renderContent = () => {
 		return activeTab === "study" ? (
@@ -239,12 +185,10 @@ const CourseContent = () => {
 		) : null;
 	};
 
-	// const hasVideoContent = videoContent.length > 0;
-
 	return (
 		<div>
 			{courseContentsLoading && <SpinnerLoader />}
-			{courseContentsError && <p>{courseContentsError}</p>}
+			{/* {courseContentsError && <p>{courseContentsError}</p>} */}
 			<CourseDetailsLayout>
 				<div className="flex px-12 justify-between">
 					<div className="bg-white flex flex-col pt-8 pr-5 border-r-[0.5px] border-r-lightGray w-[30%] h-full gap-3 min-h-screen sticky top-0 bottom-0 z-20">
@@ -308,7 +252,9 @@ const CourseContent = () => {
 									transform: videoUrl
 										? activeTab === "discuss"
 											? "translateX(2%)"
-											: "translateX(135%)"
+											: activeTab === "resources"
+											? "translateX(135%)"
+											: "translateX(0%)"
 										: activeTab === "study"
 										? "translateX(0%)"
 										: activeTab === "discuss"

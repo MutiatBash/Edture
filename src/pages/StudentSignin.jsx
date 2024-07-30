@@ -85,7 +85,16 @@ const StudentSignin = () => {
 			localStorage.setItem("authToken", token);
 			setToken(token);
 
-			navigate("/student-dashboard");
+			const lastLocation = localStorage.getItem("lastLocation");
+			if (
+				lastLocation &&
+				!["/student-signin", "/student-signup"].includes(lastLocation)
+			) {
+				navigate(lastLocation);
+			} else {
+				navigate("/student-dashboard");
+			}
+			localStorage.removeItem("lastLocation");
 		} catch (error) {
 			setAuthLoading(false);
 			console.error("Error submitting data:", error.message);
@@ -94,7 +103,7 @@ const StudentSignin = () => {
 
 	return (
 		<section className="flex flex-col lg:flex-row items-center p-5 lg:pr-[120px] lg:pl-8 lg:py-6">
-			{authLoading && <SpinnerLoader/>}
+			{authLoading && <SpinnerLoader />}
 			<div className="hidden md:block fixed left-0 top-0 bottom-0 w-[45%] bg-white z-0">
 				<AuthCarousel images={studentImages} className="" />
 			</div>

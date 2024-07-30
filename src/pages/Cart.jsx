@@ -7,10 +7,21 @@ import CartCard from "../components/cards/CartCard";
 import { ConfirmationModal } from "../components/popups/Modal";
 import { useNavigate } from "react-router-dom";
 import { PrimaryButton } from "../components/Button";
+import { SpinnerLoader } from "../components/Loader";
 
 const Cart = () => {
 	const { allCourses } = useContext(userContext);
-	const { cartItems, removeItemFromCart, clearCart } = useCart();
+	const { cartItems, removeItemFromCart, clearCart, cartLoading } = useCart();
+
+	const calculateTotalPrice = (items) => {
+		if (items.length === 0) return { total: 0, currency: "" };
+
+		const totalPrice = items.reduce((acc, item) => acc + item.price, 0);
+		const currency = items[0].currency;
+		return { totalPrice, currency };
+	};
+
+	const { totalPrice, currency } = calculateTotalPrice(cartItems);
 
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [itemToRemove, setItemToRemove] = useState(null);
@@ -28,10 +39,12 @@ const Cart = () => {
 		setIsModalOpen(false);
 	};
 
+	const courseText = cartItems?.length > 1 ? "course" : "course";
 	const recommendedCourses = allCourses?.courses.slice(0, 4);
 	return (
-		<div>
+		<div className="relative">
 			<CourseDetailsLayout>
+				{cartLoading && <SpinnerLoader />}
 				{cartItems?.length === 0 ? (
 					<h3>Your cart is empty</h3>
 				) : (
@@ -40,11 +53,11 @@ const Cart = () => {
 							<div>
 								<h3 className="text-2xl font-semibold">Cart</h3>
 								<p className="font-trap-grotesk text-lg font-medium">
-									You have {cartItems.length} courses in cart
+									You have {cartItems?.length} {courseText} in cart
 								</p>
 							</div>
 
-							<div className="flex flex-col gap-3 divide-y divide-lightGray border-t border-b border-lightGray ">
+							<div className="flex flex-col gap-3 divide-y divide-lightGray border-t border-b border-lightGray w-[60%]">
 								{cartItems?.map((item) => (
 									<CartCard
 										key={item.id}
@@ -54,7 +67,7 @@ const Cart = () => {
 								))}
 							</div>
 						</div>
-						<CheckoutModal />
+						<CheckoutModal totalPrice={totalPrice} currency={currency} />
 					</div>
 				)}
 				<RecommendedCourses
@@ -79,32 +92,21 @@ const Cart = () => {
 
 export default Cart;
 
-const CheckoutModal = () => {
-	const { cartItems } = useCart();
+const CheckoutModal = ({ currency, totalPrice }) => {
 	const navigate = useNavigate();
 
-	const calculateTotalPrice = (items) => {
-		if (items.length === 0) return { total: 0, currency: "" };
-
-		const totalPrice = items.reduce((acc, item) => acc + item.price, 0);
-		const currency = items[0].currency;
-		return { totalPrice, currency };
-	};
-
-	const { totalPrice, currency } = calculateTotalPrice(cartItems);
-	// Proceed to checkout
 	const handleProceed = () => {
 		navigate("/checkout");
 	};
 
 	return (
-		<div className="fixed top-32 right-14 p-4 w-full max-w-[400px] bg-white shadow-lg z-20 rounded-lg font-trap-grotesk">
+		<div className="absolute top-32 right-14 p-4 w-full max-w-[400px] bg-white shadow-lg z-20 rounded-lg font-trap-grotesk">
 			<div className="mb-4">
 				<p className="text-lg text-lightGray font-trap-grotesk font-medium">
 					Total:
 				</p>
 				<p className="text-2xl font-semibold font-trap-grotesk">
-					{currency} {totalPrice.toFixed(2)}
+					{currency} {totalPrice?.toFixed(2)}
 				</p>
 			</div>
 			<PrimaryButton

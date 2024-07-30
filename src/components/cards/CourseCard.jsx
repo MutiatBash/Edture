@@ -9,7 +9,7 @@ export const ActiveCourseCard = ({ progress, course, id }) => {
 	const navigate = useNavigate();
 
 	const handleClick = () => {
-		navigate(`/courses/${course.id}`);
+		navigate(`/courses/${course?.course.id}`);
 	};
 	return (
 		<div
@@ -18,25 +18,25 @@ export const ActiveCourseCard = ({ progress, course, id }) => {
 			onClick={handleClick}
 		>
 			<div className="w-full">
-				<img src={course.image} className="w-full" />
+				<img src={course?.course?.image} className="w-full" />
 			</div>
 			<h5 className="font-trap-grotesk font-bold leading-6 text-lg">
-				{truncateString(course.title, 38)}
+				{truncateString(course?.course.title, 38)}
 			</h5>
 			<div className="flex flex-col">
 				<p className="font-trap-grotesk text-lightGray text-sm">
-					{course.provider}
+					{course?.course?.instructorName}
 				</p>
 				<p className="text-lightGray items-center">
 					<span className="font-trap-grotesk text-[10px]">
-						{course.totalHours} total hours •
+						{course?.course.totalHours} total hours •
 					</span>
 					<span className="font-trap-grotesk text-[10px]">
-						{course.lectures} lectures •
+						{course?.course.totalNumberOfLessons} lectures •
 					</span>
 					<span className="font-trap-grotesk text-[10px]">
 						{" "}
-						{course.difficulty}
+						{course?.course.difficulty}
 					</span>
 				</p>
 			</div>

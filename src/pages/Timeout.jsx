@@ -1,10 +1,8 @@
-import React, { useEffect, useRef, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useRef, useContext } from "react";
 import { userContext } from "../context/UserContext";
 
-const InactivityTimeout = ({ timeout = 30 * 60 * 1000 }) => {
-	const navigate = useNavigate();
-	const { user, setUser } = useContext(userContext);
+const useInactivityTimeout = (timeout, setIsTimeoutModalOpen, navigate) => {
+	const { user, setUser, setToken } = useContext(userContext);
 	const timerRef = useRef(null);
 
 	const resetTimer = () => {
@@ -17,17 +15,11 @@ const InactivityTimeout = ({ timeout = 30 * 60 * 1000 }) => {
 	};
 
 	const handleTimeout = () => {
-		// Clear user session or token
+		localStorage.setItem("lastLocation", window.location.pathname);
 		localStorage.removeItem("authToken");
-		setUser(null); // Clear user context
-
-		// Redirect to appropriate sign-in page
-		if (user?.role === "TUTOR") {
-			navigate("/tutor-signin");
-		} else {
-			navigate("/student-signin");
-		}
-		console.log("Session timeout");
+		setUser(null);
+		setToken(null);
+		setIsTimeoutModalOpen(true);
 	};
 
 	useEffect(() => {
@@ -47,9 +39,9 @@ const InactivityTimeout = ({ timeout = 30 * 60 * 1000 }) => {
 				clearTimeout(timerRef.current);
 			}
 		};
-	}, [user, navigate]);
+	}, [user]);
 
 	return null;
 };
 
-export default InactivityTimeout;
+export default useInactivityTimeout;

@@ -7,9 +7,12 @@ const CartContext = createContext();
 export const CartProvider = ({ children }) => {
 	const { token } = useContext(userContext);
 	const [cartItems, setCartItems] = useState([]);
+	const [cartLoading, setCartLoading] = useState(false);
 
 	const fetchCartItems = async () => {
 		if (!token) return;
+
+		setCartLoading(true);
 
 		try {
 			const response = await axios.get("https://edture.onrender.com/cart", {
@@ -27,8 +30,10 @@ export const CartProvider = ({ children }) => {
 			} else {
 				console.error("Unexpected response structure:", response.data);
 			}
+			setCartLoading(false);
 		} catch (error) {
 			console.error("Failed to fetch cart items:", error);
+			setCartLoading(false);
 		}
 	};
 
@@ -38,6 +43,8 @@ export const CartProvider = ({ children }) => {
 
 	const addItemToCart = async (item) => {
 		if (!token) return false;
+
+		setCartLoading(true);
 
 		const itemExists = cartItems.some((cartItem) => cartItem.id === item.id);
 
@@ -55,13 +62,15 @@ export const CartProvider = ({ children }) => {
 
 			await fetchCartItems();
 
-			// Log the updated cart items
 			console.log("Item added to cart:", item);
 			console.log("Updated cart items:", cartItems);
+			setCartLoading(false);
 
 			return true;
 		} catch (error) {
 			console.error("Failed to add item to cart:", error);
+			setCartLoading(false);
+
 			return false;
 		}
 	};
@@ -69,18 +78,19 @@ export const CartProvider = ({ children }) => {
 	const removeItemFromCart = async (item) => {
 		if (!token) return;
 
+		setCartLoading(true);
+
 		try {
-			await axios.delete(
-				"https://edture.onrender.com/cart", 
-				{
-					headers: { Authorization: `Bearer ${token}` },
-					data: { courseId: item.id }, 
-				}
-			);
+			await axios.delete("https://edture.onrender.com/cart", {
+				headers: { Authorization: `Bearer ${token}` },
+				data: { courseId: item.id },
+			});
 
 			await fetchCartItems();
+			setCartLoading(false);
 		} catch (error) {
 			console.error("Failed to remove item from cart:", error);
+			setCartLoading(false);
 		}
 	};
 
@@ -95,6 +105,7 @@ export const CartProvider = ({ children }) => {
 				addItemToCart,
 				removeItemFromCart,
 				clearCartItems,
+				cartLoading,
 			}}
 		>
 			{children}

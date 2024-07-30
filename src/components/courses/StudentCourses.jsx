@@ -12,13 +12,15 @@ export const ActiveStudentCourses = ({ heading, courses }) => {
 				<h3 className="text-2xl font-medium">{heading}</h3>
 			</div>
 			<div className="flex gap-3">
-				{courses?.map((course, index) => (
-					<ActiveCourseCard
-						progress={course.progress}
-						course={course}
-						key={index}
-					/>
-				))}
+				<CourseCarousel>
+					{courses?.map((course, index) => (
+						<ActiveCourseCard
+							progress={course.progress}
+							course={course}
+							key={index}
+						/>
+					))}
+				</CourseCarousel>
 			</div>
 		</section>
 	);
@@ -41,7 +43,7 @@ export const RecentStudentCourses = ({ heading, onClick, courses }) => {
 };
 
 export const AllStudentCourses = ({ heading, courses }) => {
-	const itemsPerPage = 6;
+	const itemsPerPage = 9;
 	const [currentPage, setCurrentPage] = useState(1);
 
 	const totalPages = Math.ceil(courses?.length / itemsPerPage);

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useContext, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { userContext } from "../context/UserContext";
+import { useLocation } from "react-router-dom";
 import axios from "axios";
 
 export const useApi = (url, token) => {
@@ -44,29 +44,52 @@ export const useApi = (url, token) => {
 	};
 };
 
-export const useInactivityTimeout = (timeout = 60000) => {
-	const navigate = useNavigate();
-	const { user, setUser, setToken } = useContext(userContext);
+export const useInactivityTimeout = (timeout, setIsTimeoutModal) => {
+	const { setUser, setToken } = useContext(userContext);
 	const timerRef = useRef(null);
+	const modalTimerRef = useRef(null);
+
+	const excludedRoutes = [
+		"/tutor-signin",
+		"/student-signin",
+		"/tutor-signup",
+		"/student-signup",
+	];
 
 	const resetTimer = () => {
 		if (timerRef.current) {
 			clearTimeout(timerRef.current);
 		}
-		timerRef.current = setTimeout(() => {
-			handleTimeout();
-		}, timeout);
+		if (!excludedRoutes.includes(window.location.pathname)) {
+			timerRef.current = setTimeout(() => {
+				handleTimeout();
+			}, timeout);
+		}
 	};
 
 	const handleTimeout = () => {
-		localStorage.removeItem("authToken");
+		localStorage.setItem("lastLocation", window.location.pathname);
+		setIsTimeoutModal("inactivity");
+
+		if (modalTimerRef.current) {
+			clearTimeout(modalTimerRef.current);
+		}
+		modalTimerRef.current = setTimeout(() => {
+			clearSessionAndRedirect();
+		}, 2 * 60 * 1000);
+	};
+
+	const clearSessionAndRedirect = () => {
 		setUser(null);
 		setToken(null);
+		localStorage.removeItem("authToken");
+		localStorage.removeItem("userRole");
 
-		if (user?.role === "TUTOR") {
-			navigate("/tutor-signin");
+		const role = localStorage.getItem("userRole");
+		if (role === "TUTOR") {
+			window.location.href = "/tutor-signin";
 		} else {
-			navigate("/student-signin");
+			window.location.href = "/student-signin";
 		}
 	};
 
@@ -86,38 +109,33 @@ export const useInactivityTimeout = (timeout = 60000) => {
 			if (timerRef.current) {
 				clearTimeout(timerRef.current);
 			}
+			if (modalTimerRef.current) {
+				clearTimeout(modalTimerRef.current);
+			}
 		};
-	}, [user, navigate]);
+	}, []);
 
 	return null;
 };
 
-export const useSessionTimeout = () => {
-	const [isTimeoutModal, setIsTimeoutModal] = useState(false);
+export const useSessionTimeout = (setIsTimeoutModal) => {
+	const modalTimerRef = useRef(null);
+	const { setUser, setToken } = useContext(userContext);
 
-	useEffect(() => {
-		// Add a response interceptor
-		const interceptor = axios.interceptors.response.use(
-			(response) => response,
-			(error) => {
-				if (error.response && error.response.status === 401) {
-					setIsTimeoutModal(true);
-				}
-				return Promise.reject(error);
-			}
-		);
+	const excludedRoutes = [
+		"/tutor-signin",
+		"/student-signin",
+		"/tutor-signup",
+		"/student-signup",
+	];
 
-		return () => {
-			axios.interceptors.response.eject(interceptor);
-		};
-	}, []);
-
-	const handleCloseModal = () => {
-		setIsLogoutModalOpen(false);
+	const clearSessionAndRedirect = () => {
+		setUser(null);
+		setToken(null);
 		localStorage.removeItem("authToken");
+		localStorage.removeItem("userRole");
 
 		const role = localStorage.getItem("userRole");
-
 		if (role === "TUTOR") {
 			window.location.href = "/tutor-signin";
 		} else {
@@ -125,5 +143,38 @@ export const useSessionTimeout = () => {
 		}
 	};
 
-	return { isTimeoutModal, handleCloseModal };
+	useEffect(() => {
+		const interceptor = axios.interceptors.response.use(
+			(response) => response,
+			(error) => {
+				if (error.response && error.response.status === 401) {
+					if (!excludedRoutes.includes(window.location.pathname)) {
+						localStorage.setItem(
+							"lastLocation",
+							window.location.pathname
+						);
+						setIsTimeoutModal("session");
+
+						// Start a modal timer to redirect after 2 minutes
+						if (modalTimerRef.current) {
+							clearTimeout(modalTimerRef.current);
+						}
+						modalTimerRef.current = setTimeout(() => {
+							clearSessionAndRedirect();
+						}, 2 * 60 * 1000);
+					}
+				}
+				return Promise.reject(error);
+			}
+		);
+
+		return () => {
+			axios.interceptors.response.eject(interceptor);
+			if (modalTimerRef.current) {
+				clearTimeout(modalTimerRef.current);
+			}
+		};
+	}, [setIsTimeoutModal, setUser, setToken]);
+
+	return null;
 };

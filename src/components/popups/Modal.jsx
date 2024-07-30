@@ -105,14 +105,17 @@ export const SessionTimeoutModal = ({ isOpen, onClose }) => {
 	if (!isOpen) return null;
 
 	return (
-		<div className="fixed inset-0 flex items-center justify-center z-50">
-			<div className="absolute inset-0 bg-black opacity-50"></div>
-			<div className="bg-white p-6 rounded shadow-lg z-10">
-				<h2 className="text-xl font-semibold mb-4">Session Expired</h2>
-				<p>Your session has expired. You will be logged out.</p>
-				<div className="mt-4 flex justify-end">
-					<PrimaryButton text={"Ok"} onClick={onClose} />
-				</div>
+		<div className="fixed inset-0 flex items-center justify-center bg-primaryBlack bg-opacity-50 z-50 backdrop-blur">
+			<div className="bg-white flex flex-col gap-3 text-center justify-center items-center rounded-lg overflow-hidden shadow-xl transform transition-all sm:max-w-md sm:w-full p-8">
+				<h3 className="text-3xl text-center font-semibold w-[80%] mx-auto">
+					{isOpen === "session" ? "Session Expired" : "Inactive Session"}
+				</h3>
+				<p className="text-lg font-trap-grotesk font-medium px-2">
+					{isOpen === "session"
+						? "Your session has expired. You will be logged out."
+						: "You have been inactive for a while. You will be logged out."}
+				</p>
+				<PrimaryButton text={"Confirm"} onClick={onClose} />
 			</div>
 		</div>
 	);

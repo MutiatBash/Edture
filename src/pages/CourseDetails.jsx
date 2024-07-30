@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useContext, useCallback } from "react";
 import { userContext } from "../context/UserContext";
 import { useNavigate, useParams } from "react-router-dom";
-import { coursesInProgress } from "../data";
 import CourseDetailsLayout from "../layouts/CourseDetailsLayout";
 import { PrimaryButton, SecondaryButton } from "../components/Button";
 import lessons from "/icons/lessons.svg";
@@ -44,7 +43,15 @@ const CourseDetails = () => {
 
 	console.log("coursedetails here", courseDetails);
 
-	const course = courseDetails || coursesInProgress.find((c) => c.id === id);
+	const {
+		data: enrolledCoursesDetails,
+		loading: enrolledCoursesLoading,
+		error: enrolledCoursesError,
+	} = useApi(`https://edture.onrender.com/users/student/courses/${id}`, token);
+
+	console.log("enrolled", enrolledCoursesDetails);
+
+	const course = courseDetails || enrolledCoursesDetails;
 	const courseLessonsData = course?.lessons || [];
 	const recommendedCourses = allCourses?.courses?.slice(0, 4);
 	console.log("rec", recommendedCourses);
@@ -67,7 +74,10 @@ const CourseDetails = () => {
 				{isTutor ? (
 					<TutorHeader selectedCourse={course} />
 				) : (
-					<StudentHeader selectedCourse={course} />
+					<StudentHeader
+						selectedCourse={course}
+						courseInProgress={enrolledCoursesDetails}
+					/>
 				)}
 				{isTutor ? (
 					<TutorContent selectedCourse={courseLessonsData} />
@@ -82,7 +92,7 @@ const CourseDetails = () => {
 	);
 };
 
-const StudentHeader = ({ selectedCourse }) => (
+const StudentHeader = ({ selectedCourse, courseInProgress }) => (
 	<div className="bg-darkBlue text-white pt-8 font-trap-grotesk">
 		<div className="flex relative container-wrapper font-trap-grotesk">
 			<div className="w-3/5 flex flex-col p-12">
@@ -112,7 +122,7 @@ const StudentHeader = ({ selectedCourse }) => (
 			</div>
 			<CourseModal
 				course={selectedCourse}
-				courseInProgress={selectedCourse}
+				courseInProgress={courseInProgress}
 			/>
 		</div>
 	</div>
@@ -422,8 +432,13 @@ const CourseModal = ({ course, courseInProgress }) => {
 			toast.error("Failed to add course to cart!");
 		}
 	};
+
+	const navigateToLms = () => {
+		navigate(`/courses/course-content/${courseInProgress?._id}`);
+	};
+
 	return (
-		<div className="fixed max-h-[40rem] top-32 bottom-5 right-14 p-4 w-full max-w-[400px] bg-white shadow-lg z-20 rounded-lg font-trap-grotesk">
+		<div className="fixed top-32 right-14 p-4 w-full max-w-[400px] max-h-[90vh] bg-white shadow-lg z-20 rounded-lg font-trap-grotesk">
 			<div className="h-[200px]">
 				<img
 					src={course?.image || courseInProgress?.image}
@@ -431,13 +446,15 @@ const CourseModal = ({ course, courseInProgress }) => {
 					alt="Course"
 				/>
 			</div>
-			{courseInProgress?.progress ? (
+			{courseInProgress?.enrollmentData ? (
 				<div className="py-4 flex flex-col gap-2">
-					<ProgressBar progress={courseInProgress?.progress} />
+					<ProgressBar
+						progress={courseInProgress?.enrollmentData?.progress}
+					/>
 					<p className="font-trap-grotesk text-lightGray text-sm">
-						{courseInProgress?.progress}% complete
+						{courseInProgress?.enrollmentData?.progress}% complete
 					</p>
-					<PrimaryButton text={"Resume Learning"} className="w-full" />
+					<PrimaryButton text={"Resume Learning"} className="w-full" onClick={navigateToLms}/>
 					<div className="border rounded-md text-primaryBlack text-sm flex gap-3 items-center border-lightGray">
 						<img
 							src={danger}
@@ -572,6 +589,5 @@ const TutorModal = ({ course }) => {
 		</div>
 	);
 };
-
 
 export default CourseDetails;

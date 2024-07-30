@@ -1,38 +1,56 @@
-import React from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import React, { useState } from "react";
+import {
+	BrowserRouter as Router,
+	Route,
+	Routes,
+	useNavigate,
+} from "react-router-dom";
 import "@fortawesome/fontawesome-free/css/all.css";
-import SignIn from "./pages/Signin";
-import SignUp from "./pages/Signup";
 import ResetPassword from "./pages/ResetPassword";
 import ForgotPassword from "./pages/ForgotPassword";
-import Dashboard from "./pages/StudentDashboard";
-import Inbox from "./pages/Inbox";
+import StudentDashboard from "./pages/StudentDashboard";
+import TutorDashboard from "./pages/TutorDashboard";
 import Courses from "./pages/Courses";
 import CourseDetails from "./pages/CourseDetails";
 import StudentSignin from "./pages/StudentSignin";
 import TutorSignin from "./pages/TutorSignin";
 import StudentSignup from "./pages/StudentSignup";
 import TutorSignup from "./pages/TutorSignup";
-import StudentDashboard from "./pages/StudentDashboard";
-import TutorDashboard from "./pages/TutorDashboard";
-import InactivityTimeout from "./pages/Timeout";
 import Cart from "./pages/Cart";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Checkout from "./pages/Checkout";
 import AllCourses from "./pages/AllCourses";
 import CourseContent from "./pages/CourseContent";
-import { SessionTimeoutModal } from "./components/popups/Modal";
-import { useSessionTimeout } from "./utils/customHooks";
 import Chat from "./pages/Chat";
+import { SessionTimeoutModal } from "./components/popups/Modal";
+import { useSessionTimeout, useInactivityTimeout } from "./utils/customHooks";
+// import useInactivityTimeout from "./pages/Timeout";
 
 const App = () => {
-	const { isTimeoutModal, handleCloseModal } = useSessionTimeout();
+	const [isTimeoutModal, setIsTimeoutModal] = useState(null);
+
+	// Session timeout hook
+	useSessionTimeout(setIsTimeoutModal);
+
+	// Inactivity timeout hook
+	useInactivityTimeout(30 * 60 * 1000, setIsTimeoutModal);
+
+	const handleCloseModal = () => {
+		setIsTimeoutModal(null);
+		localStorage.removeItem("authToken");
+		const role = localStorage.getItem("userRole");
+
+		if (role === "TUTOR") {
+			window.location.href = "/tutor-signin";
+		} else {
+			window.location.href = "/student-signin";
+		}
+	};
 
 	return (
-		<div className="mx-auto container-wrapper">
-			<Router>
-				<InactivityTimeout />
+		<Router>
+			<div className="mx-auto container-wrapper">
 				<SessionTimeoutModal
 					isOpen={isTimeoutModal}
 					onClose={handleCloseModal}
@@ -60,9 +78,9 @@ const App = () => {
 					<Route path="/allcourses" element={<AllCourses />} />
 					<Route path="/courses/:id/chat" element={<Chat />} />
 				</Routes>
-			</Router>
-			<ToastContainer />
-		</div>
+				<ToastContainer />
+			</div>
+		</Router>
 	);
 };
 

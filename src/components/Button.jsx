@@ -5,8 +5,10 @@ export const PrimaryButton = ({ text, className, onClick, type, disabled }) => {
 				disabled={disabled}
 				type={type}
 				onClick={onClick}
-				className={`rounded-lg text-lg text-white bg-primaryBlue p-2 py-3 md:py-3 md:px-6 hover:bg-hoverBlue transition-all ease-in cursor-pointer font-trap-grotesk font-medium tracking-tight ${className} ${
-					disabled ? "bg-lightGray text-darkGray cursor-not-allowed" : "bg-primaryBlue"
+				className={`rounded-lg text-lg p-2 py-3 md:py-3 md:px-6 transition-all ease-in cursor-pointer font-trap-grotesk font-medium tracking-tight ${className} ${
+					disabled
+						? "bg-lighterGray text-lightGray cursor-not-allowed"
+						: "bg-primaryBlue hover:bg-hoverBlue text-white"
 				}`}
 			>
 				{text}

@@ -9,6 +9,8 @@ const UserContextProvider = ({ children }) => {
 	const [user, setUser] = useState(null);
 	const [dashboardData, setDashboardData] = useState(null);
 	const [courses, setCourses] = useState(null);
+	const [enrolledCourses, setEnrolledCourses] = useState(null);
+	const [studentCourses, setStudentCourses] = useState([]);
 	const [courseById, setCourseById] = useState(null);
 	const [loading, setLoading] = useState(false);
 	const [success, setSuccess] = useState(false);
@@ -43,6 +45,21 @@ const UserContextProvider = ({ children }) => {
 		error: studentError,
 	} = useApi("https://edture.onrender.com/users/dashboard/student", token);
 
+	// const {
+	// 	data: enrolledCoursesData,
+	// 	loading: enrolledCoursesLoading,
+	// 	error: enrolledCoursesError,
+	// } = useApi(
+	// 	`https://edture.onrender.com/users/student/courses/${courses?.id}`,
+	// 	token
+	// );
+
+	// const {
+	// 	data: studentCoursesData,
+	// 	loading: studentCoursesLoading,
+	// 	error: studentCoursesError,
+	// } = useApi("https://edture.onrender.com/users/student/courses", token);
+
 	useEffect(() => {
 		if (userData) {
 			setUser(userData);
@@ -52,6 +69,12 @@ const UserContextProvider = ({ children }) => {
 			}
 		}
 	}, [userData]);
+
+	useEffect(() => {
+		if (user?.email) {
+			localStorage.setItem("userEmail", user.email);
+		}
+	}, [user]);
 
 	useEffect(() => {
 		if (tutorDashboardData || studentDashboardData) {
@@ -64,6 +87,19 @@ const UserContextProvider = ({ children }) => {
 			setCourses(allCourses);
 		}
 	}, [allCourses]);
+
+	// useEffect(() => {
+	// 	if (enrolledCoursesData) {
+	// 		setEnrolledCourses(enrolledCoursesData);
+	// 	}
+	// }, [enrolledCoursesData]);
+
+	// useEffect(() => {
+	// 	if (studentCoursesData) {
+	// 		setStudentCourses(studentCoursesData);
+	// 		console.log("student courses",studentCourses)
+	// 	}
+	// }, [studentCoursesData]);
 
 	useEffect(() => {
 		if (token) {
@@ -95,6 +131,31 @@ const UserContextProvider = ({ children }) => {
 			setError(error.message);
 		}
 	};
+
+	const fetchEnrolledStudentCourses = async () => {
+		try {
+			const response = await axios.get(
+				"https://edture.onrender.com/users/student/courses",
+				{
+					headers: { Authorization: `Bearer ${token}` },
+				}
+			);
+
+			const fetchedCourses = response?.data;
+			setStudentCourses(fetchedCourses);
+			console.log("Student courses showing", studentCourses);
+			console.log("Student courses here", response.data);
+		} catch (error) {
+			console.error("Error fetching courses:", error);
+			setError(error.message);
+		}
+	};
+
+	useEffect(() => {
+		if (studentCourses.length > 0) {
+			console.log("Student courses should show", studentCourses); // This will log the updated courses
+		}
+	}, [studentCourses]);
 
 	const logout = async () => {
 		setIsLoggingOut(true);
@@ -153,7 +214,9 @@ const UserContextProvider = ({ children }) => {
 				authLoading,
 				setAuthLoading,
 				fetchCourseById,
+				fetchEnrolledStudentCourses,
 				courseById,
+				enrolledCourses,
 			}}
 		>
 			{children}
