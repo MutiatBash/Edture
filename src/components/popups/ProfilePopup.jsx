@@ -48,17 +48,17 @@ const ProfilePopup = ({ initials, firstName, lastName, email }) => {
 						<ProfileLink
 							icon={certificate}
 							label={"Certificates"}
-							to="/profile"
+							to=""
 						/>
 						<ProfileLink
 							icon={wallet}
 							label={"My Purchases"}
-							to="/profile"
+							to=""
 						/>
 					</div>
 				)}
-				<ProfileLink icon={settings} label={"Settings"} to="/settings" />
-				<ProfileLink icon={help} label={"Help"} to="/profile" />
+				<ProfileLink icon={settings} label={"Settings"} to="" />
+				<ProfileLink icon={help} label={"Help"} to="" />
 				<ProfileLink
 					icon={logouticon}
 					label={"Logout"}

@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import ai from "/ai-course.svg";
 import ProgressBar from "../../components/ProgressBar";
 import ratings from "/icons/ratings.svg";
-import { truncateString } from "../../utils/utils";
+import { truncateString, formatPriceWithCommas } from "../../utils/utils";
 
 export const ActiveCourseCard = ({ progress, course, id }) => {
 	const navigate = useNavigate();
@@ -21,7 +21,7 @@ export const ActiveCourseCard = ({ progress, course, id }) => {
 				<img src={course?.course?.image} className="w-full" />
 			</div>
 			<h5 className="font-trap-grotesk font-bold leading-6 text-lg">
-				{truncateString(course?.course.title, 38)}
+				{truncateString(course?.course.title, 30)}
 			</h5>
 			<div className="flex flex-col">
 				<p className="font-trap-grotesk text-lightGray text-sm">
@@ -32,7 +32,7 @@ export const ActiveCourseCard = ({ progress, course, id }) => {
 						{course?.course.totalHours} total hours •
 					</span>
 					<span className="font-trap-grotesk text-[10px]">
-						{course?.course.totalNumberOfLessons} lectures •
+						{course?.course.totalNumberOfLessons} lecture •
 					</span>
 					<span className="font-trap-grotesk text-[10px]">
 						{" "}
@@ -70,7 +70,7 @@ export const CourseCard = ({ course }) => {
 				/>
 			</div>
 			<h5 className="font-trap-grotesk font-bold leading-6 text-lg">
-				{truncateString(course.title, 38)}
+				{truncateString(course.title, 30)}
 			</h5>
 			<div className="flex flex-col">
 				<p className="font-trap-grotesk text-lightGray text-sm">
@@ -92,10 +92,7 @@ export const CourseCard = ({ course }) => {
 			<div className="flex justify-between">
 				<p className="font-trap-grotesk font-semibold">
 					{course.currency}
-					<span> {course.price} </span>
-					<span className="text-lightGray line-through text-xs font-normal">
-						{course.originalPrice}
-					</span>
+					<span> {formatPriceWithCommas(course.price)} </span>
 				</p>
 				<div>
 					<img src={ratings} alt="Ratings" />

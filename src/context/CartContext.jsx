@@ -70,7 +70,6 @@ export const CartProvider = ({ children }) => {
 		} catch (error) {
 			console.error("Failed to add item to cart:", error);
 			setCartLoading(false);
-
 			return false;
 		}
 	};

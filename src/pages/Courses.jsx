@@ -4,16 +4,24 @@ import {
 	TutorDashboardLayout,
 } from "../layouts/DashboardLayout";
 import RecommendedCourses from "../components/courses/RecommendedCourses";
-import { ActiveStudentCourses } from "../components/courses/StudentCourses";
+import { ActiveStudentCourses, AllStudentCourses } from "../components/courses/StudentCourses";
 import { userContext } from "../context/UserContext";
 import AddCourseCard from "../components/cards/AddCourseCard";
 import CreateCourse from "../components/courses/CreateCourse";
 import { AllTutorCourses } from "../components/courses/TutorCourse";
+import { useNavigate } from "react-router-dom";
 
 const Courses = () => {
-	const { tutorDashboardData, studentDashboardData, courses, user } =
-		useContext(userContext);
+	const {
+		tutorDashboardData,
+		studentDashboardData,
+		courses,
+		user,
+		studentCourses,
+	} = useContext(userContext);
 	const role = user?.role;
+
+	const navigate = useNavigate();
 
 	const [isCreatingCourse, setIsCreatingCourse] = useState(false);
 
@@ -25,18 +33,19 @@ const Courses = () => {
 
 	const allCourses = courses?.courses;
 
-
 	const sortedStudentCourses = allCourses?.sort(
 		(a, b) => new Date(b.createdAt) - new Date(a.createdAt)
 	);
 
-	const recentStudentCourses = sortedStudentCourses?.slice(0, 2);
+	const sortedActiveStudentCourses = studentCourses?.sort(
+		(a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+	);
+
+	const notEnrolledCourses = sortedActiveStudentCourses?.slice(0, 4);
 	const recommendedCourses = sortedStudentCourses?.slice(0, 4);
 
 	const dashboardStudentCourses = sortedStudentCourses?.slice(0, 12);
-	const activeStudentCoursesCount =
-		studentDashboardData?.totalActiveCourses?.length || 0;
-	const showAddCourse = activeStudentCoursesCount === 0;
+	const isNewStudent = studentDashboardData?.enrolledCourses?.length === 0;
 
 	const handleAddCourseClick = () => {
 		setIsCreatingCourse(true);
@@ -46,11 +55,20 @@ const Courses = () => {
 		setIsCreatingCourse(false);
 	};
 
+	const handleViewCourse = () => {
+		navigate("/allcourses");
+		console.log("navigating to courses");
+	};
+
 	const studentContent = (
 		<>
-			{showAddCourse ? (
+			{isNewStudent ? (
 				<>
-					<AddCourseCard text={"Add Course"} heading={"My Courses"} />
+					<AddCourseCard
+						text={"Add Course"}
+						heading={"My Courses"}
+						onClick={handleViewCourse}
+					/>
 					<RecommendedCourses
 						heading={"Recommended for you"}
 						courses={recommendedCourses}
@@ -63,13 +81,19 @@ const Courses = () => {
 			) : (
 				<>
 					<div className="flex">
-						<ActiveStudentCourses heading={"Your Courses"} />
-						<AddCourseCard text={"Add Course"} heading={"My Courses"} />
+						{/* <ActiveStudentCourses heading={"Your Courses"} /> */}
+						<AddCourseCard
+							text={"Add Course"}
+							heading={"My Courses"}
+							onClick={handleViewCourse}
+						/>
 					</div>
 					<RecommendedCourses
 						heading={"Recommended for you"}
-						courses={recommendedCourses}
+						courses={notEnrolledCourses}
+						slidesToShow={3}
 					/>
+					<AllStudentCourses itemsPerPage="9" courses={sortedActiveStudentCourses} gridCol={"grid-cols-3"}/>
 				</>
 			)}
 		</>

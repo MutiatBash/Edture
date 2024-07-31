@@ -1,6 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
 import CourseDetailsLayout from "../layouts/CourseDetailsLayout";
-import RecommendedCourses from "../components/courses/RecommendedCourses";
 import { userContext } from "../context/UserContext";
 import { useCart } from "../context/CartContext";
 import { useNavigate } from "react-router-dom";
@@ -11,6 +10,8 @@ import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 import { SuccessModal } from "../components/popups/Modal";
+import { formatPriceWithCommas } from "../utils/utils";
+import successgif from "/success-gif.gif";
 
 const Checkout = () => {
 	const { user, token } = useContext(userContext);
@@ -21,7 +22,7 @@ const Checkout = () => {
 	const [txRef, setTxRef] = useState(`txn-${Date.now()}`);
 	const [transactionReady, setTransactionReady] = useState(false);
 
-	const navigate = useNavigate()
+	const navigate = useNavigate();
 
 	// useEffect(() => {
 	const storedEmail = localStorage.getItem("userEmail");
@@ -79,6 +80,7 @@ const Checkout = () => {
 			if (data.statusCode === 201) {
 				setShowSuccess(true);
 				fetchCartItems();
+				clearCartItems();
 			}
 		} catch (error) {
 			console.error("Error during checkout:", error);
@@ -137,8 +139,10 @@ const Checkout = () => {
 
 	const { totalPrice, currency } = calculateTotalPrice(cartItems);
 
-	const handleStartLearning = () => {
+	const handleStartLearning = async () => {
+		clearCartItems();
 		navigate("/student-dashboard");
+		// window.location.reload();
 	};
 
 	return (
@@ -149,6 +153,7 @@ const Checkout = () => {
 					heading={"Payment Successful"}
 					buttonText={"Start Learning"}
 					onConfirm={handleStartLearning}
+					img={successgif}
 				/>
 			)}
 			<CourseDetailsLayout>
@@ -243,7 +248,7 @@ const Checkout = () => {
 											</h6>
 										</div>
 										<p className="font-trap-grotesk font-semibold">
-											NGN {item.price}
+											NGN {formatPriceWithCommas(item.price)}
 										</p>
 									</div>
 								))}
@@ -268,7 +273,7 @@ const CheckoutModal = ({ totalPrice, currency, isLoading }) => {
 						Subtotal:
 					</p>
 					<p className="text-lg font-semibold font-trap-grotesk text-lightGray">
-						{currency} {totalPrice?.toFixed(2)}
+						{currency} {formatPriceWithCommas(totalPrice?.toFixed(2))}
 					</p>
 				</div>
 			</div>
@@ -278,7 +283,7 @@ const CheckoutModal = ({ totalPrice, currency, isLoading }) => {
 					Total:
 				</p>
 				<p className="text-2xl font-semibold font-trap-grotesk">
-					{currency} {totalPrice?.toFixed(2)}
+					{currency} {formatPriceWithCommas(totalPrice?.toFixed(2))}
 				</p>
 			</div>
 			<div className="flex flex-col gap-2 pb-5">

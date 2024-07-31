@@ -10,7 +10,7 @@ const UserContextProvider = ({ children }) => {
 	const [dashboardData, setDashboardData] = useState(null);
 	const [courses, setCourses] = useState(null);
 	const [enrolledCourses, setEnrolledCourses] = useState(null);
-	const [studentCourses, setStudentCourses] = useState([]);
+	const [studentCourses, setStudentCourses] = useState(null);
 	const [courseById, setCourseById] = useState(null);
 	const [loading, setLoading] = useState(false);
 	const [success, setSuccess] = useState(false);
@@ -54,11 +54,11 @@ const UserContextProvider = ({ children }) => {
 	// 	token
 	// );
 
-	// const {
-	// 	data: studentCoursesData,
-	// 	loading: studentCoursesLoading,
-	// 	error: studentCoursesError,
-	// } = useApi("https://edture.onrender.com/users/student/courses", token);
+	const {
+		data: studentCoursesData,
+		loading: studentCoursesLoading,
+		error: studentCoursesError,
+	} = useApi("https://edture.onrender.com/users/student/courses", token);
 
 	useEffect(() => {
 		if (userData) {
@@ -94,12 +94,12 @@ const UserContextProvider = ({ children }) => {
 	// 	}
 	// }, [enrolledCoursesData]);
 
-	// useEffect(() => {
-	// 	if (studentCoursesData) {
-	// 		setStudentCourses(studentCoursesData);
-	// 		console.log("student courses",studentCourses)
-	// 	}
-	// }, [studentCoursesData]);
+	useEffect(() => {
+		if (studentCoursesData) {
+			setStudentCourses(studentCoursesData);
+			console.log("student courses",studentCourses)
+		}
+	}, [studentCoursesData]);
 
 	useEffect(() => {
 		if (token) {
@@ -131,31 +131,6 @@ const UserContextProvider = ({ children }) => {
 			setError(error.message);
 		}
 	};
-
-	const fetchEnrolledStudentCourses = async () => {
-		try {
-			const response = await axios.get(
-				"https://edture.onrender.com/users/student/courses",
-				{
-					headers: { Authorization: `Bearer ${token}` },
-				}
-			);
-
-			const fetchedCourses = response?.data;
-			setStudentCourses(fetchedCourses);
-			console.log("Student courses showing", studentCourses);
-			console.log("Student courses here", response.data);
-		} catch (error) {
-			console.error("Error fetching courses:", error);
-			setError(error.message);
-		}
-	};
-
-	useEffect(() => {
-		if (studentCourses.length > 0) {
-			console.log("Student courses should show", studentCourses); // This will log the updated courses
-		}
-	}, [studentCourses]);
 
 	const logout = async () => {
 		setIsLoggingOut(true);
@@ -214,9 +189,9 @@ const UserContextProvider = ({ children }) => {
 				authLoading,
 				setAuthLoading,
 				fetchCourseById,
-				fetchEnrolledStudentCourses,
 				courseById,
 				enrolledCourses,
+				studentCourses,
 			}}
 		>
 			{children}

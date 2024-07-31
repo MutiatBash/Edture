@@ -34,11 +34,20 @@ export const StudentSideBar = () => {
 			navigate("/student-signin");
 		}, 2000);
 	};
+
+	const handleLogoClick = () => {
+		navigate("/student-dashboard");
+	};
 	return (
 		<>
 			<div className="bg-white flex flex-col p-10 pr-5 border-r-[0.5px] border-r-lightGray w-1/5 h-full gap-12 min-h-screen sticky top-0 z-10">
 				<div>
-					<img src={edture} />
+					<img
+						src={edture}
+						alt="Edture Logo"
+						className="cursor-pointer"
+						onClick={handleLogoClick}
+					/>
 				</div>
 				<div className="flex flex-col gap-16">
 					<div className="flex flex-col gap-4">
@@ -119,11 +128,20 @@ export const TutorSideBar = () => {
 		}, 2000);
 	};
 
+	const handleLogoClick = () => {
+		navigate("/tutor-dashboard");
+	};
+
 	return (
 		<>
 			<div className="bg-white flex flex-col p-10 pr-5 border-r-[0.5px] border-r-lightGray w-64 h-full gap-12 min-h-screen sticky top-0 bottom-0 z-10">
 				<div>
-					<img src={edture} />
+					<img
+						src={edture}
+						alt="Edture Logo"
+						className="cursor-pointer"
+						onClick={handleLogoClick}
+					/>
 				</div>
 				<div className="flex flex-col gap-16">
 					<div className="flex flex-col gap-4">

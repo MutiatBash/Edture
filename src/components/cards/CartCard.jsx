@@ -1,5 +1,6 @@
 import React from "react";
 import closeicon from "/icons/close-circle.svg";
+import { formatPriceWithCommas } from "../../utils/utils";
 
 const CartCard = ({ course, onRemove }) => {
 	return (
@@ -14,7 +15,6 @@ const CartCard = ({ course, onRemove }) => {
 				className="w-32 h-20 object-cover rounded-md"
 			/>
 
-			{/* Course details */}
 			<div className="flex justify-between gap-10 w-full">
 				<div>
 					<h3 className="text-lg font-semibold leading-6">
@@ -23,7 +23,7 @@ const CartCard = ({ course, onRemove }) => {
 				</div>
 
 				<p className="font-trap-grotesk font-semibold text-lg whitespace-nowrap">
-					{course.currency} {course.price}
+					{course.currency} {formatPriceWithCommas(course.price)}
 				</p>
 			</div>
 		</div>

@@ -20,7 +20,7 @@ import danger from "/icons/danger.svg";
 import quiz from "/quiz.svg";
 import tutor from "/tutor-profile.svg";
 import certificate from "/icons/certificate.svg";
-import CourseModule from "../components/courses/CourseModule";
+import { CourseModule } from "../components/courses/CourseModule";
 import ProgressBar from "../components/ProgressBar";
 import { useApi } from "../utils/customHooks";
 import { SpinnerLoader } from "../components/Loader";
@@ -49,7 +49,7 @@ const CourseContent = () => {
 		error: courseContentsError,
 	} = useApi(`https://edture.onrender.com/users/student/courses/${id}`, token);
 
-	const course = courseContents
+	const course = courseContents;
 	const courseLessonsData = course?.lessons || [];
 
 	const videoRef = useRef(null);
@@ -140,8 +140,6 @@ const CourseContent = () => {
 			isFirstRender.current = false;
 		}
 	}, [videoUrl, textContent]);
-
-
 
 	const renderContent = () => {
 		return activeTab === "study" ? (

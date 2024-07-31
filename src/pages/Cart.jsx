@@ -8,6 +8,7 @@ import { ConfirmationModal } from "../components/popups/Modal";
 import { useNavigate } from "react-router-dom";
 import { PrimaryButton } from "../components/Button";
 import { SpinnerLoader } from "../components/Loader";
+import { formatPriceWithCommas } from "../utils/utils";
 
 const Cart = () => {
 	const { allCourses } = useContext(userContext);
@@ -44,9 +45,11 @@ const Cart = () => {
 	return (
 		<div className="relative">
 			<CourseDetailsLayout>
-				{cartLoading && <SpinnerLoader />}
+				{/* {cartLoading && <SpinnerLoader />} */}
 				{cartItems?.length === 0 ? (
-					<h3>Your cart is empty</h3>
+					<h3 className="font-medium text-2xl px-12">
+						Your cart is empty
+					</h3>
 				) : (
 					<div>
 						<div className="px-12 py-10 flex flex-col gap-3">
@@ -67,7 +70,10 @@ const Cart = () => {
 								))}
 							</div>
 						</div>
-						<CheckoutModal totalPrice={totalPrice} currency={currency} />
+						<CheckoutModal
+							totalPrice={formatPriceWithCommas(totalPrice)}
+							currency={currency}
+						/>
 					</div>
 				)}
 				<RecommendedCourses
@@ -106,7 +112,7 @@ const CheckoutModal = ({ currency, totalPrice }) => {
 					Total:
 				</p>
 				<p className="text-2xl font-semibold font-trap-grotesk">
-					{currency} {totalPrice?.toFixed(2)}
+					{currency} {formatPriceWithCommas(totalPrice)}
 				</p>
 			</div>
 			<PrimaryButton

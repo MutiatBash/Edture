@@ -2,11 +2,10 @@ import React, { useContext } from "react";
 import CourseDetailsLayout from "../layouts/CourseDetailsLayout";
 import RecommendedCourses from "../components/courses/RecommendedCourses";
 import { userContext } from "../context/UserContext";
-import coursebanner from "/course-banner.svg";
 import { AllStudentCourses } from "../components/courses/StudentCourses";
 
 const AllCourses = () => {
-	const { courses, user } = useContext(userContext);
+	const { courses, user, studentCourses } = useContext(userContext);
 	const allCourses = courses?.courses;
 
 	const sortedStudentCourses = allCourses?.sort(
@@ -32,15 +31,11 @@ const AllCourses = () => {
 						courses={recommendedCourses}
 						slidesToShow={3.5}
 					/>
-					<RecommendedCourses
-						heading={"Top searches"}
-						courses={recommendedCourses}
-						slidesToShow={3.5}
-						flowDirection={"rtl"}
-					/>
 					<AllStudentCourses
 						courses={allCourses}
 						heading={"All courses"}
+						itemsPerPage={12}
+						gridCol={"grid-cols-4"}
 					/>
 				</div>
 			</CourseDetailsLayout>

@@ -25,6 +25,7 @@ import CourseContent from "./pages/CourseContent";
 import Chat from "./pages/Chat";
 import { SessionTimeoutModal } from "./components/popups/Modal";
 import { useSessionTimeout, useInactivityTimeout } from "./utils/customHooks";
+import Profile from "./pages/Profile";
 
 const App = () => {
 	const [isTimeoutModal, setIsTimeoutModal] = useState(null);
@@ -66,6 +67,7 @@ const App = () => {
 						element={<StudentDashboard />}
 					/>
 					<Route path="/tutor-dashboard" element={<TutorDashboard />} />
+					<Route path="/profile" element={<Profile />} />
 					<Route path="/courses" element={<Courses />} />
 					<Route path="/courses/:id" element={<CourseDetails />} />
 					<Route

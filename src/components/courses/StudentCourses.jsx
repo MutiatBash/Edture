@@ -42,8 +42,7 @@ export const RecentStudentCourses = ({ heading, onClick, courses }) => {
 	);
 };
 
-export const AllStudentCourses = ({ heading, courses }) => {
-	const itemsPerPage = 9;
+export const AllStudentCourses = ({ heading, courses, itemsPerPage, gridCol }) => {
 	const [currentPage, setCurrentPage] = useState(1);
 
 	const totalPages = Math.ceil(courses?.length / itemsPerPage);
@@ -54,7 +53,7 @@ export const AllStudentCourses = ({ heading, courses }) => {
 	return (
 		<div className="flex flex-col gap-4">
 			<h3 className="font-medium text-2xl">{heading}</h3>
-			<div className="grid grid-cols-4 gap-3">
+			<div className={`grid gap-3 ${gridCol}`}>
 				{currentCourses?.map((course) => (
 					<CourseCard key={course?.id} course={course} />
 				))}

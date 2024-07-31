@@ -10,8 +10,7 @@ import completed from "/icons/completed-course.svg";
 import { ActiveStudentCourses } from "../components/courses/StudentCourses";
 import RecommendedCourses from "../components/courses/RecommendedCourses";
 import { SpinnerLoader } from "../components/Loader";
-import AddCourseCard from "../components/cards/AddCourseCard";
-import CreateCourse from "../components/courses/CreateCourse";
+import axios from "axios";
 
 const StudentDashboard = () => {
 	const {
@@ -28,43 +27,43 @@ const StudentDashboard = () => {
 		setCourses,
 	} = useContext(userContext);
 
-	useEffect(() => {
-		// Fetch enrolled student courses if not already fetched
-		if (!studentCourses || studentCourses.length === 0) {
-			fetchEnrolledStudentCourses();
-		}
-	}, [studentCourses, fetchEnrolledStudentCourses]);
-
-	const [isCreatingCourse, setIsCreatingCourse] = useState(false);
-
-	const handleAddCourseClick = () => {
-		setIsCreatingCourse(true);
-	};
-
-	const handleCancel = () => {
-		setIsCreatingCourse(false);
-	};
-
 	const navigate = useNavigate();
 
-	const allCourses = courses?.courses;
+	// const [studentCourses, setStudentCourses] = useState([]);
 
-	// Debugging logs
-	console.log("All Courses:", allCourses);
-	console.log("Student Courses:", studentCourses);
-	console.log(
-		"Student Dashboard Data Enrolled Courses:",
-		studentDashboardData?.enrolledCourses
-	);
+	// const fetchStudentCourses = async () => {
+	// 	try {
+	// 		const response = await axios.get(
+	// 			"https://edture.onrender.com/users/student/courses",
+	// 			{
+	// 				headers: { Authorization: `Bearer ${token}` },
+	// 			}
+	// 		);
+
+	// 		const fetchedCourses = response?.data;
+	// 		setStudentCourses(fetchedCourses);
+	// 		console.log("Student courses showing", studentCourses);
+	// 		console.log("Fetched Student courses here", fetchedCourses);
+	// 	} catch (error) {
+	// 		console.error("Error fetching courses:", error);
+	// 	}
+	// };
+
+	// useEffect(() => {
+	// 	fetchStudentCourses();
+	// }, []); 
+
+	// useEffect(() => {
+	// 	console.log("Student courses updated", studentCourses);
+	// }, [studentCourses]);
+
+	const allCourses = courses?.courses;
 
 	const sortedStudentCourses = allCourses?.sort(
 		(a, b) => new Date(b.createdAt) - new Date(a.createdAt)
 	);
 
-	const recentStudentCourses = sortedStudentCourses?.slice(0, 2);
 	const recommendedCourses = sortedStudentCourses?.slice(0, 4);
-
-	const dashboardStudentCourses = sortedStudentCourses?.slice(0, 12);
 
 	const enrolledStudentCourses = studentDashboardData?.enrolledCourses?.slice(
 		0,
@@ -74,7 +73,6 @@ const StudentDashboard = () => {
 	const isNewUser = studentDashboardData?.enrolledCourses?.length === 0;
 	const activeCoursesCount =
 		studentDashboardData?.totalActiveCourses?.length || 0;
-	const showAddCourse = activeCoursesCount === 0;
 	const role = "STUDENT";
 
 	return (
@@ -82,58 +80,46 @@ const StudentDashboard = () => {
 			{(userLoading || studentLoading) && <SpinnerLoader />}
 			<StudentDashboardLayout>
 				<>
-					{isCreatingCourse ? (
-						<CreateCourse onCancel={handleCancel} />
+					<DashboardBanner
+						className="pt-6"
+						isNewUser={isNewUser}
+						role={role}
+					/>
+					<div className="grid grid-cols-3 gap-6">
+						<CourseStatusCard
+							number={studentDashboardData?.totalEnrolledCourses || 0}
+							status={"Enrolled"}
+							icon={enrolled}
+						/>
+						<CourseStatusCard
+							number={studentDashboardData?.totalActiveCourses || 0}
+							status={"Active"}
+							icon={active}
+						/>
+						<CourseStatusCard
+							number={studentDashboardData?.totalCompletedCourses || 0}
+							status={"Completed"}
+							icon={completed}
+						/>
+					</div>
+					{isNewUser ? (
+						<RecommendedCourses
+							heading={"Recommended"}
+							courses={recommendedCourses}
+						/>
 					) : (
 						<>
-							<DashboardBanner
-								className="pt-6"
-								isNewUser={isNewUser}
-								role={role}
-							/>
-							<div className="grid grid-cols-3 gap-6">
-								<CourseStatusCard
-									number={
-										studentDashboardData?.totalEnrolledCourses || 0
-									}
-									status={"Enrolled"}
-									icon={enrolled}
+							<div className="">
+								<ActiveStudentCourses
+									heading={"Your Courses"}
+									courses={enrolledStudentCourses}
 								/>
-								<CourseStatusCard
-									number={
-										studentDashboardData?.totalActiveCourses || 0
-									}
-									status={"Active"}
-									icon={active}
-								/>
-								<CourseStatusCard
-									number={
-										studentDashboardData?.totalCompletedCourses || 0
-									}
-									status={"Completed"}
-									icon={completed}
-								/>
+								{/* <AddCourseCard text={"Add Course"} /> */}
 							</div>
-							{isNewUser ? (
-								<RecommendedCourses
-									heading={"Recommended"}
-									courses={recommendedCourses}
-								/>
-							) : (
-								<>
-									<div className="">
-										<ActiveStudentCourses
-											heading={"Your Courses"}
-											courses={enrolledStudentCourses}
-										/>
-										{/* <AddCourseCard text={"Add Course"} /> */}
-									</div>
-									<RecommendedCourses
-										heading={"Recommended"}
-										courses={studentCourses}
-									/>
-								</>
-							)}
+							<RecommendedCourses
+								heading={"Recommended"}
+								courses={studentCourses}
+							/>
 						</>
 					)}
 				</>

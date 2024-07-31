@@ -14,13 +14,14 @@ import certificate from "/icons/certificate.svg";
 import verify from "/icons/verify.svg";
 import ratingsicon from "/icons/ratings.svg";
 import RecommendedCourses from "../components/courses/RecommendedCourses";
-import CourseModule from "../components/courses/CourseModule";
+import { CourseModule } from "../components/courses/CourseModule";
 import ProgressBar from "../components/ProgressBar";
 import { useApi } from "../utils/customHooks";
 import { SpinnerLoader } from "../components/Loader";
 import { useCart } from "../context/CartContext";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { formatPriceWithCommas } from "../utils/utils";
 
 const CourseDetails = () => {
 	const { id } = useParams();
@@ -213,19 +214,19 @@ const StudentContent = ({ selectedCourse, recommendedCourse }) => {
 	return (
 		<>
 			<div className="flex flex-col gap-10 py-8 pl-14 w-3/5 relative">
-				<div className="font-trap-grotesk">
+				{/* <div className="font-trap-grotesk">
 					<div className="flex flex-col gap-3 border border-lightGray rounded-lg p-4 text-darkGray">
 						<p className="text-xl font-trap-grotesk">What you'll learn</p>
-						{/* <div className="grid grid-cols-2 gap-3">
+						<div className="grid grid-cols-2 gap-3">
 						{selectedCourse?.learnings?.map((learning, index) => (
 							<div key={index} className="flex gap-3 items-start">
 								<img src={verify} alt="Verify Icon" />
 								{learning}
 							</div>
 						))}
-					</div> */}
+					</div> 
 					</div>
-				</div>
+				</div> */}
 				<div>
 					<h5 className="text-xl font-trap-grotesk font-semibold">
 						Course Content
@@ -425,8 +426,13 @@ const CourseModal = ({ course, courseInProgress }) => {
 
 	const handleBuyNow = async () => {
 		try {
-			await addItemToCart(course);
-			navigate("/cart");
+			const itemAdded = await addItemToCart(course);
+			if (itemAdded) {
+				navigate("/cart");
+			} else {
+				await addItemToCart(course);
+				navigate("/cart");
+			}
 		} catch (error) {
 			console.error("Failed to add course to cart:", error);
 			toast.error("Failed to add course to cart!");
@@ -454,7 +460,11 @@ const CourseModal = ({ course, courseInProgress }) => {
 					<p className="font-trap-grotesk text-lightGray text-sm">
 						{courseInProgress?.enrollmentData?.progress}% complete
 					</p>
-					<PrimaryButton text={"Resume Learning"} className="w-full" onClick={navigateToLms}/>
+					<PrimaryButton
+						text={"Resume Learning"}
+						className="w-full"
+						onClick={navigateToLms}
+					/>
 					<div className="border rounded-md text-primaryBlack text-sm flex gap-3 items-center border-lightGray">
 						<img
 							src={danger}
@@ -468,10 +478,11 @@ const CourseModal = ({ course, courseInProgress }) => {
 			) : (
 				<>
 					<p className="font-semibold text-2xl pt-2 text-primaryBlack font-trap-grotesk">
-						{course?.price || courseInProgress?.price}{" "}
-						<span className="text-lightGray line-through font-normal">
-							{course?.originalPrice || courseInProgress?.originalPrice}
+						<span className="font-trap-grotesk font-semibold text-xl pr-1">
+							{course?.currency || courseInProgress?.currency}
 						</span>
+						{formatPriceWithCommas(course?.price) ||
+							formatPriceWithCommas(courseInProgress?.price)}
 					</p>
 					<div className="flex flex-col gap-4 py-2">
 						<PrimaryButton

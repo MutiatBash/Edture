@@ -5,12 +5,20 @@ export const truncateString = (str, num) => {
 	return str?.slice(0, num) + "...";
 };
 
+export const formatPriceWithCommas = (price) => {
+	// Convert the price to a string if it's not already
+	const priceStr = price?.toString();
+
+	// Format the price with commas
+	return priceStr?.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+};
+
 export const formatVideoDuration = (seconds) => {
 	if (seconds === undefined || seconds === null || isNaN(seconds)) {
 		return "0:00";
 	}
 
-	const roundedSeconds = Math.round(seconds); 
+	const roundedSeconds = Math.round(seconds);
 	const hours = Math.floor(roundedSeconds / 3600);
 	const minutes = Math.floor((roundedSeconds % 3600) / 60);
 	const remainingSeconds = roundedSeconds % 60;

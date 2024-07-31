@@ -39,11 +39,11 @@ const CreateCourse = ({ onCancel }) => {
 		{ value: "programming", label: "Programming" },
 		{ value: "ai", label: "AI" },
 		{ value: "machine learning", label: "Machine Learning" },
+		{ value: "others", label: "Others" },
 	];
 	const [step, setStep] = useState(1);
 	const [showModal, setShowModal] = useState(false);
 	const [courseId, setCourseId] = useState(null);
-
 	const [lessons, setLessons] = useState([]);
 
 	const addLesson = (lessonTitle) => {
@@ -71,7 +71,7 @@ const CreateCourse = ({ onCancel }) => {
 			fileUrl: "",
 		},
 		difficultyLevel: "",
-		currency: "",
+		currency: "NGN",
 		price: "",
 		instructorsName: tutorsName,
 		instructorsBio: "",
@@ -287,7 +287,6 @@ const CreateCourse = ({ onCancel }) => {
 			console.log("Payload:", lessonData);
 			handleCreationConfirmation();
 		} catch (error) {
-			// setError(error.message);
 			console.error("Error creating course:", error.message);
 			console.log(error);
 			console.log("Payload:", lessonData);
@@ -327,6 +326,7 @@ const CreateCourse = ({ onCancel }) => {
 							options={[
 								{ value: "programming", label: "Programming" },
 								{ value: "design", label: "Design" },
+								{ value: "others", label: "Others" },
 							]}
 							name="category"
 							value={formData.category}

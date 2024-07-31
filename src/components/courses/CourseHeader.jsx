@@ -10,8 +10,11 @@ import InboxPopup from "../popups/InboxPopup";
 import CartPopup from "../popups/CartPopup";
 import { userContext } from "../../context/UserContext";
 import { useCart } from "../../context/CartContext";
+import { useNavigate } from "react-router-dom";
 
 const CourseHeader = () => {
+	const navigate = useNavigate();
+
 	const { firstName, lastName, emailAddress, user } = useContext(userContext);
 	const { cartItems } = useCart();
 
@@ -37,11 +40,24 @@ const CourseHeader = () => {
 
 	const role = user?.role;
 
+	const handleLogoClick = () => {
+		if (role === "TUTOR") {
+			navigate("/tutor-dashboard");
+		} else {
+			navigate("/student-dashboard");
+		}
+	};
+
 	return (
 		<div className="bg-white border-b-[0.5px] border-b-lightGray px-12 py-6 sticky z-30 top-0">
 			<div className="flex justify-between gap-6 items-center bg-white container-wrapper mx-auto">
 				<div className="">
-					<img src={edture} />
+					<img
+						src={edture}
+						alt="Edture Logo"
+						className="cursor-pointer"
+						onClick={handleLogoClick}
+					/>
 				</div>
 				<div className="flex justify-between gap-4 w-4/5">
 					<div className="flex gap-3 border p-2 border-lightGray rounded-lg w-[78%]">
