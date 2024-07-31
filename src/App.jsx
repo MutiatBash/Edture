@@ -17,6 +17,7 @@ import TutorSignin from "./pages/TutorSignin";
 import StudentSignup from "./pages/StudentSignup";
 import TutorSignup from "./pages/TutorSignup";
 import Cart from "./pages/Cart";
+import Home from "./pages/Home";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Checkout from "./pages/Checkout";
@@ -56,6 +57,7 @@ const App = () => {
 					onClose={handleCloseModal}
 				/>
 				<Routes>
+					<Route path="/" element={<Home />} />
 					<Route path="/student-signin" element={<StudentSignin />} />
 					<Route path="/student-signup" element={<StudentSignup />} />
 					<Route path="/tutor-signin" element={<TutorSignin />} />
