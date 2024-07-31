@@ -65,14 +65,13 @@ const Navbar = () => {
 					/>
 				</div>
 				<div className="flex justify-between gap-4 w-full">
-					<div className="flex gap-3 border p-2 border-lightGray rounded-lg w-[50%]">
+					<div className="flex gap-3 border p-2 py-1 border-lightGray rounded-lg w-[50%]">
 						<img src={search} className="w-5" />
 						<input
 							className="text-darkGray placeholder:text-lightGray w-full focus:border-none focus:outline-none"
 							placeholder="Search for anything"
 						/>
 					</div>
-
 					{user ? (
 						<div className="flex gap-5 items-center">
 							<img
@@ -118,7 +117,7 @@ const Navbar = () => {
 							{popups.cart && <CartPopup />}
 						</div>
 					) : (
-						<div className="flex gap-5 justify-between items-center w-[45%]">
+						<div className="flex gap-5 justify-between items-center w-[50%]">
 							<div className="flex justify-between gap-3 w-full font-trap-grotesk">
 								<Link
 									to="/"
