@@ -20,14 +20,15 @@ import danger from "/icons/danger.svg";
 import quiz from "/quiz.svg";
 import tutor from "/tutor-profile.svg";
 import certificate from "/icons/certificate.svg";
-import { CourseModule } from "../components/courses/CourseModule";
+import {
+	ContentModule,
+	CourseModule,
+} from "../components/courses/CourseModule";
 import ProgressBar from "../components/ProgressBar";
 import { useApi } from "../utils/customHooks";
 import { SpinnerLoader } from "../components/Loader";
 import { useCart } from "../context/CartContext";
 import { Divider } from "../components/Dividers";
-import ReactPlayer from "react-player";
-// import VideoComponent from "../components/courses/VideoComponent";
 import VideoComponent from "../components/courses/VideoComponent";
 
 const CourseContent = () => {
@@ -61,6 +62,7 @@ const CourseContent = () => {
 	const [expandAll, setExpandAll] = useState(false);
 	const [modulesState, setModulesState] = useState({});
 	const [activeTab, setActiveTab] = useState("study");
+	const [selectedTopic, setSelectedTopic] = useState(null);
 
 	const handleExpandAllClick = useCallback(() => {
 		const newExpandAll = !expandAll;
@@ -88,6 +90,10 @@ const CourseContent = () => {
 		});
 	}, []);
 
+	const handleTopicSelect = (topic) => {
+		setSelectedTopic(topic);
+	};
+
 	const calculateTotalDuration = () => {
 		let totalSeconds = 0;
 
@@ -107,46 +113,40 @@ const CourseContent = () => {
 
 	const { hours, minutes } = calculateTotalDuration();
 
-	const videoUrl = courseLessonsData
-		?.flatMap((lesson) => lesson.topics)
-		.find((topic) => topic.contentType === "video")?.videoUrl;
+	const videoUrl =
+		selectedTopic?.contentType === "video" ? selectedTopic.videoUrl : null;
 
-	const textContent = courseLessonsData.flatMap((lesson) =>
-		lesson.topics.filter((topic) => topic.contentType === "text")
-	);
-
-	const TextContent = ({ textContent }) => {
-		return (
-			<div className="">
-				{textContent.map((topic, i) => (
-					<div key={i}>
-						<h4>{topic.title}</h4>
-						<p>{topic.content}</p>
-					</div>
-				))}
-			</div>
-		);
-	};
+	const textContent =
+		selectedTopic?.contentType === "text" ? selectedTopic.description : null;
 
 	const isFirstRender = useRef(true);
 
 	useEffect(() => {
-		if (isFirstRender.current) {
-			if (videoUrl) {
-				setActiveTab("discuss");
-			} else if (textContent.length > 0) {
-				setActiveTab("study");
-			}
+		if (isFirstRender.current && courseLessonsData.length > 0) {
+			const firstTopic = courseLessonsData[0].topics[0];
+			setSelectedTopic(firstTopic);
 			isFirstRender.current = false;
 		}
-	}, [videoUrl, textContent]);
+	}, [courseLessonsData]);
+
+	useEffect(() => {
+		if (selectedTopic) {
+			if (selectedTopic.contentType === "video") {
+				setActiveTab("discuss");
+			} else if (selectedTopic.contentType === "text") {
+				setActiveTab("study");
+			}
+		}
+	}, [selectedTopic]);
 
 	const renderContent = () => {
 		return activeTab === "study" ? (
-			<TextContent textContent={textContent} />
+			<div className="">
+				<p className="font-trap-grotesk text-lg">{textContent}</p>
+			</div>
 		) : activeTab === "discuss" ? (
 			<div className="flex flex-col gap-4">
-				<p className="font-trap-grotesk">
+				<p className="font-trap-grotesk text-lg">
 					Visit the community page to browse topics and discussions. Post a
 					question, start a new discussion, or join an existing
 					conversation!
@@ -163,12 +163,16 @@ const CourseContent = () => {
 			</div>
 		) : activeTab === "resources" ? (
 			courseLessonsData?.map((lesson, index) => (
-				<div key={index}>
+				<div key={index} className="">
 					{lesson.topics.map((topic, i) =>
-						topic.resources?.map((resource, j) => (
-							<div key={`${i}-${j}`}>
-								<h4>{topic.title}</h4>
+						topic.downloadableMaterials?.map((resource, j) => (
+							<div
+								key={`${i}-${j}`}
+								className="flex gap-4 justify-start"
+							>
+								<h4 className="text-lg">{topic.title}:</h4>
 								<a
+									className="text-primaryBlue underline font-trap-grotesk text-lg"
 									href={resource.url}
 									target="_blank"
 									rel="noopener noreferrer"
@@ -186,7 +190,6 @@ const CourseContent = () => {
 	return (
 		<div>
 			{courseContentsLoading && <SpinnerLoader />}
-			{/* {courseContentsError && <p>{courseContentsError}</p>} */}
 			<CourseDetailsLayout>
 				<div className="flex px-12 justify-between">
 					<div className="bg-white flex flex-col pt-8 pr-5 border-r-[0.5px] border-r-lightGray w-[30%] h-full gap-3 min-h-screen sticky top-0 bottom-0 z-20">
@@ -202,7 +205,7 @@ const CourseContent = () => {
 						</div>
 						<div>
 							{courseLessonsData?.map((lesson, index) => (
-								<CourseModule
+								<ContentModule
 									key={index}
 									lessonTitle={lesson.title}
 									lessonItems={lesson.topics}
@@ -210,6 +213,7 @@ const CourseContent = () => {
 									onToggle={(isOpen) =>
 										handleModuleToggle(index, isOpen)
 									}
+									onTopicSelect={handleTopicSelect}
 								/>
 							))}
 						</div>
@@ -251,18 +255,20 @@ const CourseContent = () => {
 										? activeTab === "discuss"
 											? "translateX(2%)"
 											: activeTab === "resources"
-											? "translateX(135%)"
-											: "translateX(0%)"
-										: activeTab === "study"
-										? "translateX(0%)"
+											? "translateX(110%)"
+											: "translateX(0)"
 										: activeTab === "discuss"
 										? "translateX(110%)"
-										: "translateX(240%)",
+										: activeTab === "resources"
+										? "translateX(240%)"
+										: "translateX(0)",
 								}}
 							></div>
 						</div>
 						<Divider />
-						<div className="py-3">{renderContent()}</div>
+						<div className="py-3 flex flex-col gap-3">
+							{renderContent()}
+						</div>
 					</div>
 				</div>
 			</CourseDetailsLayout>

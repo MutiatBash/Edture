@@ -90,6 +90,7 @@ export const ContentModule = ({
 	lessonItems,
 	isExpanded,
 	onToggle,
+	onTopicSelect
 }) => {
 	const [isOpen, setIsOpen] = useState(isExpanded);
 
@@ -134,9 +135,13 @@ export const ContentModule = ({
 				</div>
 			</div>
 			{isOpen && (
-				<div className="submodules bg-white p-3">
+				<div className=" bg-white p-3">
 					{lessonItems?.map((items, index) => (
-						<div key={index} className="flex gap-2 pb-2">
+						<div
+							key={index}
+							className="flex gap-2 pb-2 cursor-pointer"
+							onClick={() => onTopicSelect(items)}
+						>
 							<img
 								className="w-5"
 								src={items.contentType === "video" ? video : book}

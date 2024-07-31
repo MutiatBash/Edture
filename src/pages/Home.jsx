@@ -32,7 +32,7 @@ const Home = () => {
 					<div className="rounded-full p-3 px-6 border border-lighterGray bg-[#222B80]">
 						Discover, Learn and Master 💡
 					</div>
-					<h2 className="font-trap-grotesk text-7xl font-semibold text-white text-center w-[75%] mx-auto">
+					<h2 className="font-trap-grotesk text-7xl font-semibold text-white text-center w-[70%] mx-auto">
 						Empower your future with emerging technologies.
 					</h2>
 					<p className="text-xl text-white font-trap-grotesk">
@@ -46,7 +46,7 @@ const Home = () => {
 						/>
 						<SecondaryButton
 							text={"Sign in"}
-							className="w-full whitespace-nowrap text-white"
+							className="w-full whitespace-nowrap text-white hover:bg-darkBlue"
 							onClick={handleSignIn}
 						/>
 					</div>
