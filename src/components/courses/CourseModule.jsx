@@ -139,11 +139,11 @@ export const ContentModule = ({
 					{lessonItems?.map((items, index) => (
 						<div
 							key={index}
-							className="flex gap-2 pb-2 cursor-pointer"
+							className="flex gap-2 pb-2 cursor-pointer items-start"
 							onClick={() => onTopicSelect(items)}
 						>
 							<img
-								className="w-5"
+								className="w-3"
 								src={items.contentType === "video" ? video : book}
 								alt={
 									items.contentType === "video"
@@ -152,7 +152,7 @@ export const ContentModule = ({
 								}
 							/>
 							<div className="text-darkGray opacity-80 flex justify-between w-full">
-								<p className="font-semibold">{items.title}</p>
+								<p className="font-medium text-sm font-trap-grotesk">{items.title}</p>
 								{items.contentType === "video" &&
 								items.videoDurationInSeconds ? (
 									<p>
