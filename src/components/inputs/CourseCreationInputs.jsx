@@ -281,9 +281,10 @@ export const FileUploadField = ({
 // 	);
 // };
 
+
 export const RadioTextGroup = ({ data, onDataChange }) => {
-	const [selectedValue, setSelectedValue] = useState(data.selectedValue || "");
-	const [textValues, setTextValues] = useState(data.textValues || {});
+	const [selectedValue, setSelectedValue] = useState(data.correctAnswer || "");
+	const [textValues, setTextValues] = useState(data.answers || {});
 
 	useEffect(() => {
 		onDataChange({ selectedValue, textValues });
@@ -294,9 +295,10 @@ export const RadioTextGroup = ({ data, onDataChange }) => {
 	};
 
 	const handleTextChange = (e) => {
+		const optionValue = e.target.dataset.value;
 		setTextValues((prevValues) => ({
 			...prevValues,
-			[e.target.dataset.value]: e.target.value,
+			[optionValue]: e.target.value,
 		}));
 	};
 
@@ -338,8 +340,8 @@ export const RadioTextGroup = ({ data, onDataChange }) => {
 };
 
 export const RadioTextTrueFalse = ({ data, onDataChange }) => {
-	const [selectedValue, setSelectedValue] = useState(data.selectedValue || "");
-	const [textValues, setTextValues] = useState(data.textValues || {});
+	const [selectedValue, setSelectedValue] = useState(data.correctAnswer || "");
+	const [textValues, setTextValues] = useState(data.answers || {});
 
 	useEffect(() => {
 		onDataChange({ selectedValue, textValues });
@@ -350,9 +352,10 @@ export const RadioTextTrueFalse = ({ data, onDataChange }) => {
 	};
 
 	const handleTextChange = (e) => {
+		const optionValue = e.target.dataset.value;
 		setTextValues((prevValues) => ({
 			...prevValues,
-			[e.target.dataset.value]: e.target.value,
+			[optionValue]: e.target.value,
 		}));
 	};
 
@@ -390,3 +393,113 @@ export const RadioTextTrueFalse = ({ data, onDataChange }) => {
 		</div>
 	);
 };
+
+// export const RadioTextGroup = ({ data, onDataChange }) => {
+// 	const [selectedValue, setSelectedValue] = useState(data.selectedValue || "");
+// 	const [textValues, setTextValues] = useState(data.textValues || {});
+
+// 	useEffect(() => {
+// 		onDataChange({ selectedValue, textValues });
+// 	}, [selectedValue, textValues]);
+
+// 	const handleRadioChange = (e) => {
+// 		setSelectedValue(e.target.value);
+// 	};
+
+// 	const handleTextChange = (e) => {
+// 		setTextValues((prevValues) => ({
+// 			...prevValues,
+// 			[e.target.dataset.value]: e.target.value,
+// 		}));
+// 	};
+
+// 	const radioOptions = [
+// 		{ value: "option1", label: "Option 1" },
+// 		{ value: "option2", label: "Option 2" },
+// 		{ value: "option3", label: "Option 3" },
+// 		{ value: "option4", label: "Option 4" },
+// 	];
+
+// 	return (
+// 		<div className="flex flex-col">
+// 			{radioOptions.map((option) => (
+// 				<div key={option.value} className="flex items-center gap-2 mb-2">
+// 					<input
+// 						type="radio"
+// 						name="quiz-radio"
+// 						value={option.value}
+// 						checked={selectedValue === option.value}
+// 						onChange={handleRadioChange}
+// 						className="h-5 w-5 text-primaryBlack border-lightGray rounded-full focus:ring-primaryBlue"
+// 					/>
+// 					<input
+// 						type="text"
+// 						data-value={option.value}
+// 						value={textValues[option.value] || ""}
+// 						onChange={handleTextChange}
+// 						placeholder="Answer"
+// 						className="border border-lightGray rounded-lg p-4 py-3 w-full"
+// 					/>
+// 				</div>
+// 			))}
+// 			<p className="text-lightGray pt-2">
+// 				<span className="font-semibold">Note: </span>
+// 				Use the radio button to select the correct answer.
+// 			</p>
+// 		</div>
+// 	);
+// };
+
+// export const RadioTextTrueFalse = ({ data, onDataChange }) => {
+// 	const [selectedValue, setSelectedValue] = useState(data.selectedValue || "");
+// 	const [textValues, setTextValues] = useState(data.textValues || {});
+
+// 	useEffect(() => {
+// 		onDataChange({ selectedValue, textValues });
+// 	}, [selectedValue, textValues]);
+
+// 	const handleRadioChange = (e) => {
+// 		setSelectedValue(e.target.value);
+// 	};
+
+// 	const handleTextChange = (e) => {
+// 		setTextValues((prevValues) => ({
+// 			...prevValues,
+// 			[e.target.dataset.value]: e.target.value,
+// 		}));
+// 	};
+
+// 	const radioOptions = [
+// 		{ value: "option1", label: "True" },
+// 		{ value: "option2", label: "False" },
+// 	];
+
+// 	return (
+// 		<div className="flex flex-col">
+// 			{radioOptions.map((option) => (
+// 				<div key={option.value} className="flex items-center gap-2 mb-2">
+// 					<input
+// 						type="radio"
+// 						name="true-false-radio"
+// 						value={option.value}
+// 						checked={selectedValue === option.value}
+// 						onChange={handleRadioChange}
+// 						className="h-5 w-5 text-primaryBlack border-lightGray rounded-full focus:ring-primaryBlue"
+// 					/>
+// 					<input
+// 						type="text"
+// 						data-value={option.value}
+// 						value={textValues[option.value] || ""}
+// 						onChange={handleTextChange}
+// 						placeholder="Answer"
+// 						className="border border-lightGray rounded-lg p-4 py-3 w-full"
+// 					/>
+// 				</div>
+// 			))}
+// 			<p className="text-lightGray pt-2">
+// 				<span className="font-semibold">Note: </span>
+// 				Use the radio button to select the correct answer.
+// 			</p>
+// 		</div>
+// 	);
+// };

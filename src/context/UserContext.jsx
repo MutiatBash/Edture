@@ -21,44 +21,55 @@ const UserContextProvider = ({ children }) => {
 	const [isLoggingOut, setIsLoggingOut] = useState(false);
 	const [role, setRole] = useState(() => localStorage.getItem("userRole"));
 
+	// Fetch user data
 	const {
 		data: userData,
 		loading: userLoading,
 		error: userError,
 	} = useApi("https://edture.onrender.com/users/profiles/my-profile", token);
 
+	// Fetch all courses
 	const {
 		data: allCourses,
 		loading: allCoursesLoading,
 		error: allCoursesError,
 	} = useApi("https://edture.onrender.com/courses", token);
 
+	// Fetch tutor dashboard data
 	const {
 		data: tutorDashboardData,
 		loading: tutorLoading,
 		error: tutorError,
-	} = useApi("https://edture.onrender.com/users/tutor/dashboard", token);
+	} = useApi(
+		role === "tutor"
+			? "https://edture.onrender.com/users/tutor/dashboard"
+			: null,
+		token
+	);
 
+	// Fetch student dashboard data
 	const {
 		data: studentDashboardData,
 		loading: studentLoading,
 		error: studentError,
-	} = useApi("https://edture.onrender.com/users/dashboard/student", token);
+	} = useApi(
+		role === "student"
+			? "https://edture.onrender.com/users/dashboard/student"
+			: null,
+		token
+	);
 
-	// const {
-	// 	data: enrolledCoursesData,
-	// 	loading: enrolledCoursesLoading,
-	// 	error: enrolledCoursesError,
-	// } = useApi(
-	// 	`https://edture.onrender.com/users/student/courses/${courses?.id}`,
-	// 	token
-	// );
-
+	// Fetch student courses
 	const {
 		data: studentCoursesData,
 		loading: studentCoursesLoading,
 		error: studentCoursesError,
-	} = useApi("https://edture.onrender.com/users/student/courses", token);
+	} = useApi(
+		role === "student"
+			? "https://edture.onrender.com/users/student/courses"
+			: null,
+		token
+	);
 
 	useEffect(() => {
 		if (userData) {
@@ -88,16 +99,10 @@ const UserContextProvider = ({ children }) => {
 		}
 	}, [allCourses]);
 
-	// useEffect(() => {
-	// 	if (enrolledCoursesData) {
-	// 		setEnrolledCourses(enrolledCoursesData);
-	// 	}
-	// }, [enrolledCoursesData]);
-
 	useEffect(() => {
 		if (studentCoursesData) {
 			setStudentCourses(studentCoursesData);
-			console.log("student courses",studentCourses)
+			console.log("student courses", studentCoursesData);
 		}
 	}, [studentCoursesData]);
 

@@ -9,7 +9,10 @@ export const useApi = (url, token) => {
 	const [error, setError] = useState(null);
 
 	useEffect(() => {
-		if (!token) return;
+		if (!url) {
+			setLoading(false);
+			return;
+		}
 
 		const fetchData = async () => {
 			setLoading(true);

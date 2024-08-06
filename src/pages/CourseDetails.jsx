@@ -12,9 +12,10 @@ import quiz from "/quiz.svg";
 import tutor from "/tutor-profile.svg";
 import certificate from "/icons/certificate.svg";
 import verify from "/icons/verify.svg";
+import deleteicon from "/icons/delete.svg";
 import ratingsicon from "/icons/ratings.svg";
 import RecommendedCourses from "../components/courses/RecommendedCourses";
-import { CourseModule } from "../components/courses/CourseModule";
+import { CourseModule, QuizModule } from "../components/courses/CourseModule";
 import ProgressBar from "../components/ProgressBar";
 import { useApi } from "../utils/customHooks";
 import { SpinnerLoader } from "../components/Loader";
@@ -35,6 +36,7 @@ const CourseDetails = () => {
 		courses: allCourses,
 		token,
 		user,
+		role,
 	} = useContext(userContext);
 
 	const {
@@ -43,24 +45,26 @@ const CourseDetails = () => {
 		error: courseDetailsError,
 	} = useApi(`https://edture.onrender.com/courses/${id}`, token);
 
-	console.log("coursedetails here", courseDetails);
-
 	const {
 		data: enrolledCoursesDetails,
 		loading: enrolledCoursesLoading,
 		error: enrolledCoursesError,
-	} = useApi(`https://edture.onrender.com/users/student/courses/${id}`, token);
+	} = useApi(
+		role === "student"
+			? `https://edture.onrender.com/users/student/courses/${id}`
+			: null,
+		token
+	);
 
-	console.log("enrolled", enrolledCoursesDetails);
+	const {
+		data: quizzes,
+		loading: quizzesLoading,
+		error: quizzesError,
+	} = useApi(`https://edture.onrender.com/courses/${id}/quiz`, token);
 
 	const course = courseDetails || enrolledCoursesDetails;
 	const courseLessonsData = course?.lessons || [];
 	const recommendedCourses = allCourses?.courses?.slice(0, 4);
-	console.log("rec", recommendedCourses);
-
-	console.log("courselessons here", courseLessonsData);
-
-	console.log("Found Course:", course);
 
 	useEffect(() => {
 		window.scrollTo(0, 0);
@@ -82,7 +86,10 @@ const CourseDetails = () => {
 					/>
 				)}
 				{isTutor ? (
-					<TutorContent selectedCourse={courseLessonsData} />
+					<TutorContent
+						selectedCourse={courseLessonsData}
+						quizzes={quizzes}
+					/>
 				) : (
 					<StudentContent
 						selectedCourse={courseLessonsData}
@@ -283,7 +290,7 @@ const StudentContent = ({ selectedCourse, recommendedCourse }) => {
 	);
 };
 
-const TutorContent = ({ selectedCourse }) => {
+const TutorContent = ({ selectedCourse, quizzes }) => {
 	const [expandAll, setExpandAll] = useState(false);
 	const [modulesState, setModulesState] = useState({});
 
@@ -403,6 +410,14 @@ const TutorContent = ({ selectedCourse }) => {
 								onToggle={(isOpen) => handleModuleToggle(index, isOpen)}
 							/>
 						))}
+						{quizzes?.length > 0 && (
+							<QuizModule
+								quizTitle="Quiz"
+								quizItems={quizzes}
+								isExpanded={false}
+								onToggle={() => {}}
+							/>
+						)}
 					</div>
 				</div>
 			</div>
@@ -545,6 +560,11 @@ const TutorModal = ({ course }) => {
 	const handleEditCourse = () => {
 		setIsEditModalOpen(true);
 	};
+
+	const handleCreateQuiz = () => {
+		navigate(`/courses/${course.id}/quiz`);
+	};
+
 	return (
 		<div className="fixed top-32 right-14 p-4 w-full max-w-[400px] max-h-[90vh] bg-white shadow-lg z-20 rounded-lg font-trap-grotesk">
 			<div className="mb-4">
@@ -554,14 +574,24 @@ const TutorModal = ({ course }) => {
 					alt="Course"
 				/>
 			</div>
-			<div className="flex flex-col gap-3">
+			<div className="flex justify-between gap-3 mb-3">
 				<p className="font-semibold text-2xl pt-2 text-primaryBlack font-trap-grotesk">
 					{course?.price}
 				</p>
+				<button>
+					<img src={deleteicon} alt="Delete" />
+				</button>
+			</div>
+			<div className="flex flex-col gap-3">
 				<PrimaryButton
 					text={"Edit Course"}
 					className="w-full"
 					onClick={handleEditCourse}
+				/>
+				<SecondaryButton
+					text={"Create Quiz"}
+					className="w-full"
+					onClick={handleCreateQuiz}
 				/>
 			</div>
 			<div className="text-primaryBlack pt-3">

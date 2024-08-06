@@ -5,7 +5,6 @@ import {
 	RadioTextGroup,
 	RadioTextTrueFalse,
 	TextAreaField,
-	TextEditor,
 } from "../inputs/CourseCreationInputs";
 import { Divider } from "../Dividers";
 import arrowup from "/icons/arrow-up.svg";
@@ -99,6 +98,8 @@ const EditQuestionForm = ({ questionData, onSave, onCancel }) => {
 
 const QuestionForm = ({ questionData, onSave, onCancel, contentType }) => {
 	const [question, setQuestion] = useState("");
+	const [error, setError] = useState("");
+
 	const [radioTextGroupData, setRadioTextGroupData] = useState({
 		selectedValue: "",
 		textValues: {
@@ -111,8 +112,8 @@ const QuestionForm = ({ questionData, onSave, onCancel, contentType }) => {
 	const [radioTextTrueFalseData, setRadioTextTrueFalseData] = useState({
 		selectedValue: "",
 		textValues: {
-			option1: "",
-			option2: "",
+			option1: "True",
+			option2: "False",
 		},
 	});
 
@@ -121,7 +122,7 @@ const QuestionForm = ({ questionData, onSave, onCancel, contentType }) => {
 			setQuestion(questionData.question);
 			if (contentType === "multipleChoice") {
 				setRadioTextGroupData({
-					selectedValue: questionData.correctAnswer,
+					selectedValue: questionData.correctAnswer.value,
 					textValues: questionData.answers,
 				});
 			} else if (contentType === "trueFalse") {
@@ -143,6 +144,14 @@ const QuestionForm = ({ questionData, onSave, onCancel, contentType }) => {
 	};
 
 	const handleSave = () => {
+		if (
+			(contentType === "multipleChoice" &&
+				!radioTextGroupData.selectedValue) ||
+			(contentType === "trueFalse" && !radioTextTrueFalseData.selectedValue)
+		) {
+			setError("Please select a correct answer");
+			return;
+		}
 		const content = {
 			question,
 			type: contentType,
@@ -192,9 +201,109 @@ const QuestionForm = ({ questionData, onSave, onCancel, contentType }) => {
 					</div>
 				</>
 			)}
+			{error && <p className="text-red">{error}</p>}
 		</div>
 	);
 };
+
+// const QuestionForm = ({ questionData, onSave, onCancel, contentType }) => {
+// 	const [question, setQuestion] = useState("");
+// 	const [radioTextGroupData, setRadioTextGroupData] = useState({
+// 		selectedValue: "",
+// 		textValues: {
+// 			option1: "",
+// 			option2: "",
+// 			option3: "",
+// 			option4: "",
+// 		},
+// 	});
+// 	const [radioTextTrueFalseData, setRadioTextTrueFalseData] = useState({
+// 		selectedValue: "",
+// 		textValues: {
+// 			option1: "",
+// 			option2: "",
+// 		},
+// 	});
+
+// 	useEffect(() => {
+// 		if (questionData) {
+// 			setQuestion(questionData.question);
+// 			if (contentType === "multipleChoice") {
+// 				setRadioTextGroupData({
+// 					selectedValue: questionData.correctAnswer,
+// 					textValues: questionData.answers,
+// 				});
+// 			} else if (contentType === "trueFalse") {
+// 				setRadioTextTrueFalseData({
+// 					selectedValue: questionData.correctAnswer,
+// 					textValues: questionData.answers,
+// 				});
+// 			}
+// 		}
+// 		console.log("content type", contentType, questionData);
+// 	}, [questionData, contentType]);
+
+// 	const handleRadioTextGroupChange = (data) => {
+// 		setRadioTextGroupData(data);
+// 	};
+
+// 	const handleRadioTextTrueFalseChange = (data) => {
+// 		setRadioTextTrueFalseData(data);
+// 	};
+
+// 	const handleSave = () => {
+// 		const content = {
+// 			question,
+// 			type: contentType,
+// 			answers:
+// 				contentType === "multipleChoice"
+// 					? radioTextGroupData.textValues
+// 					: radioTextTrueFalseData.textValues,
+// 			correctAnswer:
+// 				contentType === "multipleChoice"
+// 					? radioTextGroupData.selectedValue
+// 					: radioTextTrueFalseData.selectedValue,
+// 		};
+// 		onSave(content);
+// 	};
+
+// 	return (
+// 		<div className="flex flex-col gap-2 mt-4">
+// 			<TextAreaField
+// 				placeholder="Enter Question"
+// 				rows="8"
+// 				value={question}
+// 				onChange={(e) => setQuestion(e.target.value)}
+// 			/>
+// 			{contentType === "multipleChoice" && (
+// 				<>
+// 					<h4>Add Answers</h4>
+// 					<RadioTextGroup
+// 						data={radioTextGroupData}
+// 						onDataChange={handleRadioTextGroupChange}
+// 					/>
+// 					<div className="flex gap-2 mt-4">
+// 						<PrimaryButton onClick={handleSave} text="Save" />
+// 						<SecondaryButton onClick={onCancel} text="Cancel" />
+// 					</div>
+// 				</>
+// 			)}
+// 			{contentType === "trueFalse" && (
+// 				<>
+// 					<h4>Add Answers</h4>
+// 					<RadioTextTrueFalse
+// 						data={radioTextTrueFalseData}
+// 						onDataChange={handleRadioTextTrueFalseChange}
+// 					/>
+// 					<div className="flex gap-2 mt-4">
+// 						<PrimaryButton onClick={handleSave} text="Save" />
+// 						<SecondaryButton onClick={onCancel} text="Cancel" />
+// 					</div>
+// 				</>
+// 			)}
+// 		</div>
+// 	);
+// };
 
 export const QuizItem = ({ item, updateQuizItem, deleteQuizItem }) => {
 	const [showAddQuestion, setShowAddQuestion] = useState(false);
@@ -207,7 +316,7 @@ export const QuizItem = ({ item, updateQuizItem, deleteQuizItem }) => {
 
 	const handleAddQuestion = (question) => {
 		const updatedItem = { ...item, questions: [...item.questions, question] };
-		updateQuizItem(item.id, updatedItem);
+		updateQuizItem(updatedItem);
 		setContentAdded(true);
 		setShowContent(true);
 		setShowAddQuestion(false);
@@ -230,7 +339,7 @@ export const QuizItem = ({ item, updateQuizItem, deleteQuizItem }) => {
 			...updatedItem.questions[editQuestionIndex],
 			...editedQuestion,
 		};
-		updateQuizItem(item.id, updatedItem);
+		updateQuizItem(updatedItem);
 		setEditQuestionIndex(null);
 		setShowEditForm(false);
 	};
@@ -240,7 +349,7 @@ export const QuizItem = ({ item, updateQuizItem, deleteQuizItem }) => {
 			...item,
 			questions: item.questions.filter((q) => q.id !== questionId),
 		};
-		updateQuizItem(item.id, updatedItem);
+		updateQuizItem(updatedItem);
 		if (updatedItem.questions.length === 0) {
 			setContentAdded(false);
 		}
@@ -249,7 +358,13 @@ export const QuizItem = ({ item, updateQuizItem, deleteQuizItem }) => {
 	return (
 		<div className="flex flex-col border border-lightGray rounded-lg p-4 mt-4">
 			<div className="flex justify-between items-center">
-				<h4 className="text-lg font-semibold">{item.quizTitle}</h4>
+				<div className="flex gap-3">
+					<h4 className="text-lg font-semibold">{item.quizTitle}</h4>
+					<button onClick={deleteQuizItem}>
+						<img src={deleteicon} alt="Delete" />
+					</button>
+				</div>
+
 				{!contentAdded && !showAddQuestion && (
 					<IconButton
 						text="Question"
@@ -276,12 +391,10 @@ export const QuizItem = ({ item, updateQuizItem, deleteQuizItem }) => {
 					<Divider />
 
 					{showAddQuestion && !contentAdded && (
-						<AddContentButton
-							onContentAdded={handleContentAdded}
-						/>
+						<AddContentButton onContentAdded={handleContentAdded} />
 					)}
 
-					{item.questions.length > 0 && (
+					{item?.questions?.length > 0 && (
 						<>
 							<div className="flex justify-between items-center">
 								<h4 className="text-lg font-semibold">Questions</h4>
@@ -299,7 +412,7 @@ export const QuizItem = ({ item, updateQuizItem, deleteQuizItem }) => {
 
 					{showEditForm && (
 						<QuestionForm
-							questionData={item.questions[editQuestionIndex]}
+							questionData={item?.questions[editQuestionIndex]}
 							contentType={contentType}
 							onSave={handleSaveEdit}
 							onCancel={() => {
@@ -311,7 +424,7 @@ export const QuizItem = ({ item, updateQuizItem, deleteQuizItem }) => {
 
 					{!showEditForm && (
 						<>
-							{item.questions.map((question, index) => (
+							{item?.questions?.map((question, index) => (
 								<div
 									key={index}
 									className="flex gap-3 items-center mt-2"
@@ -402,311 +515,3 @@ const AddContentButton = ({
 		</div>
 	);
 };
-
-// export const QuizItem = ({ item, updateQuizItem, deleteQuizItem }) => {
-// 	const [showAddQuestion, setShowAddQuestion] = useState(false);
-// 	const [showContent, setShowContent] = useState(false);
-// 	const [showAddContent, setShowAddContent] = useState(false);
-// 	const [contentAdded, setContentAdded] = useState(false);
-// 	const [showEditForm, setShowEditForm] = useState(false);
-// 	const [editQuestionIndex, setEditQuestionIndex] = useState(null);
-
-// 	const handleAddQuestion = (question) => {
-// 		const updatedItem = { ...item, questions: [...item.questions, question] };
-// 		updateQuizItem(item.id, updatedItem);
-// 		setContentAdded(true);
-// 		setShowContent(true);
-// 		setShowAddQuestion(false);
-// 		setShowAddContent(false);
-// 	};
-
-// 	const handleContentAdded = (content) => {
-// 		handleAddQuestion(content);
-// 	};
-
-// 	// const handleEditQuestion = (index) => {
-// 	// 	setEditQuestionIndex(index);
-// 	// 	setEditedQuestion(item.questions[index].question);
-// 	// 	setCurrentQuestionType(item.questions[index].type);
-// 	// 	if (item.questions[index].type === "multipleChoice") {
-// 	// 		setEditedOptions(item.questions[index].answers);
-// 	// 	} else if (item.questions[index].type === "trueFalse") {
-// 	// 		setEditedOptions(item.questions[index].answers);
-// 	// 	}
-// 	// };
-
-//      const handleEditQuestion = (index) => {
-// 			setEditQuestionIndex(index);
-// 			setShowEditForm(true);
-// 		};
-
-// 	// const handleSaveEdit = () => {
-// 	// 	const updatedItem = { ...item };
-// 	// 	updatedItem.questions[editQuestionIndex] = {
-// 	// 		...updatedItem.questions[editQuestionIndex],
-// 	// 		question: editedQuestion,
-// 	// 		answers: editedOptions,
-// 	// 		type: currentQuestionType,
-// 	// 	};
-// 	// 	updateQuizItem(item.id, updatedItem);
-// 	// 	setEditQuestionIndex(null);
-// 	// 	setEditedQuestion("");
-// 	// 	setEditedOptions([]);
-// 	// 	setCurrentQuestionType("");
-// 	// };
-
-//     const handleSaveEdit = (editedQuestion) => {
-// 			const updatedItem = { ...item };
-// 			updatedItem.questions[editQuestionIndex] = {
-// 				...updatedItem.questions[editQuestionIndex],
-// 				...editedQuestion,
-// 			};
-// 			updateQuizItem(item.id, updatedItem);
-// 			setEditQuestionIndex(null);
-// 			setShowEditForm(false);
-// 		};
-
-// 	const handleDeleteQuestion = (questionId) => {
-// 		const updatedItem = {
-// 			...item,
-// 			questions: item.questions.filter((q) => q.id !== questionId),
-// 		};
-// 		updateQuizItem(item.id, updatedItem);
-// 		if (updatedItem.questions.length === 0) {
-// 			setContentAdded(false);
-// 		}
-// 	};
-
-// 	return (
-// 		<div className="flex flex-col border border-lightGray rounded-lg p-4 mt-4">
-// 			<div className="flex justify-between items-center">
-// 				<h4 className="text-lg font-semibold">{item.quizTitle}</h4>
-// 				{!contentAdded && !showAddQuestion && (
-// 					<IconButton
-// 						text="Question"
-// 						icon={addicon}
-// 						onClick={() => {
-// 							setShowAddQuestion(true);
-// 							setShowContent(true);
-// 						}}
-// 					/>
-// 				)}
-// 				{(contentAdded || showAddQuestion) && (
-// 					<button onClick={() => setShowContent(!showContent)}>
-// 						{showContent ? (
-// 							<img src={arrowup} alt="Collapse" />
-// 						) : (
-// 							<img src={arrowdown} alt="Expand" />
-// 						)}
-// 					</button>
-// 				)}
-// 			</div>
-
-// 			{showContent && (
-// 				<>
-// 					<Divider />
-
-// 					{showAddQuestion && !contentAdded && (
-// 						<AddContentButton
-// 							onContentAdded={handleContentAdded}
-// 							onCancel={() => setShowAddQuestion(false)}
-// 						/>
-// 					)}
-// 					{item.questions.length > 0 && (
-// 						<div className="flex justify-between items-center">
-// 							<h4 className="text-lg font-semibold">Questions</h4>
-// 							<IconButton
-// 								text="Add Question"
-// 								icon={addicon}
-// 								onClick={() => {
-// 									setShowAddContent(true);
-// 								}}
-// 							/>
-// 						</div>
-// 					)}
-
-// 					{showEditForm && (
-// 						<EditQuestionForm
-// 							questionData={item.questions[editQuestionIndex]}
-// 							onSave={handleSaveEdit}
-// 							onCancel={() => {
-// 								setShowEditForm(false);
-// 								setEditQuestionIndex(null);
-// 							}}
-// 						/>
-// 					)}
-
-// 					<Divider />
-// 					{item.questions.map((question, index) => (
-// 						<div
-// 							key={index}
-// 							className="flex justify-between items-center mt-2"
-// 						>
-// 							<p>
-// 								Question {index + 1}: {question.question}
-// 							</p>
-// 							<div className="flex gap-2">
-// 								<button onClick={() => handleEditQuestion(index)}>
-// 									<img src={editicon} alt="Edit" />
-// 								</button>
-// 								<button
-// 									onClick={() => handleDeleteQuestion(question.id)}
-// 								>
-// 									<img src={deleteicon} alt="Delete" />
-// 								</button>
-// 							</div>
-// 						</div>
-// 					))}
-
-// 					{showAddContent && (
-// 						<AddContentButton
-// 							onContentAdded={handleContentAdded}
-// 							onCancel={() => setShowAddQuestion(false)}
-// 						/>
-// 					)}
-// 				</>
-// 			)}
-// 		</div>
-// 	);
-// };
-
-// const AddContentButton = ({
-// 	onContentAdded,
-// 	existingContent,
-// 	onContentDeleted,
-// }) => {
-// 	const [showInput, setShowInput] = useState(false);
-// 	const [contentType, setContentType] = useState(null);
-// 	const [question, setQuestion] = useState(existingContent?.question || "");
-// 	const [radioTextGroupData, setRadioTextGroupData] = useState({
-// 		selectedValue: "",
-// 		textValues: {
-// 			option1: "",
-// 			option2: "",
-// 			option3: "",
-// 			option4: "",
-// 		},
-// 	});
-// 	const [radioTextTrueFalseData, setRadioTextTrueFalseData] = useState({
-// 		selectedValue: "",
-// 		textValues: {
-// 			option1: "",
-// 			option2: "",
-// 		},
-// 	});
-
-// 	const handleRadioTextGroupChange = (data) => {
-// 		setRadioTextGroupData(data);
-// 	};
-
-// 	const handleRadioTextTrueFalseChange = (data) => {
-// 		setRadioTextTrueFalseData(data);
-// 	};
-
-// 	const handleAdd = () => {
-// 		const content = { question };
-// 		if (contentType === "multipleChoice") {
-// 			onContentAdded({
-// 				type: "multipleChoice",
-// 				question,
-// 				answers: radioTextGroupData.textValues,
-// 				correctAnswer: radioTextGroupData.selectedValue,
-// 			});
-// 		} else if (contentType === "trueFalse") {
-// 			onContentAdded({
-// 				type: "trueFalse",
-// 				question,
-// 				answers: radioTextTrueFalseData.textValues,
-// 				correctAnswer: radioTextTrueFalseData.selectedValue,
-// 			});
-// 		}
-// 		resetState();
-// 	};
-
-// 	const handleCancel = () => {
-// 		resetState();
-// 	};
-
-// 	const resetState = () => {
-// 		setQuestion("");
-// 		setRadioTextGroupData({
-// 			selectedValue: "",
-// 			textValues: {
-// 				option1: "",
-// 				option2: "",
-// 				option3: "",
-// 				option4: "",
-// 			},
-// 		});
-// 		setRadioTextTrueFalseData({
-// 			selectedValue: "",
-// 			textValues: {
-// 				option1: "",
-// 				option2: "",
-// 			},
-// 		});
-// 		setShowInput(false);
-// 		setContentType(null);
-// 	};
-
-// 	return (
-// 		<div>
-// 			{showInput ? (
-// 				<div className="flex flex-col gap-2">
-// 					<TextAreaField
-// 						placeholder="Enter Question"
-// 						rows="8"
-// 						value={question}
-// 						onChange={(e) => setQuestion(e.target.value)}
-// 					/>
-// 					{contentType === "multipleChoice" && (
-// 						<>
-// 							<h4>Add Answers</h4>
-// 							<RadioTextGroup
-// 								data={radioTextGroupData}
-// 								onDataChange={handleRadioTextGroupChange}
-// 							/>
-// 							<div className="flex gap-2 mt-4">
-// 								<PrimaryButton onClick={handleAdd} text="Save" />
-// 								<SecondaryButton onClick={handleCancel} text="Cancel" />
-// 							</div>
-// 						</>
-// 					)}
-// 					{contentType === "trueFalse" && (
-// 						<>
-// 							<h4>Add Answers</h4>
-// 							<RadioTextTrueFalse
-// 								data={radioTextTrueFalseData}
-// 								onDataChange={handleRadioTextTrueFalseChange}
-// 							/>
-// 							<div className="flex gap-2 mt-4">
-// 								<PrimaryButton onClick={handleAdd} text="Save" />
-// 								<SecondaryButton onClick={handleCancel} text="Cancel" />
-// 							</div>
-// 						</>
-// 					)}
-// 				</div>
-// 			) : (
-// 				<div className="flex gap-2 mt-4 justify-center">
-// 					<IconButton
-// 						onClick={() => {
-// 							setShowInput(true);
-// 							setContentType("multipleChoice");
-// 						}}
-// 						text="Multiple Choice"
-// 						className="border-primaryBlue"
-// 						icon={texticon}
-// 					/>
-// 					<IconButton
-// 						onClick={() => {
-// 							setShowInput(true);
-// 							setContentType("trueFalse");
-// 						}}
-// 						text="True/False"
-// 						icon={videoicon}
-// 					/>
-// 				</div>
-// 			)}
-// 		</div>
-// 	);
-// };

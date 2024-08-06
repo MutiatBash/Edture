@@ -27,6 +27,7 @@ import Chat from "./pages/Chat";
 import { SessionTimeoutModal } from "./components/popups/Modal";
 import { useSessionTimeout, useInactivityTimeout } from "./utils/customHooks";
 import Profile from "./pages/Profile";
+import Quiz from "./pages/Quiz";
 
 const App = () => {
 	const [isTimeoutModal, setIsTimeoutModal] = useState(null);
@@ -72,6 +73,7 @@ const App = () => {
 					<Route path="/profile" element={<Profile />} />
 					<Route path="/courses" element={<Courses />} />
 					<Route path="/courses/:id" element={<CourseDetails />} />
+					<Route path="/courses/:id/quiz" element={<Quiz />} />
 					<Route
 						path="/courses/course-content/:id"
 						element={<CourseContent />}
