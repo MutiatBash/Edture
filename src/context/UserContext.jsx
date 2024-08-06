@@ -41,7 +41,7 @@ const UserContextProvider = ({ children }) => {
 		loading: tutorLoading,
 		error: tutorError,
 	} = useApi(
-		role === "tutor"
+		role === "TUTOR"
 			? "https://edture.onrender.com/users/tutor/dashboard"
 			: null,
 		token
@@ -53,7 +53,7 @@ const UserContextProvider = ({ children }) => {
 		loading: studentLoading,
 		error: studentError,
 	} = useApi(
-		role === "student"
+		role === "STUDENT"
 			? "https://edture.onrender.com/users/dashboard/student"
 			: null,
 		token
@@ -65,7 +65,7 @@ const UserContextProvider = ({ children }) => {
 		loading: studentCoursesLoading,
 		error: studentCoursesError,
 	} = useApi(
-		role === "student"
+		role === "STUDENT"
 			? "https://edture.onrender.com/users/student/courses"
 			: null,
 		token

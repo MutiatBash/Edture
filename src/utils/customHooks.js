@@ -9,7 +9,7 @@ export const useApi = (url, token) => {
 	const [error, setError] = useState(null);
 
 	useEffect(() => {
-		if (!url) {
+		if (!url ) {
 			setLoading(false);
 			return;
 		}

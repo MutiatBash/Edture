@@ -50,7 +50,7 @@ const CourseDetails = () => {
 		loading: enrolledCoursesLoading,
 		error: enrolledCoursesError,
 	} = useApi(
-		role === "student"
+		role === "STUDENT"
 			? `https://edture.onrender.com/users/student/courses/${id}`
 			: null,
 		token
