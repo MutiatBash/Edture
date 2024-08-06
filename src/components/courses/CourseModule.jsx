@@ -237,3 +237,69 @@ export const QuizModule = ({ quizTitle, quizItems, isExpanded, onToggle }) => {
 		</div>
 	);
 };
+
+export const QuizContent = ({ quizTitle, quizItems, isExpanded, onToggle }) => {
+	const [isOpen, setIsOpen] = useState(isExpanded);
+
+	useEffect(() => {
+		setIsOpen(isExpanded);
+	}, [isExpanded]);
+
+	const toggleModule = () => {
+		setIsOpen((prev) => {
+			const newOpen = !prev;
+			onToggle(newOpen);
+			return newOpen;
+		});
+	};
+
+	return (
+		<div className=" w-full border border-lightGray">
+			<div
+				className="flex gap-2 bg-nude p-3 cursor-pointer transition-all ease-in duration-300"
+				onClick={toggleModule}
+			>
+				<span className="transform transition-transform duration-300">
+					<img
+						src={isOpen ? arrowup : arrowdown}
+						alt="Toggle icon"
+						className="w-4 h-4"
+					/>
+				</span>
+				<div className="flex justify-between w-full">
+					<h3>{quizTitle}</h3>
+				</div>
+			</div>
+			{isOpen && (
+				<div className="submodules bg-white p-3">
+					{quizItems?.map((quiz, index) => (
+						<div key={index} className="mb-4">
+							<div className="flex items-center gap-3">
+								<img className="w-5" src={book} alt="Book Icon" />
+								<h5 className="font-semibold">{quiz.title}</h5>
+							</div>
+
+							{/* {quiz.questions?.map((question, index) => (
+								<div key={index} className="quiz-question my-2">
+									<div className="flex gap-2 items-center">
+										<p>Question {index + 1}:</p>
+										<p className="font-medium">
+											{question.questionText}
+										</p>
+									</div>
+									<ul className="quiz-options list-disc ml-5">
+										{question.answers?.map((answer, aIndex) => (
+											<li key={aIndex} className="text-darkGray">
+												{answer.option}
+											</li>
+										))}
+									</ul>
+								</div>
+							))} */}
+						</div>
+					))}
+				</div>
+			)}
+		</div>
+	);
+};

@@ -20,10 +20,7 @@ import danger from "/icons/danger.svg";
 import quiz from "/quiz.svg";
 import tutor from "/tutor-profile.svg";
 import certificate from "/icons/certificate.svg";
-import {
-	ContentModule,
-	CourseModule,
-} from "../components/courses/CourseModule";
+import { ContentModule, QuizModule, QuizContent } from "../components/courses/CourseModule";
 import ProgressBar from "../components/ProgressBar";
 import { useApi } from "../utils/customHooks";
 import { SpinnerLoader } from "../components/Loader";
@@ -49,6 +46,12 @@ const CourseContent = () => {
 		loading: courseContentsLoading,
 		error: courseContentsError,
 	} = useApi(`https://edture.onrender.com/users/student/courses/${id}`, token);
+
+	const {
+		data: quizzes,
+		loading: quizzesLoading,
+		error: quizzesError,
+	} = useApi(`https://edture.onrender.com/courses/${id}/quiz`, token);
 
 	const course = courseContents;
 	const courseLessonsData = course?.lessons || [];
@@ -216,6 +219,14 @@ const CourseContent = () => {
 									onTopicSelect={handleTopicSelect}
 								/>
 							))}
+							{quizzes?.length > 0 && (
+								<QuizContent
+									quizTitle="Quiz"
+									quizItems={quizzes}
+									isExpanded={false}
+									onToggle={() => {}}
+								/>
+							)}
 						</div>
 					</div>
 
