@@ -93,6 +93,7 @@ const StudentSignin = () => {
 					"/student-signup",
 					"/forgot-password",
 					"/reset-password",
+					"/"
 				].includes(lastLocation)
 			) {
 				navigate(lastLocation);

@@ -10,7 +10,6 @@ import { userContext } from "../../context/UserContext";
 import LessonContainer from "./LessonsContainer";
 import { SuccessModal, ConfirmationModal } from "../popups/Modal";
 import successgif from "/success-gif.gif";
-import QuizCreation from "./QuizCreation";
 import axios from "axios";
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
@@ -142,7 +141,6 @@ const CreateCourse = ({ onCancel }) => {
 	const validate = () => {
 		const newErrors = {};
 
-		// Validate based on the current step
 		if (step === 1) {
 			// Step 1 validation
 			if (!formData.courseTitle)
@@ -516,30 +514,6 @@ const CreateCourse = ({ onCancel }) => {
 						onConfirm={navigateToCourses}
 					/>
 				)}
-
-				{/* {step === 4 && (
-					<div className="flex flex-col gap-4">
-						<div className="flex flex-col gap-3">
-							<h3 className="text-xl font-semibold mb-2 text-primaryBlack">
-								Course Curriculum
-							</h3>
-							<p className="font-trap-grotesk text-lg">
-								Build your course by creating lessons and topics.{" "}
-								<br></br>
-								Use your outline to structure content and label clearly,
-								create quiz at the end of the course.
-							</p>
-						</div>
-						<QuizCreation />
-						<div className="flex justify-between pt-8">
-							<SecondaryButton
-								onClick={handlePreviousStep}
-								text={"Previous"}
-							/>
-							<PrimaryButton text={"Create"} />
-						</div>
-					</div>
-				)} */}
 			</div>
 		</>
 	);

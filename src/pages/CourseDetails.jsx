@@ -22,6 +22,7 @@ import { useCart } from "../context/CartContext";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { formatPriceWithCommas } from "../utils/utils";
+import EditCourse from "../components/courses/EditCourse";
 
 const CourseDetails = () => {
 	const { id } = useParams();
@@ -538,7 +539,12 @@ const CourseModal = ({ course, courseInProgress }) => {
 };
 
 const TutorModal = ({ course }) => {
+	const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 	const navigate = useNavigate();
+
+	const handleEditCourse = () => {
+		setIsEditModalOpen(true);
+	};
 	return (
 		<div className="fixed top-32 right-14 p-4 w-full max-w-[400px] max-h-[90vh] bg-white shadow-lg z-20 rounded-lg font-trap-grotesk">
 			<div className="mb-4">
@@ -552,7 +558,11 @@ const TutorModal = ({ course }) => {
 				<p className="font-semibold text-2xl pt-2 text-primaryBlack font-trap-grotesk">
 					{course?.price}
 				</p>
-				<PrimaryButton text={"Edit Course"} className="w-full" />
+				<PrimaryButton
+					text={"Edit Course"}
+					className="w-full"
+					onClick={handleEditCourse}
+				/>
 			</div>
 			<div className="text-primaryBlack pt-3">
 				<h5 className="font-bold font-trap-grotesk text-lg">
@@ -597,6 +607,12 @@ const TutorModal = ({ course }) => {
 					</div>
 				</div>
 			</div>
+			{isEditModalOpen && (
+				<EditCourse
+					course={course}
+					onCancel={() => setIsEditModalOpen(false)}
+				/>
+			)}
 		</div>
 	);
 };

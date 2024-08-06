@@ -89,6 +89,7 @@ const TutorSignin = () => {
 					"/tutor-signup",
 					"/forgot-password",
 					"/reset-password",
+					"/",
 				].includes(lastLocation)
 			) {
 				navigate(lastLocation);

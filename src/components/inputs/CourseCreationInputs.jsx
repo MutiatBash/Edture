@@ -54,7 +54,7 @@ export const InputField = ({
 					{subtitle}
 				</p>
 			)}
-			<label className="sr-only">{label}</label>
+			{label && <label className="pb-2 font-trap-grotesk font-medium text-lg">{label}</label>}
 			<input
 				type={type === "number" ? "text" : type}
 				name={name}
@@ -93,7 +93,11 @@ export const TextAreaField = ({
 					{subtitle}
 				</p>
 			)}
-			<label className="sr-only">{label}</label>
+			{label && (
+				<label className="pb-2 font-trap-grotesk font-medium text-lg">
+					{label}
+				</label>
+			)}
 			<textarea
 				value={value}
 				onChange={onChange}
@@ -125,7 +129,11 @@ export const SelectField = ({
 					{title}
 				</h3>
 			)}
-			<label className="sr-only">{label}</label>
+			{label && (
+				<label className="pb-2 font-trap-grotesk font-medium text-lg">
+					{label}
+				</label>
+			)}
 			<select
 				value={value}
 				onChange={onChange}
@@ -137,7 +145,7 @@ export const SelectField = ({
 				<option value="" disabled className="text-lightGray">
 					{placeholder}
 				</option>
-				{options.map((option, index) => (
+				{options?.map((option, index) => (
 					<option key={index} value={option.value}>
 						{option.label}
 					</option>
@@ -182,7 +190,11 @@ export const FileUploadField = ({
 					{subtitle}
 				</p>
 			)}
-			<label className="sr-only">{label}</label>
+			{label && (
+				<label className="pb-2 font-trap-grotesk font-medium text-lg">
+					{label}
+				</label>
+			)}
 			<div
 				className={`relative h-72 w-[460px] border border-dashed border-lightGray rounded-lg overflow-hidden ${
 					error ? "border-red" : " border-lightGray"
@@ -194,7 +206,7 @@ export const FileUploadField = ({
 					onChange={onFileChange}
 					className={`absolute inset-0 opacity-0 w-full h-full cursor-pointer z-10 `}
 				/>
-				{localFileData.fileUrl ? (
+				{localFileData?.fileUrl ? (
 					<img
 						src={localFileData.fileUrl}
 						alt={localFileData.fileName}
@@ -211,7 +223,7 @@ export const FileUploadField = ({
 				)}
 			</div>
 			{note && <p className="mt-2 text-lightGray">{note}</p>}
-			{localFileData.fileName && (
+			{localFileData?.fileName && (
 				<p className="text-lg mt-2 text-primaryBlack">
 					Uploaded file: {localFileData.fileName}
 				</p>
@@ -221,53 +233,53 @@ export const FileUploadField = ({
 	);
 };
 
-export const TextEditor = ({ value, onChange, placeholder }) => {
-	const editorRef = useRef(null);
+// export const TextEditor = ({ value, onChange, placeholder }) => {
+// 	const editorRef = useRef(null);
 
-	useEffect(() => {
-		if (editorRef.current) {
-			editorRef.current.innerHTML = value;
-		}
-	}, [value]);
+// 	useEffect(() => {
+// 		if (editorRef.current) {
+// 			editorRef.current.innerHTML = value;
+// 		}
+// 	}, [value]);
 
-	const handleCommand = (command) => {
-		document.execCommand(command, false, null);
-	};
+// 	const handleCommand = (command) => {
+// 		document.execCommand(command, false, null);
+// 	};
 
-	const handleInput = () => {
-		if (editorRef.current) {
-			onChange(editorRef.current.innerHTML);
-		}
-	};
+// 	const handleInput = () => {
+// 		if (editorRef.current) {
+// 			onChange(editorRef.current.innerHTML);
+// 		}
+// 	};
 
-	return (
-		<div className="border rounded p-4">
-			<div className="mb-2">
-				<button
-					type="button"
-					onClick={() => handleCommand("bold")}
-					className="mr-2 p-2 bg-gray-200 rounded hover:bg-gray-300"
-				>
-					<b>B</b>
-				</button>
-				<button
-					type="button"
-					onClick={() => handleCommand("italic")}
-					className="p-2 bg-gray-200 rounded hover:bg-gray-300"
-				>
-					<i>I</i>
-				</button>
-			</div>
-			<div
-				ref={editorRef}
-				contentEditable
-				onInput={handleInput}
-				className="min-h-[150px] border border-gray-300 rounded p-2 outline-none"
-				placeholder={placeholder}
-			></div>
-		</div>
-	);
-};
+// 	return (
+// 		<div className="border rounded p-4">
+// 			<div className="mb-2">
+// 				<button
+// 					type="button"
+// 					onClick={() => handleCommand("bold")}
+// 					className="mr-2 p-2 bg-gray-200 rounded hover:bg-gray-300"
+// 				>
+// 					<b>B</b>
+// 				</button>
+// 				<button
+// 					type="button"
+// 					onClick={() => handleCommand("italic")}
+// 					className="p-2 bg-gray-200 rounded hover:bg-gray-300"
+// 				>
+// 					<i>I</i>
+// 				</button>
+// 			</div>
+// 			<div
+// 				ref={editorRef}
+// 				contentEditable
+// 				onInput={handleInput}
+// 				className="min-h-[150px] border border-gray-300 rounded p-2 outline-none"
+// 				placeholder={placeholder}
+// 			></div>
+// 		</div>
+// 	);
+// };
 
 export const RadioTextGroup = ({ data, onDataChange }) => {
 	const [selectedValue, setSelectedValue] = useState(data.selectedValue || "");

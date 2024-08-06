@@ -56,6 +56,7 @@ export const useInactivityTimeout = (timeout, setIsTimeoutModal) => {
 		"/student-signup",
 		"/reset-password",
 		"/forgot-password",
+		"/",
 	];
 
 	const resetTimer = () => {
@@ -131,6 +132,7 @@ export const useSessionTimeout = (setIsTimeoutModal) => {
 		"/student-signup",
 		"/reset-password",
 		"/forgot-password",
+		"/",
 	];
 
 	const clearSessionAndRedirect = () => {

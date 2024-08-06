@@ -249,13 +249,13 @@ const CourseContent = () => {
 								Resources
 							</button>
 							<div
-								className="absolute -bottom-[8.5px] rounded left-0 h-[1.5px] w-[10%] bg-primaryBlue transition-all duration-300"
+								className="absolute -bottom-[8.5px] rounded left-0 h-[1.5px] w-[12%] bg-primaryBlue transition-all duration-300"
 								style={{
 									transform: videoUrl
 										? activeTab === "discuss"
 											? "translateX(2%)"
 											: activeTab === "resources"
-											? "translateX(110%)"
+											? "translateX(100%)"
 											: "translateX(0)"
 										: activeTab === "discuss"
 										? "translateX(110%)"
