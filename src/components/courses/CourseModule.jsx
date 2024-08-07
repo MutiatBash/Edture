@@ -277,7 +277,7 @@ export const QuizSidebar = ({
 				</div>
 			</div>
 			{isOpen && (
-				<div className="submodules bg-white p-3">
+				<div className="bg-white p-3 cursor-pointer">
 					{quizItems?.map((quiz, index) => (
 						<div key={index} className="mb-4" onClick={onQuizSelect}>
 							<div className="flex items-center gap-3">

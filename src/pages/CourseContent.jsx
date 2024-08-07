@@ -71,6 +71,9 @@ const CourseContent = () => {
 	const [selectedTopic, setSelectedTopic] = useState(null);
 	const [showQuizContent, setShowQuizContent] = useState(false);
 	const [currentQuizIndex, setCurrentQuizIndex] = useState(0);
+	const [selectedAnswer, setSelectedAnswer] = useState(null);
+	const [responses, setResponses] = useState({});
+
 
 	const handleExpandAllClick = useCallback(() => {
 		const newExpandAll = !expandAll;
@@ -115,9 +118,24 @@ const CourseContent = () => {
 	};
 
 	const handleNextQuestion = () => {
-		if (currentQuizIndex < quizzes.length - 1) {
-			setCurrentQuizIndex(currentQuizIndex + 1);
+		if (selectedAnswer === null) {
+			alert("Please select an answer before proceeding.");
+			return;
 		}
+
+		if (currentQuizIndex < quizzes.questions.length - 1) {
+			setCurrentQuizIndex(currentQuizIndex + 1);
+			setSelectedAnswer(responses[currentQuizIndex] || null); 
+		}
+	};
+
+
+	const handleAnswerSelect = (answerId) => {
+		setSelectedAnswer(answerId);
+		setResponses((prevResponses) => ({
+			...prevResponses,
+			[currentQuizIndex]: answerId,
+		}));
 	};
 
 	const calculateTotalDuration = () => {
@@ -198,8 +216,9 @@ const CourseContent = () => {
 							<input
 								type="radio"
 								name="quizOption"
-								value={option.option}
-								className=""
+								value={option.id}
+								checked={responses[currentQuizIndex] === option.id}
+								onChange={() => handleAnswerSelect(option.id)}
 							/>
 							<label className="font-trap-grotesk text-lg capitalize">
 								{option.option}
@@ -214,7 +233,7 @@ const CourseContent = () => {
 							/>
 						)}
 
-						<PrimaryButton onClick={handleNextQuestion} text="Next" />
+						<PrimaryButton onClick={handleNextQuestion} text="Next" disabled={selectedAnswer === null}/>
 					</div>
 				</div>
 			</div>
