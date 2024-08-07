@@ -20,7 +20,11 @@ import danger from "/icons/danger.svg";
 import quiz from "/quiz.svg";
 import tutor from "/tutor-profile.svg";
 import certificate from "/icons/certificate.svg";
-import { ContentModule, QuizModule, QuizContent } from "../components/courses/CourseModule";
+import {
+	ContentModule,
+	QuizModule,
+	QuizSidebar,
+} from "../components/courses/CourseModule";
 import ProgressBar from "../components/ProgressBar";
 import { useApi } from "../utils/customHooks";
 import { SpinnerLoader } from "../components/Loader";
@@ -39,6 +43,7 @@ const CourseContent = () => {
 		courses: allCourses,
 		token,
 		user,
+		role,
 	} = useContext(userContext);
 
 	const {
@@ -56,8 +61,6 @@ const CourseContent = () => {
 	const course = courseContents;
 	const courseLessonsData = course?.lessons || [];
 
-	const videoRef = useRef(null);
-
 	useEffect(() => {
 		window.scrollTo(0, 0);
 	}, []);
@@ -66,6 +69,8 @@ const CourseContent = () => {
 	const [modulesState, setModulesState] = useState({});
 	const [activeTab, setActiveTab] = useState("study");
 	const [selectedTopic, setSelectedTopic] = useState(null);
+	const [showQuizContent, setShowQuizContent] = useState(false);
+	const [currentQuizIndex, setCurrentQuizIndex] = useState(0);
 
 	const handleExpandAllClick = useCallback(() => {
 		const newExpandAll = !expandAll;
@@ -95,6 +100,24 @@ const CourseContent = () => {
 
 	const handleTopicSelect = (topic) => {
 		setSelectedTopic(topic);
+		setShowQuizContent(false);
+	};
+
+	const handleQuizSelect = () => {
+		setShowQuizContent(true);
+		setActiveTab("quiz");
+	};
+
+	const handlePreviousQuestion = () => {
+		if (currentQuizIndex > 0) {
+			setCurrentQuizIndex(currentQuizIndex - 1);
+		}
+	};
+
+	const handleNextQuestion = () => {
+		if (currentQuizIndex < quizzes.length - 1) {
+			setCurrentQuizIndex(currentQuizIndex + 1);
+		}
 	};
 
 	const calculateTotalDuration = () => {
@@ -142,7 +165,72 @@ const CourseContent = () => {
 		}
 	}, [selectedTopic]);
 
+	const QuizContent = ({ quizzes, currentQuizIndex, quizData }) => {
+		const currentQuiz = quizzes[currentQuizIndex];
+
+		return (
+			<div>
+				<div>
+					{quizData?.map((quiz, index) => (
+						<div key={index} className="mb-4 flex items-center gap-4">
+							<h2 className="text-3xl font-bold capitalize">
+								{quiz.title}
+							</h2>
+							<span className="rounded-full px-3 py-1 font-medium text-darkBlue bg-secondaryHoverBlue">
+								Quiz
+							</span>
+						</div>
+					))}
+				</div>
+				<Divider />
+				<div className="pt-5">
+					<div className="flex flex-col gap-3 items-center">
+						<span className="text-sm text-lightGray text-center">
+							Question {currentQuizIndex + 1}
+						</span>
+						<h5 className="font-trap-grotesk text-xl capitalize text-center font-semibold">
+							{currentQuiz?.questionText} ?
+						</h5>
+					</div>
+
+					{currentQuiz?.answers?.map((option, index) => (
+						<div key={index} className="flex gap-4 justify-start">
+							<input
+								type="radio"
+								name="quizOption"
+								value={option.option}
+								className=""
+							/>
+							<label className="font-trap-grotesk text-lg capitalize">
+								{option.option}
+							</label>
+						</div>
+					))}
+					<div className="flex gap-4 mt-4 justify-between items-center">
+						{currentQuizIndex === 1 && (
+							<SecondaryButton
+								onClick={handlePreviousQuestion}
+								text="Previous"
+							/>
+						)}
+
+						<PrimaryButton onClick={handleNextQuestion} text="Next" />
+					</div>
+				</div>
+			</div>
+		);
+	};
+
 	const renderContent = () => {
+		if (activeTab === "quiz" && showQuizContent) {
+			return (
+				<QuizContent
+					quizzes={quizzes[currentQuizIndex]?.questions}
+					currentQuizIndex={currentQuizIndex}
+					quizData={quizzes}
+				/>
+			);
+		}
 		return activeTab === "study" ? (
 			<div className="">
 				<p className="font-trap-grotesk text-lg">{textContent}</p>
@@ -200,13 +288,13 @@ const CourseContent = () => {
 							<h5 className="text-lg font-trap-grotesk font-semibold">
 								Course Content
 							</h5>
-							<SecondaryButton
+							{/* <SecondaryButton
 								onClick={handleExpandAllClick}
 								className="font-trap-grotesk text-primary text-sm"
 								text={expandAll ? "Collapse" : "Expand"}
-							/>
+							/> */}
 						</div>
-						<div>
+						<div className="h-full ">
 							{courseLessonsData?.map((lesson, index) => (
 								<ContentModule
 									key={index}
@@ -220,11 +308,12 @@ const CourseContent = () => {
 								/>
 							))}
 							{quizzes?.length > 0 && (
-								<QuizContent
+								<QuizSidebar
 									quizTitle="Quiz"
 									quizItems={quizzes}
 									isExpanded={false}
 									onToggle={() => {}}
+									onQuizSelect={handleQuizSelect}
 								/>
 							)}
 						</div>
@@ -232,51 +321,63 @@ const CourseContent = () => {
 
 					<div className="p-8 w-full">
 						{videoUrl && <VideoComponent url={videoUrl} />}
-						<div className="flex gap-14 items-center px-6 p-1 text-center relative">
-							{!videoUrl && (
-								<button
-									className={`hover:text-primaryBlue font-trap-grotesk ${
-										activeTab === "study" ? "text-primaryBlue" : ""
-									}`}
-									onClick={() => setActiveTab("study")}
-								>
-									Study
-								</button>
-							)}
-							<button
-								className={`hover:text-primaryBlue font-trap-grotesk ${
-									activeTab === "discuss" ? "text-primaryBlue" : ""
-								}`}
-								onClick={() => setActiveTab("discuss")}
-							>
-								Discuss
-							</button>
-							<button
-								className={`hover:text-primaryBlue font-trap-grotesk ${
-									activeTab === "resources" ? "text-primaryBlue" : ""
-								}`}
-								onClick={() => setActiveTab("resources")}
-							>
-								Resources
-							</button>
-							<div
-								className="absolute -bottom-[8.5px] rounded left-0 h-[1.5px] w-[12%] bg-primaryBlue transition-all duration-300"
-								style={{
-									transform: videoUrl
-										? activeTab === "discuss"
-											? "translateX(2%)"
-											: activeTab === "resources"
-											? "translateX(100%)"
-											: "translateX(0)"
-										: activeTab === "discuss"
-										? "translateX(110%)"
-										: activeTab === "resources"
-										? "translateX(240%)"
-										: "translateX(0)",
-								}}
-							></div>
-						</div>
-						<Divider />
+
+						{!showQuizContent && (
+							<>
+								<div className="flex gap-14 items-center px-6 p-1 text-center relative">
+									{!videoUrl && (
+										<button
+											className={`hover:text-primaryBlue font-trap-grotesk ${
+												activeTab === "study"
+													? "text-primaryBlue"
+													: ""
+											}`}
+											onClick={() => setActiveTab("study")}
+										>
+											Study
+										</button>
+									)}
+									<button
+										className={`hover:text-primaryBlue font-trap-grotesk ${
+											activeTab === "discuss"
+												? "text-primaryBlue"
+												: ""
+										}`}
+										onClick={() => setActiveTab("discuss")}
+									>
+										Discuss
+									</button>
+									<button
+										className={`hover:text-primaryBlue font-trap-grotesk ${
+											activeTab === "resources"
+												? "text-primaryBlue"
+												: ""
+										}`}
+										onClick={() => setActiveTab("resources")}
+									>
+										Resources
+									</button>
+									<div
+										className="absolute -bottom-[8.5px] rounded left-0 h-[1.5px] w-[12%] bg-primaryBlue transition-all duration-300"
+										style={{
+											transform: videoUrl
+												? activeTab === "discuss"
+													? "translateX(2%)"
+													: activeTab === "resources"
+													? "translateX(100%)"
+													: "translateX(0)"
+												: activeTab === "discuss"
+												? "translateX(80%)"
+												: activeTab === "resources"
+												? "translateX(188%)"
+												: "translateX(0)",
+										}}
+									></div>
+								</div>
+								<Divider />
+							</>
+						)}
+
 						<div className="py-3 flex flex-col gap-3">
 							{renderContent()}
 						</div>

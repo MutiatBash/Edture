@@ -117,7 +117,7 @@ export const ContentModule = ({
 	return (
 		<div className=" w-full border border-lightGray">
 			<div
-				className="flex gap-2 bg-nude p-3 cursor-pointer transition-all ease-in duration-300"
+				className="flex gap-2 bg-white p-3 cursor-pointer transition-all ease-in duration-300"
 				onClick={toggleModule}
 			>
 				<span className="transform transition-transform duration-300">
@@ -129,8 +129,8 @@ export const ContentModule = ({
 				</span>
 				<div className="flex justify-between w-full">
 					<h3>{lessonTitle}</h3>
-					<p className="text-sm text-darkGray">
-						{totalTopics} {topicLabel} • {formattedTotalDuration}
+					<p className="text-sm text-darkGray whitespace-nowrap">
+						{totalTopics} {topicLabel}
 					</p>
 				</div>
 			</div>
@@ -238,7 +238,13 @@ export const QuizModule = ({ quizTitle, quizItems, isExpanded, onToggle }) => {
 	);
 };
 
-export const QuizContent = ({ quizTitle, quizItems, isExpanded, onToggle }) => {
+export const QuizSidebar = ({
+	quizTitle,
+	quizItems,
+	isExpanded,
+	onToggle,
+	onQuizSelect,
+}) => {
 	const [isOpen, setIsOpen] = useState(isExpanded);
 
 	useEffect(() => {
@@ -256,7 +262,7 @@ export const QuizContent = ({ quizTitle, quizItems, isExpanded, onToggle }) => {
 	return (
 		<div className=" w-full border border-lightGray">
 			<div
-				className="flex gap-2 bg-nude p-3 cursor-pointer transition-all ease-in duration-300"
+				className="flex gap-2 bg-white p-3 cursor-pointer transition-all ease-in duration-300"
 				onClick={toggleModule}
 			>
 				<span className="transform transition-transform duration-300">
@@ -273,29 +279,11 @@ export const QuizContent = ({ quizTitle, quizItems, isExpanded, onToggle }) => {
 			{isOpen && (
 				<div className="submodules bg-white p-3">
 					{quizItems?.map((quiz, index) => (
-						<div key={index} className="mb-4">
+						<div key={index} className="mb-4" onClick={onQuizSelect}>
 							<div className="flex items-center gap-3">
 								<img className="w-5" src={book} alt="Book Icon" />
 								<h5 className="font-semibold">{quiz.title}</h5>
 							</div>
-
-							{/* {quiz.questions?.map((question, index) => (
-								<div key={index} className="quiz-question my-2">
-									<div className="flex gap-2 items-center">
-										<p>Question {index + 1}:</p>
-										<p className="font-medium">
-											{question.questionText}
-										</p>
-									</div>
-									<ul className="quiz-options list-disc ml-5">
-										{question.answers?.map((answer, aIndex) => (
-											<li key={aIndex} className="text-darkGray">
-												{answer.option}
-											</li>
-										))}
-									</ul>
-								</div>
-							))} */}
 						</div>
 					))}
 				</div>

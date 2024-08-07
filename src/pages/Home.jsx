@@ -107,7 +107,7 @@ const Home = () => {
 					</div>
 					<div>
 						<CourseCarousel>
-							{coursesInProgress?.map((course, index) => (
+							{allCourses?.courses?.map((course, index) => (
 								<CourseCard key={index} course={course} />
 							))}
 						</CourseCarousel>
