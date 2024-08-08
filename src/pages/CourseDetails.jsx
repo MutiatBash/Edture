@@ -10,9 +10,7 @@ import book from "/icons/book.svg";
 import danger from "/icons/danger.svg";
 import medal from "/icons/medal-star.svg";
 import quiz from "/quiz.svg";
-import tutor from "/tutor-profile.svg";
 import certificateicon from "/icons/certificate.svg";
-import verify from "/icons/verify.svg";
 import deleteicon from "/icons/delete.svg";
 import ratingsicon from "/icons/ratings.svg";
 import RecommendedCourses from "../components/courses/RecommendedCourses";
@@ -26,9 +24,12 @@ import "react-toastify/dist/ReactToastify.css";
 import { formatPriceWithCommas } from "../utils/utils";
 import EditCourse from "../components/courses/EditCourse";
 import Certificate from "../components/courses/CertificateComponent";
+import { ConfirmationModal } from "../components/popups/Modal";
+import axios from "axios";
 
 const CourseDetails = () => {
 	const { id } = useParams();
+	const navigate = useNavigate();
 	const {
 		courses: allCourses,
 		token,
@@ -36,17 +37,45 @@ const CourseDetails = () => {
 		role,
 		firstName,
 		lastName,
+		loading,
+		setLoading,
 	} = useContext(userContext);
 
 	const [showCertificate, setShowCertificate] = useState(false);
+	const [showDelete, setShowDelete] = useState(false);
 
 	const handleShowCertificate = () => {
 		setShowCertificate(true);
-		console.log("showCertificate")
 	};
 
 	const handleCloseCertificate = () => {
 		setShowCertificate(false);
+	};
+
+	const showDeleteModal = () => {
+		setShowDelete(true);
+	};
+
+	const closeDeleteModal = () => {
+		setShowDelete(false);
+	};
+
+	const handleDelete = async () => {
+		setLoading(true);
+
+		try {
+			await axios.delete(`https://edture.onrender.com/courses/${id}`, {
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			});
+			navigate("/courses");
+			window.location.reload();
+		} catch (error) {
+			console.error("Failed to delete course:", error);
+		} finally {
+			setLoading(false);
+		}
 	};
 
 	const {
@@ -84,11 +113,14 @@ const CourseDetails = () => {
 
 	return (
 		<>
-			{courseDetailsLoading && <SpinnerLoader />}
+			{courseDetailsLoading || (loading && <SpinnerLoader />)}
 			{courseDetailsError && <p>{courseDetailsError}</p>}
 			<CourseDetailsLayout>
 				{isTutor ? (
-					<TutorHeader selectedCourse={course} />
+					<TutorHeader
+						selectedCourse={course}
+						showDeleteModal={showDeleteModal}
+					/>
 				) : (
 					<StudentHeader
 						selectedCourse={course}
@@ -115,12 +147,26 @@ const CourseDetails = () => {
 						onClose={handleCloseCertificate}
 					/>
 				)}
+				{showDelete && (
+					<ConfirmationModal
+						heading={"Delete Course"}
+						onConfirm={handleDelete}
+						content={"Are you sure you want to delete this course"}
+						confirmText={"Yes"}
+						cancelText={"No"}
+						onClose={closeDeleteModal}
+					/>
+				)}
 			</CourseDetailsLayout>
 		</>
 	);
 };
 
-const StudentHeader = ({ selectedCourse, courseInProgress, handleShowCertificate }) => (
+const StudentHeader = ({
+	selectedCourse,
+	courseInProgress,
+	handleShowCertificate,
+}) => (
 	<div className="bg-darkBlue text-white pt-8 font-trap-grotesk">
 		<div className="flex relative container-wrapper font-trap-grotesk">
 			<div className="w-3/5 flex flex-col p-12">
@@ -157,7 +203,7 @@ const StudentHeader = ({ selectedCourse, courseInProgress, handleShowCertificate
 	</div>
 );
 
-const TutorHeader = ({ selectedCourse }) => (
+const TutorHeader = ({ selectedCourse, showDeleteModal }) => (
 	<div className="bg-darkBlue text-white pt-8 font-trap-grotesk">
 		<div className="flex relative container-wrapper w-full font-trap-grotesk">
 			<div className="w-3/5 flex flex-col p-12">
@@ -185,7 +231,10 @@ const TutorHeader = ({ selectedCourse }) => (
 					</p>
 				</div>
 			</div>
-			<TutorModal course={selectedCourse} />
+			<TutorModal
+				course={selectedCourse}
+				showDeleteModal={showDeleteModal}
+			/>
 		</div>
 	</div>
 );
@@ -597,7 +646,7 @@ const CourseModal = ({ course, courseInProgress, handleShowCertificate }) => {
 	);
 };
 
-const TutorModal = ({ course }) => {
+const TutorModal = ({ course, showDeleteModal }) => {
 	const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 	const navigate = useNavigate();
 
@@ -622,7 +671,7 @@ const TutorModal = ({ course }) => {
 				<p className="font-semibold text-2xl pt-2 text-primaryBlack font-trap-grotesk">
 					{course?.price}
 				</p>
-				<button>
+				<button onClick={showDeleteModal}>
 					<img src={deleteicon} alt="Delete" />
 				</button>
 			</div>
