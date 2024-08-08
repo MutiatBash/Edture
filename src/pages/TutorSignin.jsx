@@ -89,6 +89,7 @@ const TutorSignin = () => {
 					"/tutor-signup",
 					"/forgot-password",
 					"/reset-password",
+					"student-dashboard",
 					"/",
 				].includes(lastLocation)
 			) {
@@ -99,6 +100,7 @@ const TutorSignin = () => {
 			localStorage.removeItem("lastLocation");
 		} catch (error) {
 			setAuthLoading(false);
+			setAuthError(error.message);
 			console.error("Error submitting data:", error.message);
 		}
 	};

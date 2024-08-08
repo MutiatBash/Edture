@@ -73,48 +73,76 @@ const Navbar = () => {
 						/>
 					</div>
 					{user ? (
-						<div className="flex gap-5 items-center">
-							<img
-								src={inbox}
-								onClick={() => handlePopup("inbox")}
-								className="cursor-pointer"
-							/>
-							<img
-								src={notification}
-								onClick={() => handlePopup("notification")}
-								className="cursor-pointer"
-							/>
-							{role !== "TUTOR" && (
-								<div
-									className="relative flex items-center cursor-pointer"
-									onClick={() => handlePopup("cart")}
+						<div>
+							<div className="flex justify-between gap-3 w-full font-trap-grotesk">
+								<Link
+									to="/"
+									className="font-trap-grotesk hover:text-darkBlue"
 								>
-									<img src={cart} alt="Cart Icon" />
-									{cartItems && (
-										<span className="absolute top-0 right-0 translate-x-1/2 -translate-y-1/2 bg-primaryBlue min-w-6 min-h-6 max-w-8 max-h-8 rounded-full flex items-center justify-center text-white text-xs sm:text-sm">
-											{cartItems.length}
-										</span>
-									)}
-								</div>
-							)}
-							<div className="h-5 w-[1px] bg-darkGray"></div>
-							<div
-								className="bg-primaryBlue rounded-full p-2 text-white uppercase w-10 h-10 text-center cursor-pointer"
-								onClick={() => handlePopup("profile")}
-							>
-								{initials}
+									Home
+								</Link>
+								<Link
+									to="/"
+									className="font-trap-grotesk hover:text-darkBlue"
+								>
+									Courses
+								</Link>
+								<Link
+									to="/"
+									className="font-trap-grotesk hover:text-darkBlue"
+								>
+									About
+								</Link>
+								<Link
+									to="/"
+									className="font-trap-grotesk hover:text-darkBlue"
+								>
+									Contact us
+								</Link>
 							</div>
-							{popups.profile && (
-								<ProfilePopup
-									firstName={firstName}
-									lastName={lastName}
-									email={emailAddress}
-									initials={initials}
+							<div className="flex gap-5 items-center">
+								<img
+									src={inbox}
+									onClick={() => handlePopup("inbox")}
+									className="cursor-pointer"
 								/>
-							)}
-							{popups.notification && <NotificationPopup />}
-							{popups.inbox && <InboxPopup />}
-							{popups.cart && <CartPopup />}
+								<img
+									src={notification}
+									onClick={() => handlePopup("notification")}
+									className="cursor-pointer"
+								/>
+								{role !== "TUTOR" && (
+									<div
+										className="relative flex items-center cursor-pointer"
+										onClick={() => handlePopup("cart")}
+									>
+										<img src={cart} alt="Cart Icon" />
+										{cartItems && (
+											<span className="absolute top-0 right-0 translate-x-1/2 -translate-y-1/2 bg-primaryBlue min-w-6 min-h-6 max-w-8 max-h-8 rounded-full flex items-center justify-center text-white text-xs sm:text-sm">
+												{cartItems.length}
+											</span>
+										)}
+									</div>
+								)}
+								<div className="h-5 w-[1px] bg-darkGray"></div>
+								<div
+									className="bg-primaryBlue rounded-full p-2 text-white uppercase w-10 h-10 text-center cursor-pointer"
+									onClick={() => handlePopup("profile")}
+								>
+									{initials}
+								</div>
+								{popups.profile && (
+									<ProfilePopup
+										firstName={firstName}
+										lastName={lastName}
+										email={emailAddress}
+										initials={initials}
+									/>
+								)}
+								{popups.notification && <NotificationPopup />}
+								{popups.inbox && <InboxPopup />}
+								{popups.cart && <CartPopup />}
+							</div>
 						</div>
 					) : (
 						<div className="flex gap-5 justify-between items-center w-[50%]">

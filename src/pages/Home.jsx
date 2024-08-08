@@ -46,7 +46,7 @@ const Home = () => {
 						/>
 						<SecondaryButton
 							text={"Sign in"}
-							className="w-full whitespace-nowrap text-white hover:bg-darkBlue"
+							className={"w-full whitespace-nowrap text-white hover:bg-darkBlue"}
 							onClick={handleSignIn}
 						/>
 					</div>

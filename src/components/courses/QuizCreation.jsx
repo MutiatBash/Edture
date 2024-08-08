@@ -35,7 +35,6 @@ const QuizCreation = () => {
 
 	const navigateToCourses = () => {
 		navigate(`/courses/${courseId}`);
-		// window.location.reload();
 	};
 
 	const handleCreateQuiz = async () => {
@@ -124,7 +123,7 @@ const QuizCreation = () => {
 			{showModal && (
 				<SuccessModal
 					heading={"Your quiz has been created successfully"}
-					buttonText={"Go to courses"}
+					buttonText={"Go to course"}
 					img={successgif}
 					imageStyling="w-[60%]"
 					allowClose={false}

@@ -17,8 +17,12 @@ export const ActiveCourseCard = ({ progress, course, id }) => {
 			className="flex flex-col gap-2 border border-lighterGray p-4 rounded-lg font-trap-grotesk hover:border-hoverBlue hover:shadow-md"
 			onClick={handleClick}
 		>
-			<div className="w-full">
-				<img src={course?.course?.image} className="w-full" />
+			<div className="w-full h-52 overflow-hidden rounded-lg">
+				<img
+					src={course?.course?.image}
+					className="w-full h-full object-cover"
+					alt="Course"
+				/>
 			</div>
 			<h5 className="font-trap-grotesk font-bold leading-6 text-lg">
 				{truncateString(course?.course.title, 30)}

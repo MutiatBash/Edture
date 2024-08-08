@@ -9,7 +9,7 @@ export const useApi = (url, token) => {
 	const [error, setError] = useState(null);
 
 	useEffect(() => {
-		if (!url ) {
+		if (!url) {
 			setLoading(false);
 			return;
 		}
@@ -89,7 +89,7 @@ export const useInactivityTimeout = (timeout, setIsTimeoutModal) => {
 		setUser(null);
 		setToken(null);
 		localStorage.removeItem("authToken");
-		localStorage.removeItem("userRole");
+		localStorage.removeItem("userEmail");
 
 		const role = localStorage.getItem("userRole");
 		if (role === "TUTOR") {
@@ -97,6 +97,7 @@ export const useInactivityTimeout = (timeout, setIsTimeoutModal) => {
 		} else {
 			window.location.href = "/student-signin";
 		}
+		localStorage.removeItem("userRole");
 	};
 
 	useEffect(() => {
@@ -142,7 +143,7 @@ export const useSessionTimeout = (setIsTimeoutModal) => {
 		setUser(null);
 		setToken(null);
 		localStorage.removeItem("authToken");
-		localStorage.removeItem("userRole");
+		localStorage.removeItem("userEmail");
 
 		const role = localStorage.getItem("userRole");
 		if (role === "TUTOR") {
@@ -150,6 +151,7 @@ export const useSessionTimeout = (setIsTimeoutModal) => {
 		} else {
 			window.location.href = "/student-signin";
 		}
+		localStorage.removeItem("userRole");
 	};
 
 	useEffect(() => {
@@ -164,7 +166,6 @@ export const useSessionTimeout = (setIsTimeoutModal) => {
 						);
 						setIsTimeoutModal("session");
 
-						// Start a modal timer to redirect after 2 minutes
 						if (modalTimerRef.current) {
 							clearTimeout(modalTimerRef.current);
 						}

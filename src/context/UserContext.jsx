@@ -143,6 +143,8 @@ const UserContextProvider = ({ children }) => {
 			console.log("Logging out...");
 			setTimeout(() => {
 				localStorage.removeItem("authToken");
+				localStorage.removeItem("userRole");
+				localStorage.removeItem("userEmail");
 				setUser(null);
 				setDashboardData(null);
 				setToken(null);

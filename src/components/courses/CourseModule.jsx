@@ -282,7 +282,7 @@ export const QuizSidebar = ({
 						<div key={index} className="mb-4" onClick={onQuizSelect}>
 							<div className="flex items-center gap-3">
 								<img className="w-5" src={book} alt="Book Icon" />
-								<h5 className="font-semibold">{quiz.title}</h5>
+								<h5 className="font-medium font-trap-grotesk text-sm">{quiz.title}</h5>
 							</div>
 						</div>
 					))}

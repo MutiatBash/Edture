@@ -93,6 +93,7 @@ const StudentSignin = () => {
 					"/student-signup",
 					"/forgot-password",
 					"/reset-password",
+					"tutor-dashboard",
 					"/"
 				].includes(lastLocation)
 			) {

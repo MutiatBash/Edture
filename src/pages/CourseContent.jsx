@@ -4,8 +4,6 @@ import React, {
 	useContext,
 	useCallback,
 	useRef,
-	useMemo,
-	memo,
 } from "react";
 import { userContext } from "../context/UserContext";
 import { useNavigate, useParams, Link } from "react-router-dom";
@@ -20,6 +18,8 @@ import danger from "/icons/danger.svg";
 import quiz from "/quiz.svg";
 import tutor from "/tutor-profile.svg";
 import certificate from "/icons/certificate.svg";
+import certificategif from "/certificate-gif.gif";
+import { SuccessModal, ScoreModal } from "../components/popups/Modal";
 import {
 	ContentModule,
 	QuizModule,
@@ -28,22 +28,25 @@ import {
 import ProgressBar from "../components/ProgressBar";
 import { useApi } from "../utils/customHooks";
 import { SpinnerLoader } from "../components/Loader";
-import { useCart } from "../context/CartContext";
 import { Divider } from "../components/Dividers";
 import VideoComponent from "../components/courses/VideoComponent";
+import axios from "axios";
+// import CertificateGenerator from "../components/courses/CertificateComponent";
+import Certificate from "../components/courses/CertificateComponent";
 
 const CourseContent = () => {
 	const { id } = useParams();
 	const {
-		tutorDashboardData,
-		tutorLoading,
-		tutorError,
-		userLoading,
-		userError,
+		loading: scoreLoading,
+		setLoading,
+		error,
+		setError,
 		courses: allCourses,
 		token,
 		user,
 		role,
+		firstName,
+		lastName,
 	} = useContext(userContext);
 
 	const {
@@ -73,7 +76,12 @@ const CourseContent = () => {
 	const [currentQuizIndex, setCurrentQuizIndex] = useState(0);
 	const [selectedAnswer, setSelectedAnswer] = useState(null);
 	const [responses, setResponses] = useState({});
+	const [showScore, setShowScore] = useState(false);
+	const [showCertificate, setShowCertificate] = useState(false);
+	const [showSuccess, setShowSuccess] = useState(false);
+	const [score, setScore] = useState(null);
 
+	const navigate = useNavigate();
 
 	const handleExpandAllClick = useCallback(() => {
 		const newExpandAll = !expandAll;
@@ -114,28 +122,82 @@ const CourseContent = () => {
 	const handlePreviousQuestion = () => {
 		if (currentQuizIndex > 0) {
 			setCurrentQuizIndex(currentQuizIndex - 1);
+			setSelectedAnswer(
+				responses[quizzes[0]?.questions[currentQuizIndex - 1]?.id] || null
+			);
 		}
 	};
 
 	const handleNextQuestion = () => {
-		if (selectedAnswer === null) {
-			alert("Please select an answer before proceeding.");
-			return;
-		}
-
-		if (currentQuizIndex < quizzes.questions.length - 1) {
-			setCurrentQuizIndex(currentQuizIndex + 1);
-			setSelectedAnswer(responses[currentQuizIndex] || null); 
+		const totalQuestions = quizzes[0]?.questions?.length || 0;
+		if (currentQuizIndex < totalQuestions - 1) {
+			const nextIndex = currentQuizIndex + 1;
+			setCurrentQuizIndex(nextIndex);
+			setSelectedAnswer(
+				responses[quizzes[0]?.questions[nextIndex]?.id] || null
+			);
 		}
 	};
 
-
 	const handleAnswerSelect = (answerId) => {
-		setSelectedAnswer(answerId);
+		const currentQuestion = quizzes[0]?.questions[currentQuizIndex];
+		const selectedAnswer = currentQuestion?.answers.find(
+			(answer) => answer.id === answerId
+		);
+
 		setResponses((prevResponses) => ({
 			...prevResponses,
-			[currentQuizIndex]: answerId,
+			[currentQuestion.id]: selectedAnswer?.option,
 		}));
+		setSelectedAnswer(answerId);
+	};
+
+	const calculateScore = async () => {
+		setLoading(true);
+		try {
+			const quizId = quizzes[0]?.id;
+
+			const answersPayload = Object.entries(responses).map(
+				([questionId, answerText]) => ({
+					questionId,
+					answer: answerText,
+				})
+			);
+
+			const response = await axios.post(
+				`https://edture.onrender.com/courses/${id}/quiz/${quizId}/score`,
+				{ answers: answersPayload },
+				{
+					headers: {
+						"Content-Type": "application/json",
+						Authorization: `Bearer ${token}`,
+					},
+				}
+			);
+
+			const scoreData = response.data;
+			const roundedScore = Math.round(scoreData.data.score.percentScore);
+			setScore(roundedScore);
+			setLoading(false);
+			setShowScore(true);
+		} catch (error) {
+			console.error("Error calculating score:", error);
+			setLoading(false);
+		}
+	};
+
+	const handleShowSuccess = () => {
+		setShowSuccess(true);
+		setShowScore(false);
+	};
+
+	const handleFail = () => {
+		navigate("/courses");
+	};
+
+	const handleShowCerificate = () => {
+		setShowCertificate(true);
+		setShowSuccess(false);
 	};
 
 	const calculateTotalDuration = () => {
@@ -183,22 +245,25 @@ const CourseContent = () => {
 		}
 	}, [selectedTopic]);
 
-	const QuizContent = ({ quizzes, currentQuizIndex, quizData }) => {
-		const currentQuiz = quizzes[currentQuizIndex];
+	const QuizContent = ({
+		quiz,
+		currentQuizIndex,
+		onAnswerSelect,
+		onNextQuestion,
+		onPreviousQuestion,
+		handleQuizSubmit,
+	}) => {
+		const currentQuiz = quiz?.questions?.[currentQuizIndex];
+		const totalQuestions = quiz?.questions?.length || 0;
+		const isLastQuestion = currentQuizIndex === totalQuestions - 1;
 
 		return (
 			<div>
-				<div>
-					{quizData?.map((quiz, index) => (
-						<div key={index} className="mb-4 flex items-center gap-4">
-							<h2 className="text-3xl font-bold capitalize">
-								{quiz.title}
-							</h2>
-							<span className="rounded-full px-3 py-1 font-medium text-darkBlue bg-secondaryHoverBlue">
-								Quiz
-							</span>
-						</div>
-					))}
+				<div className="flex items-center gap-5 mb-4">
+					<h2 className="text-3xl font-bold capitalize">{quiz?.title}</h2>
+					<span className="rounded-full px-3 py-1 font-medium text-darkBlue bg-secondaryHoverBlue">
+						Quiz
+					</span>
 				</div>
 				<Divider />
 				<div className="pt-5">
@@ -217,8 +282,8 @@ const CourseContent = () => {
 								type="radio"
 								name="quizOption"
 								value={option.id}
-								checked={responses[currentQuizIndex] === option.id}
-								onChange={() => handleAnswerSelect(option.id)}
+								checked={responses[currentQuiz?.id] === option.option}
+								onChange={() => onAnswerSelect(option.id)}
 							/>
 							<label className="font-trap-grotesk text-lg capitalize">
 								{option.option}
@@ -226,14 +291,21 @@ const CourseContent = () => {
 						</div>
 					))}
 					<div className="flex gap-4 mt-4 justify-between items-center">
-						{currentQuizIndex === 1 && (
+						{currentQuizIndex > 0 && (
 							<SecondaryButton
-								onClick={handlePreviousQuestion}
+								onClick={onPreviousQuestion}
 								text="Previous"
 							/>
 						)}
-
-						<PrimaryButton onClick={handleNextQuestion} text="Next" disabled={selectedAnswer === null}/>
+						<div className="flex justify-between self-end">
+							<PrimaryButton
+								onClick={
+									isLastQuestion ? handleQuizSubmit : onNextQuestion
+								}
+								text={isLastQuestion ? "Check Score" : "Next"}
+								disabled={selectedAnswer === null}
+							/>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -242,11 +314,15 @@ const CourseContent = () => {
 
 	const renderContent = () => {
 		if (activeTab === "quiz" && showQuizContent) {
+			const quiz = quizzes[0];
 			return (
 				<QuizContent
-					quizzes={quizzes[currentQuizIndex]?.questions}
+					quiz={quiz}
 					currentQuizIndex={currentQuizIndex}
-					quizData={quizzes}
+					onAnswerSelect={handleAnswerSelect}
+					onNextQuestion={handleNextQuestion}
+					onPreviousQuestion={handlePreviousQuestion}
+					handleQuizSubmit={calculateScore}
 				/>
 			);
 		}
@@ -299,7 +375,7 @@ const CourseContent = () => {
 
 	return (
 		<div>
-			{courseContentsLoading && <SpinnerLoader />}
+			{courseContentsLoading || (scoreLoading && <SpinnerLoader />)}
 			<CourseDetailsLayout>
 				<div className="flex px-12 justify-between">
 					<div className="bg-white flex flex-col pt-8 pr-5 border-r-[0.5px] border-r-lightGray w-[30%] h-full gap-3 min-h-screen sticky top-0 bottom-0 z-20">
@@ -403,6 +479,32 @@ const CourseContent = () => {
 					</div>
 				</div>
 			</CourseDetailsLayout>
+			{showScore && (
+				<ScoreModal
+					content={"You scored"}
+					score={`${score}`}
+					allowClose={false}
+					onPass={handleShowSuccess}
+					onFail={handleFail}
+				/>
+			)}
+			{showSuccess && (
+				<SuccessModal
+					heading={"Congratulations on completing this course"}
+					buttonText={"Download certificate"}
+					allowClose={false}
+					onConfirm={handleShowCerificate}
+					img={certificategif}
+					imageStyling="w-48"
+				/>
+			)}
+			{showCertificate && (
+				<Certificate
+					firstName={firstName}
+					lastName={lastName}
+					course={course.title}
+				/>
+			)}
 		</div>
 	);
 };

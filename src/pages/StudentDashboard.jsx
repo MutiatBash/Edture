@@ -29,34 +29,6 @@ const StudentDashboard = () => {
 
 	const navigate = useNavigate();
 
-	// const [studentCourses, setStudentCourses] = useState([]);
-
-	// const fetchStudentCourses = async () => {
-	// 	try {
-	// 		const response = await axios.get(
-	// 			"https://edture.onrender.com/users/student/courses",
-	// 			{
-	// 				headers: { Authorization: `Bearer ${token}` },
-	// 			}
-	// 		);
-
-	// 		const fetchedCourses = response?.data;
-	// 		setStudentCourses(fetchedCourses);
-	// 		console.log("Student courses showing", studentCourses);
-	// 		console.log("Fetched Student courses here", fetchedCourses);
-	// 	} catch (error) {
-	// 		console.error("Error fetching courses:", error);
-	// 	}
-	// };
-
-	// useEffect(() => {
-	// 	fetchStudentCourses();
-	// }, []); 
-
-	// useEffect(() => {
-	// 	console.log("Student courses updated", studentCourses);
-	// }, [studentCourses]);
-
 	const allCourses = courses?.courses;
 
 	const sortedStudentCourses = allCourses?.sort(
