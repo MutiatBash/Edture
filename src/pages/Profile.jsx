@@ -9,7 +9,7 @@ const Profile = () => {
 	const { user, firstName, lastName, emailAddress } = useContext(userContext);
 	const role = user?.role;
 	const initials =
-		firstName && lastName ? `${firstName[0]}${lastName[0]}` : "";
+		firstName && lastName ? `${firstName[0]}${lastName[0]}` : "FN";
 
 	const studentContent = (
 		<>
