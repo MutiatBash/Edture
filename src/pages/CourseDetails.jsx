@@ -8,9 +8,10 @@ import topics from "/icons/topics.svg";
 import video from "/icons/video.svg";
 import book from "/icons/book.svg";
 import danger from "/icons/danger.svg";
+import medal from "/icons/medal-star.svg";
 import quiz from "/quiz.svg";
 import tutor from "/tutor-profile.svg";
-import certificate from "/icons/certificate.svg";
+import certificateicon from "/icons/certificate.svg";
 import verify from "/icons/verify.svg";
 import deleteicon from "/icons/delete.svg";
 import ratingsicon from "/icons/ratings.svg";
@@ -24,20 +25,29 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { formatPriceWithCommas } from "../utils/utils";
 import EditCourse from "../components/courses/EditCourse";
+import Certificate from "../components/courses/CertificateComponent";
 
 const CourseDetails = () => {
 	const { id } = useParams();
 	const {
-		tutorDashboardData,
-		tutorLoading,
-		tutorError,
-		userLoading,
-		userError,
 		courses: allCourses,
 		token,
 		user,
 		role,
+		firstName,
+		lastName,
 	} = useContext(userContext);
+
+	const [showCertificate, setShowCertificate] = useState(false);
+
+	const handleShowCertificate = () => {
+		setShowCertificate(true);
+		console.log("showCertificate")
+	};
+
+	const handleCloseCertificate = () => {
+		setShowCertificate(false);
+	};
 
 	const {
 		data: courseDetails,
@@ -83,6 +93,7 @@ const CourseDetails = () => {
 					<StudentHeader
 						selectedCourse={course}
 						courseInProgress={enrolledCoursesDetails}
+						handleShowCertificate={handleShowCertificate}
 					/>
 				)}
 				{isTutor ? (
@@ -96,12 +107,20 @@ const CourseDetails = () => {
 						recommendedCourse={recommendedCourses}
 					/>
 				)}
+				{showCertificate && (
+					<Certificate
+						firstName={firstName}
+						lastName={lastName}
+						course={course.title}
+						onClose={handleCloseCertificate}
+					/>
+				)}
 			</CourseDetailsLayout>
 		</>
 	);
 };
 
-const StudentHeader = ({ selectedCourse, courseInProgress }) => (
+const StudentHeader = ({ selectedCourse, courseInProgress, handleShowCertificate }) => (
 	<div className="bg-darkBlue text-white pt-8 font-trap-grotesk">
 		<div className="flex relative container-wrapper font-trap-grotesk">
 			<div className="w-3/5 flex flex-col p-12">
@@ -132,6 +151,7 @@ const StudentHeader = ({ selectedCourse, courseInProgress }) => (
 			<CourseModal
 				course={selectedCourse}
 				courseInProgress={courseInProgress}
+				handleShowCertificate={handleShowCertificate}
 			/>
 		</div>
 	</div>
@@ -361,7 +381,7 @@ const TutorContent = ({ selectedCourse, quizzes }) => {
 						</div>
 						<div className="flex gap-2 items-center">
 							<img
-								src={certificate}
+								src={certificateicon}
 								alt="Certificate Icon"
 								className="w-5"
 							/>
@@ -425,7 +445,7 @@ const TutorContent = ({ selectedCourse, quizzes }) => {
 	);
 };
 
-const CourseModal = ({ course, courseInProgress }) => {
+const CourseModal = ({ course, courseInProgress, handleShowCertificate }) => {
 	const { addItemToCart } = useCart();
 
 	const navigate = useNavigate();
@@ -476,20 +496,44 @@ const CourseModal = ({ course, courseInProgress }) => {
 					<p className="font-trap-grotesk text-lightGray text-sm">
 						{courseInProgress?.enrollmentData?.progress}% complete
 					</p>
-					<PrimaryButton
-						text={"Resume Learning"}
-						className="w-full"
-						onClick={navigateToLms}
-					/>
-					<div className="border rounded-md text-primaryBlack text-sm flex gap-3 items-center border-lightGray">
-						<img
-							src={danger}
-							className="bg-warning p-2 rounded-tl rounded-bl"
-						/>
-						<span className="font-trap-grptesk text-primaryBlack opacity-80">
-							Complete all lessons to get your certificate
-						</span>
-					</div>
+					{courseInProgress?.enrollmentData.progress === 100 ? (
+						<div className="flex flex-col gap-3">
+							<PrimaryButton
+								text={"Resume Learning"}
+								className="w-full"
+								onClick={navigateToLms}
+							/>
+							<div
+								className="border rounded-md text-primaryBlack text-sm flex gap-3 items-center border-lightGray cursor-pointer"
+								onClick={handleShowCertificate}
+							>
+								<img
+									src={medal}
+									className="bg-green p-3 rounded-tl rounded-bl"
+								/>
+								<span className="font-trap-grptesk text-primaryBlack opacity-80">
+									Download certificate
+								</span>
+							</div>
+						</div>
+					) : (
+						<div className="flex flex-col gap-3">
+							<PrimaryButton
+								text={"Resume Learning"}
+								className="w-full"
+								onClick={navigateToLms}
+							/>
+							<div className="border rounded-md text-primaryBlack text-sm flex gap-3 items-center border-lightGray">
+								<img
+									src={danger}
+									className="bg-warning p-3 rounded-tl rounded-bl"
+								/>
+								<span className="font-trap-grptesk text-primaryBlack opacity-80">
+									Complete all lessons to get your certificate
+								</span>
+							</div>
+						</div>
+					)}
 				</div>
 			) : (
 				<>
@@ -544,7 +588,7 @@ const CourseModal = ({ course, courseInProgress }) => {
 						Quizzes
 					</div>
 					<div className="flex gap-3">
-						<img src={certificate} className="w-4 h-4" />
+						<img src={certificateicon} className="w-4 h-4" />
 						Certificate of completion
 					</div>
 				</div>
@@ -629,7 +673,7 @@ const TutorModal = ({ course }) => {
 					</div>
 					<div className="flex gap-3">
 						<img
-							src={certificate}
+							src={certificateicon}
 							className="w-4 h-4"
 							alt="Certificate Icon"
 						/>

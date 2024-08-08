@@ -4,17 +4,37 @@ import inbox from "/inbox.svg";
 import search from "/icons/search.svg";
 import cart from "/icons/shopping-cart.svg";
 import notification from "/icons/notification.svg";
+import dashboard from "/dashboard.svg";
 import ProfilePopup from "../popups/ProfilePopup";
 import NotificationPopup from "../popups/NotificationPopup";
 import InboxPopup from "../popups/InboxPopup";
 import CartPopup from "../popups/CartPopup";
 import { userContext } from "../../context/UserContext";
 import { useCart } from "../../context/CartContext";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, NavLink, useLocation } from "react-router-dom";
 import { SecondaryButton, PrimaryButton } from "../Button";
 
 const Navbar = () => {
 	const navigate = useNavigate();
+	const location = useLocation();
+
+	const handleScroll = (e, sectionId) => {
+		e.preventDefault();
+
+		if (location.pathname !== "/") {
+			navigate("/", { replace: true });
+
+			setTimeout(() => {
+				document
+					.getElementById(sectionId)
+					?.scrollIntoView({ behavior: "smooth" });
+			}, 100);
+		} else {
+			document
+				.getElementById(sectionId)
+				?.scrollIntoView({ behavior: "smooth" });
+		}
+	};
 
 	const { firstName, lastName, emailAddress, user } = useContext(userContext);
 	const { cartItems } = useCart();
@@ -41,8 +61,12 @@ const Navbar = () => {
 
 	const role = user?.role;
 
-	const handleLogoClick = () => {
-		navigate("/");
+	const navigateToDashboard = () => {
+		if (role === "STUDENT") {
+			navigate("/student-dashboard");
+		} else {
+			navigate("/tutor-dashboard");
+		}
 	};
 
 	const handleSignIn = () => {
@@ -56,14 +80,9 @@ const Navbar = () => {
 	return (
 		<div className="bg-white border-b-[0.5px] border-b-lightGray px-12 py-6 sticky z-30 top-0">
 			<div className="flex justify-between gap-6 items-center bg-white container-wrapper mx-auto">
-				<div className="">
-					<img
-						src={edture}
-						alt="Edture Logo"
-						className="cursor-pointer"
-						onClick={handleLogoClick}
-					/>
-				</div>
+				<Link to="/" className="">
+					<img src={edture} alt="Edture Logo" className="cursor-pointer" />
+				</Link>
 				<div className="flex justify-between gap-4 w-full">
 					<div className="flex gap-3 border p-2 py-1 border-lightGray rounded-lg w-[50%]">
 						<img src={search} className="w-5" />
@@ -73,34 +92,52 @@ const Navbar = () => {
 						/>
 					</div>
 					{user ? (
-						<div>
-							<div className="flex justify-between gap-3 w-full font-trap-grotesk">
-								<Link
+						<div className="flex gap-10 items-center w-[50%] justify-end">
+							<div className="flex justify-between gap-5 font-trap-grotesk">
+								<NavLink
 									to="/"
-									className="font-trap-grotesk hover:text-darkBlue"
+									end
+									className={({ isActive }) =>
+										isActive && location.pathname === "/"
+											? "font-bold text-primaryBlue font-trap-grotesk"
+											: "hover:text-darkBlue font-trap-grotesk"
+									}
 								>
 									Home
-								</Link>
-								<Link
-									to="/"
-									className="font-trap-grotesk hover:text-darkBlue"
+								</NavLink>
+								<NavLink
+									to="/ourcourses"
+									className={({ isActive }) =>
+										isActive
+											? "font-bold text-primaryBlue font-trap-grotesk"
+											: "hover:text-darkBlue font-trap-grotesk"
+									}
 								>
 									Courses
-								</Link>
-								<Link
-									to="/"
-									className="font-trap-grotesk hover:text-darkBlue"
+								</NavLink>
+								<NavLink
+									to="/#about"
+									className={
+										location.hash === "#about" ||
+										(location.pathname === "/" &&
+											location.hash === "#about")
+											? "font-bold text-primaryBlue font-trap-grotesk"
+											: "hover:text-darkBlue font-trap-grotesk"
+									}
+									onClick={(e) => handleScroll(e, "about")}
 								>
 									About
-								</Link>
-								<Link
-									to="/"
-									className="font-trap-grotesk hover:text-darkBlue"
-								>
+								</NavLink>
+								<NavLink className="font-trap-grotesk">
 									Contact us
-								</Link>
+								</NavLink>
 							</div>
 							<div className="flex gap-5 items-center">
+								<img
+									src={dashboard}
+									onClick={navigateToDashboard}
+									className="cursor-pointer"
+								/>
 								<img
 									src={inbox}
 									onClick={() => handlePopup("inbox")}
@@ -147,30 +184,43 @@ const Navbar = () => {
 					) : (
 						<div className="flex gap-5 justify-between items-center w-[50%]">
 							<div className="flex justify-between gap-3 w-full font-trap-grotesk">
-								<Link
+								<NavLink
 									to="/"
-									className="font-trap-grotesk hover:text-darkBlue"
+									end
+									className={({ isActive }) =>
+										isActive && location.pathname === "/"
+											? "font-bold text-primaryBlue font-trap-grotesk"
+											: "hover:text-darkBlue font-trap-grotesk"
+									}
 								>
 									Home
-								</Link>
-								<Link
-									to="/"
-									className="font-trap-grotesk hover:text-darkBlue"
+								</NavLink>
+								<NavLink
+									to="/ourcourses"
+									className={({ isActive }) =>
+										isActive
+											? "font-bold text-primaryBlue font-trap-grotesk"
+											: "hover:text-darkBlue font-trap-grotesk"
+									}
 								>
 									Courses
-								</Link>
-								<Link
-									to="/"
-									className="font-trap-grotesk hover:text-darkBlue"
+								</NavLink>
+								<NavLink
+									to="/#about"
+									className={
+										location.hash === "#about" ||
+										(location.pathname === "/" &&
+											location.hash === "#about")
+											? "font-bold text-primaryBlue font-trap-grotesk"
+											: "hover:text-darkBlue font-trap-grotesk"
+									}
+									onClick={(e) => handleScroll(e, "about")}
 								>
 									About
-								</Link>
-								<Link
-									to="/"
-									className="font-trap-grotesk hover:text-darkBlue"
-								>
+								</NavLink>
+								<NavLink className="font-trap-grotesk">
 									Contact us
-								</Link>
+								</NavLink>
 							</div>
 							<div className="h-5 w-[1px] bg-darkGray"></div>
 							<div className="flex gap-3 justify-center items-center">

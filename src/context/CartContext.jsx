@@ -5,12 +5,12 @@ import { userContext } from "./UserContext";
 const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
-	const { token } = useContext(userContext);
+	const { token, user } = useContext(userContext);
 	const [cartItems, setCartItems] = useState([]);
 	const [cartLoading, setCartLoading] = useState(false);
 
 	const fetchCartItems = async () => {
-		if (!token) return;
+		if (!token || user?.role !== "STUDENT") return;
 
 		setCartLoading(true);
 
@@ -62,8 +62,6 @@ export const CartProvider = ({ children }) => {
 
 			await fetchCartItems();
 
-			console.log("Item added to cart:", item);
-			console.log("Updated cart items:", cartItems);
 			setCartLoading(false);
 
 			return true;

@@ -21,6 +21,11 @@ const Home = () => {
 	const handleSignUp = () => {
 		navigate("/student-signup");
 	};
+
+	const goToCourses = () => {
+		navigate("/ourcourses");
+	};
+
 	return (
 		<div className="flex flex-col w-full min-h-screen">
 			<Navbar />
@@ -53,7 +58,7 @@ const Home = () => {
 				</div>
 
 				{/* ABOUT US */}
-				<div className="flex flex-col gap-6 justify-center items-center">
+				<div className="flex flex-col gap-6 justify-center items-center" id="about">
 					<div className="rounded-full p-3 px-6 border border-primaryBlue text-primaryBlue bg-white">
 						About us
 					</div>
@@ -103,7 +108,7 @@ const Home = () => {
 						<h3 className="text-3xl text-left font-trap-grotesk font-semibold">
 							Courses to scale your knowledge
 						</h3>
-						<SecondaryButton text={"More courses"} />
+						<SecondaryButton text={"More courses"} onClick={goToCourses}/>
 					</div>
 					<div>
 						<CourseCarousel>

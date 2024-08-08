@@ -28,6 +28,7 @@ import { SessionTimeoutModal } from "./components/popups/Modal";
 import { useSessionTimeout, useInactivityTimeout } from "./utils/customHooks";
 import Profile from "./pages/Profile";
 import Quiz from "./pages/Quiz";
+import OurCourses from "./pages/OurCourses";
 
 const App = () => {
 	const [isTimeoutModal, setIsTimeoutModal] = useState(null);
@@ -81,6 +82,7 @@ const App = () => {
 					<Route path="/cart" element={<Cart />} />
 					<Route path="/checkout" element={<Checkout />} />
 					<Route path="/allcourses" element={<AllCourses />} />
+					<Route path="/ourcourses" element={<OurCourses />} />
 					<Route path="/courses/:id/chat" element={<Chat />} />
 				</Routes>
 				<ToastContainer />

@@ -22,7 +22,6 @@ const StudentDashboard = () => {
 		token,
 		user,
 		courses,
-		fetchEnrolledStudentCourses,
 		studentCourses,
 		setCourses,
 	} = useContext(userContext);
@@ -86,7 +85,6 @@ const StudentDashboard = () => {
 									heading={"Your Courses"}
 									courses={enrolledStudentCourses}
 								/>
-								{/* <AddCourseCard text={"Add Course"} /> */}
 							</div>
 							<RecommendedCourses
 								heading={"Recommended"}

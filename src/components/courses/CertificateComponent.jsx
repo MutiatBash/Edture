@@ -2,38 +2,35 @@ import React, { useRef } from "react";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import { PrimaryButton, SecondaryButton } from "../Button";
-import certificate from "/certificate-img.svg";
-import { Navigate, useNavigate } from "react-router-dom";
+import certificate from "/edture-cert.svg";
+import { useNavigate } from "react-router-dom";
 
-const Certificate = ({ firstName, lastName, course }) => {
+const Certificate = ({ firstName, lastName, course, onClose }) => {
 	const certificateRef = useRef(null);
-	const navigate = useNavigate();
-
-	const backToCourses = () => {
-		navigate("/courses");
-	};
 
 	const downloadCertificate = async () => {
-		const canvas = await html2canvas(certificateRef.current, {
-			scale: 2,
-			useCORS: true,
-		});
-		const imgData = canvas.toDataURL("image/png");
-		const pdf = new jsPDF({
-			orientation: "landscape",
-			unit: "px",
-			format: [canvas.width, canvas.height],
-		});
-		pdf.addImage(imgData, "PNG", 0, 0, canvas.width, canvas.height);
-		pdf.save(`${firstName}-${lastName}-certificate.pdf`);
+		setTimeout(async () => {
+			const canvas = await html2canvas(certificateRef.current, {
+				scale: 2,
+				useCORS: true,
+			});
+			const imgData = canvas.toDataURL("image/png");
+			const pdf = new jsPDF({
+				orientation: "landscape",
+				unit: "px",
+				format: [canvas.width, canvas.height],
+			});
+			pdf.addImage(imgData, "PNG", 0, 0, canvas.width, canvas.height);
+			pdf.save(`${firstName}-${lastName}-certificate.pdf`);
+		}, 100); 
 	};
-
+	
 	return (
 		<div className="fixed inset-0 flex items-center justify-center bg-primaryBlack bg-opacity-50 z-50 backdrop-blur">
-			<div className="bg-white flex flex-col p-7 rounded-lg">
+			<div className="bg-white flex flex-col p-7 rounded-lg gap-6">
 				<button
 					className="ml-auto bg-transparent border-0 float-right font-semibold outline-none focus:outline-none"
-					onClick={backToCourses}
+					onClick={onClose}
 				>
 					<span className="text-xl block outline-none focus:outline-none">
 						&times;
@@ -42,7 +39,7 @@ const Certificate = ({ firstName, lastName, course }) => {
 				<div
 					className="overflow-hidden transform transition-all"
 					ref={certificateRef}
-					style={{ position: "relative", width: "500px", height: "400px" }}
+					style={{ position: "relative", width: "600px", height: "400px" }}
 				>
 					<img
 						src={certificate}
@@ -53,63 +50,71 @@ const Certificate = ({ firstName, lastName, course }) => {
 							left: 0,
 							width: "100%",
 							height: "100%",
+							objectFit: "cover",
 							zIndex: -1,
 						}}
 					/>
 					<div
 						style={{
 							position: "absolute",
-							top: "55%",
-							left: "40%",
-							objectFit: "cover",
+							top: "63%",
+							left: "35%",
 							transform: "translate(-50%, -50%)",
 							color: "#000",
 						}}
+						className="flex flex-col gap-8"
 					>
-						<div className="flex flex-col gap-8">
+						<div className="flex flex-col">
 							<h2
 								style={{
-									fontSize: "30px",
-									margin: 0,
+									fontSize: "32px",
+									marginBottom: "34px",
 									lineHeight: "0",
 								}}
-								className="font-medium "
+								className="font-medium"
 							>
 								{firstName}
 							</h2>
 							<h2
 								style={{
-									fontSize: "30px",
+									fontSize: "32px",
 									lineHeight: "0",
-									marginBottom: "10px",
+									marginBottom: "22px",
 								}}
+								className="font-medium"
 							>
 								{lastName}
 							</h2>
 						</div>
-
-						<p
-							style={{
-								fontSize: "8px",
-								marginLeft: "40px",
-								marginTop: "22px",
-							}}
-						>
-							{course}
-						</p>
-						<p
-							style={{
-								fontSize: "8px",
-								marginLeft: "40px",
-								marginTop: "8px",
-							}}
-						>
-							on {new Date().toLocaleDateString()}
-						</p>
+						<div className="flex flex-col gap-6">
+							<p
+								style={{
+									fontSize: "6px",
+									marginLeft: "28px",
+									// marginTop: "19px",
+									lineHeight: "0",
+								}}
+							>
+								{course}
+							</p>
+							<p
+								style={{
+									fontSize: "6px",
+									marginLeft: "50px",
+									// marginTop: "8px",
+									lineHeight: "0",
+								}}
+							>
+								on {new Date().toLocaleDateString()}
+							</p>
+						</div>
 					</div>
 				</div>
 				<div className="flex justify-between">
-					<PrimaryButton onClick={downloadCertificate} text={"Download PDF"} />
+					<PrimaryButton
+						onClick={downloadCertificate}
+						text={"Download PDF"}
+					/>
 					{/* <SecondaryButton
 						onClick={backToCourses}
 						text={"Back to courses"}

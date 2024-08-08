@@ -1,21 +1,29 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import ai from "/ai-course.svg";
 import ProgressBar from "../../components/ProgressBar";
 import ratings from "/icons/ratings.svg";
 import { truncateString, formatPriceWithCommas } from "../../utils/utils";
+import { userContext } from "../../context/UserContext";
 
 export const ActiveCourseCard = ({ progress, course, id }) => {
 	const navigate = useNavigate();
+	const { user } = useContext(userContext);
 
 	const handleClick = () => {
-		navigate(`/courses/${course?.course.id}`);
+		if (user === null) {
+			navigate("/student-signin");
+		} else {
+			navigate(`/courses/${course?.course.id}`);
+		}
 	};
+
 	return (
 		<div
 			id={id}
-			className="flex flex-col gap-2 border border-lighterGray p-4 rounded-lg font-trap-grotesk hover:border-hoverBlue hover:shadow-md"
+			className="flex flex-col gap-2 border border-lighterGray p-3 rounded-lg font-trap-grotesk hover:border-hoverBlue hover:shadow-md"
 			onClick={handleClick}
+			style={{ minHeight: "380px" }}
 		>
 			<div className="w-full h-52 overflow-hidden rounded-lg">
 				<img
@@ -24,7 +32,7 @@ export const ActiveCourseCard = ({ progress, course, id }) => {
 					alt="Course"
 				/>
 			</div>
-			<h5 className="font-trap-grotesk font-bold leading-6 text-lg">
+			<h5 className="font-trap-grotesk font-bold leading-6 text-lg flex-grow">
 				{truncateString(course?.course.title, 30)}
 			</h5>
 			<div className="flex flex-col">
@@ -57,14 +65,21 @@ export const ActiveCourseCard = ({ progress, course, id }) => {
 
 export const CourseCard = ({ course }) => {
 	const navigate = useNavigate();
+	const { user } = useContext(userContext);
 
 	const handleClick = () => {
-		navigate(`/courses/${course.id}`);
+		if (user === null) {
+			navigate("/student-signin");
+		} else {
+			navigate(`/courses/${course?.id}`);
+		}
 	};
+
 	return (
 		<div
-			className="flex flex-col gap-2 border border-lighterGray p-4 rounded-lg font-trap-grotesk hover:border-hoverBlue hover:shadow-md"
+			className="flex flex-col gap-2 border border-lighterGray p-3 rounded-lg font-trap-grotesk hover:border-hoverBlue hover:shadow-md cursor-pointer"
 			onClick={handleClick}
+			style={{ minHeight: "380px" }}
 		>
 			<div className="w-full h-52 overflow-hidden rounded-lg">
 				<img
@@ -73,10 +88,10 @@ export const CourseCard = ({ course }) => {
 					alt="Course"
 				/>
 			</div>
-			<h5 className="font-trap-grotesk font-bold leading-6 text-lg">
+			<h5 className="font-trap-grotesk font-bold leading-6 text-lg flex-grow">
 				{truncateString(course.title, 30)}
 			</h5>
-			<div className="flex flex-col">
+			<div className="flex flex-col flex-grow">
 				<p className="font-trap-grotesk text-lightGray text-sm">
 					{course.instructorName}
 				</p>

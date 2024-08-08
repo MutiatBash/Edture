@@ -10,7 +10,8 @@ import InboxPopup from "../popups/InboxPopup";
 import CartPopup from "../popups/CartPopup";
 import { userContext } from "../../context/UserContext";
 import { useCart } from "../../context/CartContext";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import dashboard from "/dashboard.svg";
 
 const CourseHeader = () => {
 	const navigate = useNavigate();
@@ -40,7 +41,7 @@ const CourseHeader = () => {
 
 	const role = user?.role;
 
-	const handleLogoClick = () => {
+	const navigateToDashboard = () => {
 		if (role === "TUTOR") {
 			navigate("/tutor-dashboard");
 		} else {
@@ -51,14 +52,9 @@ const CourseHeader = () => {
 	return (
 		<div className="bg-white border-b-[0.5px] border-b-lightGray px-12 py-6 sticky z-30 top-0">
 			<div className="flex justify-between gap-6 items-center bg-white container-wrapper mx-auto">
-				<div className="">
-					<img
-						src={edture}
-						alt="Edture Logo"
-						className="cursor-pointer"
-						onClick={handleLogoClick}
-					/>
-				</div>
+				<Link to="/" className="">
+					<img src={edture} alt="Edture Logo" className="cursor-pointer" />
+				</Link>
 				<div className="flex justify-between gap-4 w-4/5">
 					<div className="flex gap-3 border p-2 border-lightGray rounded-lg w-[78%]">
 						<img src={search} />
@@ -68,6 +64,11 @@ const CourseHeader = () => {
 						/>
 					</div>
 					<div className="flex gap-5 items-center">
+						<img
+							src={dashboard}
+							onClick={navigateToDashboard}
+							className="cursor-pointer"
+						/>
 						<img
 							src={inbox}
 							onClick={() => handlePopup("inbox")}

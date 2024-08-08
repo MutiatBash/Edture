@@ -1,15 +1,19 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import {
 	StudentDashboardLayout,
 	TutorDashboardLayout,
 } from "../layouts/DashboardLayout";
 import RecommendedCourses from "../components/courses/RecommendedCourses";
-import { ActiveStudentCourses, AllStudentCourses } from "../components/courses/StudentCourses";
+import {
+	ActiveStudentCourses,
+	AllStudentCourses,
+} from "../components/courses/StudentCourses";
 import { userContext } from "../context/UserContext";
 import AddCourseCard from "../components/cards/AddCourseCard";
 import CreateCourse from "../components/courses/CreateCourse";
 import { AllTutorCourses } from "../components/courses/TutorCourse";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import arrowright from "/icons/arrow-right-active.svg";
 
 const Courses = () => {
 	const {
@@ -41,10 +45,13 @@ const Courses = () => {
 		(a, b) => new Date(b.createdAt) - new Date(a.createdAt)
 	);
 
+	const enrolledStudentCourses = studentDashboardData?.enrolledCourses?.slice(
+		0,
+		5
+	);
 	const notEnrolledCourses = sortedActiveStudentCourses?.slice(0, 4);
 	const recommendedCourses = sortedStudentCourses?.slice(0, 4);
 
-	const dashboardStudentCourses = sortedStudentCourses?.slice(0, 12);
 	const isNewStudent = studentDashboardData?.enrolledCourses?.length === 0;
 
 	const handleAddCourseClick = () => {
@@ -59,6 +66,10 @@ const Courses = () => {
 		navigate("/allcourses");
 		console.log("navigating to courses");
 	};
+
+	useEffect(() => {
+		window.scrollTo(0, 0);
+	}, []);
 
 	const studentContent = (
 		<>
@@ -79,13 +90,21 @@ const Courses = () => {
 					/>
 				</>
 			) : (
-				<>
+				<div className="flex flex-col">
+					<div className="flex items-center gap-1 border border-primaryBlue rounded-lg self-end p-3">
+						<Link
+							to="/allcourses"
+							className=" font-trap-grotesk font-medium text-primaryBlue"
+						>
+							Explore Courses
+						</Link>
+						<img src={arrowright} />
+					</div>
+
 					<div className="flex">
-						{/* <ActiveStudentCourses heading={"Your Courses"} /> */}
-						<AddCourseCard
-							text={"Add Course"}
-							heading={"My Courses"}
-							onClick={handleViewCourse}
+						<ActiveStudentCourses
+							heading={"Your Courses"}
+							courses={enrolledStudentCourses}
 						/>
 					</div>
 					<RecommendedCourses
@@ -93,8 +112,12 @@ const Courses = () => {
 						courses={notEnrolledCourses}
 						slidesToShow={3}
 					/>
-					<AllStudentCourses itemsPerPage="9" courses={sortedActiveStudentCourses} gridCol={"grid-cols-3"}/>
-				</>
+					<AllStudentCourses
+						itemsPerPage="9"
+						courses={sortedActiveStudentCourses}
+						gridCol={"grid-cols-3"}
+					/>
+				</div>
 			)}
 		</>
 	);

@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import CourseDetailsLayout from "../layouts/CourseDetailsLayout";
 import RecommendedCourses from "../components/courses/RecommendedCourses";
 import { userContext } from "../context/UserContext";
@@ -12,8 +12,12 @@ const AllCourses = () => {
 		(a, b) => new Date(b.createdAt) - new Date(a.createdAt)
 	);
 
-	const recentStudentCourses = sortedStudentCourses?.slice(0, 2);
 	const recommendedCourses = sortedStudentCourses?.slice(0, 4);
+
+	useEffect(() => {
+		window.scrollTo(0, 0);
+	}, []);
+
 	return (
 		<div>
 			<CourseDetailsLayout>

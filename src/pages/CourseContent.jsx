@@ -80,19 +80,10 @@ const CourseContent = () => {
 	const [showCertificate, setShowCertificate] = useState(false);
 	const [showSuccess, setShowSuccess] = useState(false);
 	const [score, setScore] = useState(null);
+	const [isMarking, setIsMarking] = useState(false);
+	const [completedTopics, setCompletedTopics] = useState([]);
 
 	const navigate = useNavigate();
-
-	const handleExpandAllClick = useCallback(() => {
-		const newExpandAll = !expandAll;
-		setExpandAll(newExpandAll);
-		setModulesState(
-			courseLessonsData?.reduce((acc, _, index) => {
-				acc[index] = newExpandAll;
-				return acc;
-			}, {})
-		);
-	}, [expandAll, courseLessonsData]);
 
 	const handleModuleToggle = useCallback((index, isOpen) => {
 		setModulesState((prev) => {
@@ -191,13 +182,35 @@ const CourseContent = () => {
 		setShowScore(false);
 	};
 
-	const handleFail = () => {
+	const handleBackToCourses = () => {
 		navigate("/courses");
 	};
 
 	const handleShowCerificate = () => {
 		setShowCertificate(true);
 		setShowSuccess(false);
+	};
+
+	const markTopicAsCompleted = async () => {
+		setIsMarking(true);
+		try {
+			await axios.put(
+				`https://edture.onrender.com/users/enrolled-courses/${id}/topics/${selectedTopic._id}/complete`,
+				{},
+				{
+					headers: { Authorization: `Bearer ${token}` },
+				}
+			);
+
+			setSelectedTopic((prevTopic) => ({
+				...prevTopic,
+				isCompleted: !prevTopic.isCompleted,
+			}));
+			setIsMarking(false);
+		} catch (error) {
+			console.error("Error updating topic completion status:", error);
+			setIsMarking(false);
+		}
 	};
 
 	const calculateTotalDuration = () => {
@@ -383,11 +396,6 @@ const CourseContent = () => {
 							<h5 className="text-lg font-trap-grotesk font-semibold">
 								Course Content
 							</h5>
-							{/* <SecondaryButton
-								onClick={handleExpandAllClick}
-								className="font-trap-grotesk text-primary text-sm"
-								text={expandAll ? "Collapse" : "Expand"}
-							/> */}
 						</div>
 						<div className="h-full ">
 							{courseLessonsData?.map((lesson, index) => (
@@ -400,6 +408,7 @@ const CourseContent = () => {
 										handleModuleToggle(index, isOpen)
 									}
 									onTopicSelect={handleTopicSelect}
+									onMarkAsCompleted={markTopicAsCompleted}
 								/>
 							))}
 							{quizzes?.length > 0 && (
@@ -415,6 +424,20 @@ const CourseContent = () => {
 					</div>
 
 					<div className="p-8 w-full">
+						<div className="flex justify-between items-center py-2">
+							<div></div>
+							<SecondaryButton
+								text={
+									selectedTopic?.isCompleted
+										? "Completed"
+										: isMarking
+										? "Marking as completed..."
+										: "Mark as completed"
+								}
+								onClick={markTopicAsCompleted}
+							/>
+						</div>
+
 						{videoUrl && <VideoComponent url={videoUrl} />}
 
 						{!showQuizContent && (
@@ -485,7 +508,7 @@ const CourseContent = () => {
 					score={`${score}`}
 					allowClose={false}
 					onPass={handleShowSuccess}
-					onFail={handleFail}
+					onFail={handleBackToCourses}
 				/>
 			)}
 			{showSuccess && (
@@ -503,6 +526,7 @@ const CourseContent = () => {
 					firstName={firstName}
 					lastName={lastName}
 					course={course.title}
+					onClose={handleBackToCourses}
 				/>
 			)}
 		</div>
