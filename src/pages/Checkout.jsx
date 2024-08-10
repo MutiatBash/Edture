@@ -109,7 +109,7 @@ const Checkout = () => {
 			customizations: {
 				title: "Course Purchase",
 				description: "Payment for purchased courses",
-				logo: "https://www.logolynx.com/images/logolynx/22/2239ca38f5505fbfce7e55bbc0604386.jpeg",
+				logo: "/edture-logo.svg",
 			},
 			callback: function (data) {
 				console.log("Flutterwave callback data:", data);

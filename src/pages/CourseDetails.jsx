@@ -681,11 +681,13 @@ const TutorModal = ({ course, showDeleteModal }) => {
 					className="w-full"
 					onClick={handleEditCourse}
 				/>
-				<SecondaryButton
-					text={"Create Quiz"}
-					className="w-full"
-					onClick={handleCreateQuiz}
-				/>
+				{!course?.quiz && (
+					<SecondaryButton
+						text={"Create Quiz"}
+						className="w-full"
+						onClick={handleCreateQuiz}
+					/>
+				)}
 			</div>
 			<div className="text-primaryBlack pt-3">
 				<h5 className="font-bold font-trap-grotesk text-lg">

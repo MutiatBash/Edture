@@ -43,6 +43,7 @@ const CreateCourse = ({ onCancel }) => {
 	const [step, setStep] = useState(1);
 	const [showModal, setShowModal] = useState(false);
 	const [courseId, setCourseId] = useState(null);
+	const [message, setMessage] = useState(null);
 	const [lessons, setLessons] = useState([]);
 
 	const addLesson = (lessonTitle) => {
@@ -223,23 +224,26 @@ const CreateCourse = ({ onCancel }) => {
 					},
 				}
 			);
-			console.log("Course created successfully:", response.data);
 			setLoading(false);
 			const courseCreated = response?.data;
 			const { id } = courseCreated.data;
 			setCourseId(id);
 
-			console.log("Paylod:", courseData);
+			console.log("Payload:", courseData);
 			handleNextStep();
 		} catch (err) {
 			setLoading(false);
 			console.error("Error creating course:", err.message);
 			console.log(err);
-			console.log("Paylod:", courseData);
 		}
 	};
 
 	const handleCreateLessons = async () => {
+		if (!lessons || lessons.length === 0) {
+			setMessage("Please add lessons before creating them.");
+			return;
+		}
+
 		const lessonData = {
 			lessons: lessons.map((lesson) => ({
 				title: lesson.lessonTitle,
@@ -266,6 +270,7 @@ const CreateCourse = ({ onCancel }) => {
 		console.log(lessonData?.lessons);
 
 		try {
+			setMessage(null);
 			const response = await axios.post(
 				`https://edture.onrender.com/courses/${courseId}/lessons`,
 				{
@@ -279,15 +284,14 @@ const CreateCourse = ({ onCancel }) => {
 					},
 				}
 			);
-			console.log(courseId);
 
+			console.log(courseId);
 			console.log("Lesson created successfully:", response.data);
 			console.log("Payload:", lessonData);
 			handleCreationConfirmation();
 		} catch (error) {
 			console.error("Error creating course:", error.message);
-			console.log(error);
-			console.log("Payload:", lessonData);
+			setError(error.message);
 		}
 	};
 
@@ -491,6 +495,7 @@ const CreateCourse = ({ onCancel }) => {
 							updateLesson={updateLesson}
 							deleteLesson={deleteLesson}
 						/>
+						<div className="text-red">{message}</div>
 						<div className="flex justify-between pt-8">
 							<SecondaryButton
 								onClick={handlePreviousStep}

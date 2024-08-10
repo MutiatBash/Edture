@@ -41,9 +41,6 @@ export const ActiveCourseCard = ({ progress, course, id }) => {
 				</p>
 				<p className="text-lightGray items-center">
 					<span className="font-trap-grotesk text-[10px]">
-						{course?.course.totalHours} total hours •
-					</span>
-					<span className="font-trap-grotesk text-[10px]">
 						{course?.course.totalNumberOfLessons} lecture •
 					</span>
 					<span className="font-trap-grotesk text-[10px]">
@@ -96,9 +93,6 @@ export const CourseCard = ({ course }) => {
 					{course.instructorName}
 				</p>
 				<p className="text-lightGray items-center">
-					<span className="font-trap-grotesk text-[10px]">
-						{course.totalVideoDurationInSeconds} total hours •
-					</span>
 					<span className="font-trap-grotesk text-[10px]">
 						{course.totalNumberOfLessons} lectures •
 					</span>

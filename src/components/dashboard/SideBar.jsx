@@ -10,7 +10,6 @@ import logouticon from "/logout.svg";
 import logoutactive from "/logout-active.svg";
 import courses from "/courses.svg";
 import coursesactive from "/courses-active.svg";
-
 import edture from "/edture-logo.svg";
 import LogoutModal from "../authentication/LogoutModal";
 
