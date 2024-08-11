@@ -199,6 +199,7 @@ const UserContextProvider = ({ children }) => {
 				courseById,
 				enrolledCourses,
 				studentCourses,
+				allCoursesLoading,
 			}}
 		>
 			{children}

@@ -8,10 +8,10 @@ import bridging from "/bridging-home.svg";
 import CourseCarousel from "../components/carousel/CourseCarousel";
 import { CourseCard } from "../components/cards/CourseCard";
 import { userContext } from "../context/UserContext";
-import { coursesInProgress } from "../data";
+import { SpinnerLoader } from "../components/Loader";
 
 const Home = () => {
-	const { allCourses } = useContext(userContext);
+	const { allCourses, allCoursesLoading } = useContext(userContext);
 
 	const navigate = useNavigate();
 	const handleSignIn = () => {
@@ -51,14 +51,19 @@ const Home = () => {
 						/>
 						<SecondaryButton
 							text={"Sign in"}
-							className={"w-full whitespace-nowrap text-white hover:bg-darkBlue"}
+							className={
+								"w-full whitespace-nowrap text-white hover:bg-darkBlue"
+							}
 							onClick={handleSignIn}
 						/>
 					</div>
 				</div>
 
 				{/* ABOUT US */}
-				<div className="flex flex-col gap-6 justify-center items-center" id="about">
+				<div
+					className="flex flex-col gap-6 justify-center items-center"
+					id="about"
+				>
 					<div className="rounded-full p-3 px-6 border border-primaryBlue text-primaryBlue bg-white">
 						About us
 					</div>
@@ -104,11 +109,15 @@ const Home = () => {
 
 				{/* COURSES */}
 				<div className="flex flex-col gap-6">
+					{allCoursesLoading && <SpinnerLoader />}
 					<div className="flex justify-between items-center">
 						<h3 className="text-3xl text-left font-trap-grotesk font-semibold">
 							Courses to scale your knowledge
 						</h3>
-						<SecondaryButton text={"More courses"} onClick={goToCourses}/>
+						<SecondaryButton
+							text={"More courses"}
+							onClick={goToCourses}
+						/>
 					</div>
 					<div>
 						<CourseCarousel>

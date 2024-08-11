@@ -45,7 +45,7 @@ const Cart = () => {
 	return (
 		<div className="relative">
 			<CourseDetailsLayout>
-				{/* {cartLoading && <SpinnerLoader />} */}
+				{cartLoading && <SpinnerLoader />}
 				{cartItems?.length === 0 ? (
 					<h3 className="font-medium text-2xl px-12">
 						Your cart is empty

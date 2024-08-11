@@ -388,7 +388,7 @@ const CourseContent = () => {
 
 	return (
 		<div>
-			{courseContentsLoading || (scoreLoading && <SpinnerLoader />)}
+			{(courseContentsLoading || scoreLoading) && <SpinnerLoader />}
 			<CourseDetailsLayout>
 				<div className="flex px-12 justify-between">
 					<div className="bg-white flex flex-col pt-8 pr-5 border-r-[0.5px] border-r-lightGray w-[30%] h-full gap-3 min-h-screen sticky top-0 bottom-0 z-20">

@@ -2,7 +2,8 @@ import React, { useRef } from "react";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import { PrimaryButton, SecondaryButton } from "../Button";
-import certificate from "/edture-cert.svg";
+// import certificate from "/edture-cert.svg";
+import certificate from "../../images/edture-cert.png";
 import { useNavigate } from "react-router-dom";
 
 const Certificate = ({ firstName, lastName, course, onClose }) => {
@@ -22,9 +23,9 @@ const Certificate = ({ firstName, lastName, course, onClose }) => {
 			});
 			pdf.addImage(imgData, "PNG", 0, 0, canvas.width, canvas.height);
 			pdf.save(`${firstName}-${lastName}-certificate.pdf`);
-		}, 100); 
+		}, 100);
 	};
-	
+
 	return (
 		<div className="fixed inset-0 flex items-center justify-center bg-primaryBlack bg-opacity-50 z-50 backdrop-blur">
 			<div className="bg-white flex flex-col p-7 rounded-lg gap-6">
@@ -56,15 +57,11 @@ const Certificate = ({ firstName, lastName, course, onClose }) => {
 					/>
 					<div
 						style={{
-							position: "absolute",
-							top: "63%",
-							left: "35%",
 							transform: "translate(-50%, -50%)",
-							color: "#000",
 						}}
-						className="flex flex-col gap-8"
+						className="flex flex-col gap-10 absolute top-[65%] left-[43%] transform"
 					>
-						<div className="flex flex-col">
+						<div className="flex flex-col capitalize">
 							<h2
 								style={{
 									fontSize: "32px",
@@ -79,7 +76,7 @@ const Certificate = ({ firstName, lastName, course, onClose }) => {
 								style={{
 									fontSize: "32px",
 									lineHeight: "0",
-									marginBottom: "22px",
+									marginBottom: "2px",
 								}}
 								className="font-medium"
 							>
@@ -90,21 +87,38 @@ const Certificate = ({ firstName, lastName, course, onClose }) => {
 							<p
 								style={{
 									fontSize: "6px",
-									marginLeft: "28px",
-									// marginTop: "19px",
 									lineHeight: "0",
+									margin: 0,
+									color: "#B4B4B4",
 								}}
 							>
-								{course}
+								This certifies that the above named student has taken
+								and completed the
+								<br></br>
+								<strong
+									style={{
+										fontSize: "6px",
+										lineHeight: "3",
+										color:"#000"
+									}}
+								>
+									{course}
+								</strong>
 							</p>
 							<p
 								style={{
 									fontSize: "6px",
-									marginLeft: "50px",
-									// marginTop: "8px",
 									lineHeight: "0",
 								}}
 							>
+								<strong
+									style={{
+										fontSize: "6px",
+										lineHeight: "0",
+									}}
+								>
+									Completed:{" "}
+								</strong>
 								on {new Date().toLocaleDateString()}
 							</p>
 						</div>
@@ -115,10 +129,6 @@ const Certificate = ({ firstName, lastName, course, onClose }) => {
 						onClick={downloadCertificate}
 						text={"Download PDF"}
 					/>
-					{/* <SecondaryButton
-						onClick={backToCourses}
-						text={"Back to courses"}
-					/> */}
 				</div>
 			</div>
 		</div>

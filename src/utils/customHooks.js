@@ -14,6 +14,11 @@ export const useApi = (url, token) => {
 			return;
 		}
 
+		if (!token) {
+			setLoading(false);
+			return;
+		}
+
 		const fetchData = async () => {
 			setLoading(true);
 

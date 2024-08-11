@@ -42,6 +42,7 @@ const CreateCourse = ({ onCancel }) => {
 	];
 	const [step, setStep] = useState(1);
 	const [showModal, setShowModal] = useState(false);
+	const [imageLoading, setImageLoading] = useState(false);
 	const [courseId, setCourseId] = useState(null);
 	const [message, setMessage] = useState(null);
 	const [lessons, setLessons] = useState([]);
@@ -95,8 +96,8 @@ const CreateCourse = ({ onCancel }) => {
 			const formData = new FormData();
 			formData.append("file", file);
 
+			setImageLoading(true);
 			try {
-				// Sending the file to the server
 				const response = await axios.post(
 					"https://edture.onrender.com/cloudinary/upload",
 					formData,
@@ -109,7 +110,6 @@ const CreateCourse = ({ onCancel }) => {
 
 				const data = response.data;
 				const fileUrl = data.url;
-				console.log(fileUrl);
 
 				setFormData((prevData) => ({
 					...prevData,
@@ -119,8 +119,10 @@ const CreateCourse = ({ onCancel }) => {
 						fileUrl: fileUrl,
 					},
 				}));
+				setImageLoading(false);
 			} catch (error) {
 				console.error("Error uploading file:", error);
+				setImageLoading(false);
 			}
 		}
 	};
@@ -143,7 +145,6 @@ const CreateCourse = ({ onCancel }) => {
 		const newErrors = {};
 
 		if (step === 1) {
-			// Step 1 validation
 			if (!formData.courseTitle)
 				newErrors.courseTitle = "Course title is required";
 			if (!formData.courseDescription)
@@ -246,22 +247,33 @@ const CreateCourse = ({ onCancel }) => {
 
 		const lessonData = {
 			lessons: lessons.map((lesson) => ({
-				title: lesson.lessonTitle,
-				curriculum: lesson.items.map((item) => item.topicTitle),
-				topics: lesson.items.map((item) => ({
-					title: item.topicTitle,
-					contentType: item?.content?.type,
+				title: lesson.lessonTitle || "",
+				curriculum: (lesson.items || []).map(
+					(item) => item.topicTitle || ""
+				),
+				topics: (lesson.items || []).map((item) => ({
+					title: item.topicTitle || "",
+					contentType: item?.content?.type || "",
 					textDescription:
-						item.content.type === "text" ? item.content.text : "",
-					videoUrl: item.content.type === "video" ? item.content.url : "",
+						item?.content?.type === "text"
+							? item?.content?.text || ""
+							: "",
+					videoUrl:
+						item?.content?.type === "video"
+							? item?.content?.url || ""
+							: "",
 					videoDurationInSeconds:
-						item.content.type === "video" ? item.content.duration : 0,
+						item?.content?.type === "video"
+							? item?.content?.duration || 0
+							: 0,
 					description: item.description || "",
-					downloadableMaterials: item.resources.map((resource) => ({
-						type: "pdf",
-						name: resource.name,
-						url: resource.url,
-					})),
+					downloadableMaterials: (item.resources || []).map(
+						(resource) => ({
+							type: "pdf",
+							name: resource.name || "",
+							url: resource.url || "",
+						})
+					),
 					links: item.links || [],
 				})),
 			})),
@@ -285,9 +297,6 @@ const CreateCourse = ({ onCancel }) => {
 				}
 			);
 
-			console.log(courseId);
-			console.log("Lesson created successfully:", response.data);
-			console.log("Payload:", lessonData);
 			handleCreationConfirmation();
 		} catch (error) {
 			console.error("Error creating course:", error.message);
@@ -397,7 +406,9 @@ const CreateCourse = ({ onCancel }) => {
 							fileData={formData.courseImage}
 							handleFileChange={handleFileChange}
 							error={courseError.courseImage}
+							loading={imageLoading}
 						/>
+
 						<SelectField
 							title="Difficulty Level"
 							label="Select Difficulty"
@@ -470,9 +481,10 @@ const CreateCourse = ({ onCancel }) => {
 							<PrimaryButton
 								onClick={handleCreateCourse}
 								text={"Next"}
+								disabled={imageLoading}
 							/>
 						</div>
-						{/* <div className="text-red">{courseError}</div> */}
+						{courseError && <div className="text-red">{courseError.message}</div>}
 					</div>
 				)}
 

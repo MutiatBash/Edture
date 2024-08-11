@@ -67,12 +67,12 @@ const FileInput = ({ onChange, note, loading }) => {
 	);
 };
 
-const VideoInput = ({ onChange, note }) => {
+const VideoInput = ({ onChange, note, loading }) => {
 	const [videoFile, setVideoFile] = useState(null);
 	const [videoUrl, setVideoUrl] = useState("");
 	const [videoDuration, setVideoDuration] = useState(0);
 
-	const videoSizeLimit = 1 * 1024 * 1024 * 1024; // 1 GB
+	const videoSizeLimit = 1 * 1024 * 1024 * 1024;
 
 	const handleVideoChange = (event) => {
 		const file = event.target.files[0];
@@ -101,24 +101,32 @@ const VideoInput = ({ onChange, note }) => {
 
 	return (
 		<div>
-			<div className="flex justify-between items-center relative pl-5 border border-lightGray rounded-lg">
-				<span className="text-lightGray">No file selected</span>
-				<label className="flex items-center cursor-pointer">
-					<div className="border p-4 px-5 rounded-tr-md rounded-br-md border-primaryBlue">
-						<input
-							type="file"
-							accept="video/*"
-							onChange={handleVideoChange}
-							className="absolute right-0 hidden"
-						/>
-						<div className="flex gap-2 items-center">
-							<img src={videoicon} alt="Video Icon" />
-							<span className="text-primaryBlue font-medium font-trap-grotesk">
-								Select Video
-							</span>
-						</div>
+			<div className="">
+				{loading ? (
+					<span className="text-lightGray py-3">
+						Please wait, your file is being uploaded...
+					</span>
+				) : (
+					<div className="flex justify-between items-center relative pl-5 border border-lightGray rounded-lg">
+						<span className="text-lightGray">No file selected</span>
+						<label className="flex items-center cursor-pointer">
+							<div className="border p-4 px-5 rounded-tr-md rounded-br-md border-primaryBlue">
+								<input
+									type="file"
+									accept="video/*"
+									onChange={handleVideoChange}
+									className="absolute right-0 hidden"
+								/>
+								<div className="flex gap-2 items-center">
+									<img src={videoicon} alt="Video Icon" />
+									<span className="text-primaryBlue font-medium font-trap-grotesk">
+										Select Video
+									</span>
+								</div>
+							</div>
+						</label>
 					</div>
-				</label>
+				)}
 			</div>
 			<p className="text-lightGray pt-2">
 				<span className="font-semibold">Note: </span>
@@ -154,6 +162,11 @@ const TextContentItem = ({ text, onEdit, onDelete }) => {
 		}
 	};
 
+	const handleCancel = () => {
+		setIsEditing(false);
+		setEditText(text);
+	};
+
 	return (
 		<div>
 			{isEditing ? (
@@ -161,31 +174,29 @@ const TextContentItem = ({ text, onEdit, onDelete }) => {
 					<textarea
 						placeholder="Add content"
 						value={editText}
-						onChange={(e) => setText(e.target.value)}
+						onChange={(e) => setEditText(e.target.value)}
 						rows="6"
 						className="border border-lightGray rounded-lg p-4 px-5 w-full"
 					/>
-					<div className="flex gap-2">
-						<button className="" onClick={handleEdit}>
-							<img src={editicon} />
-						</button>
-						<button className="" onClick={onDelete}>
-							<img src={deleteicon} />
-						</button>
+					<div className="flex gap-2 mt-4">
+						<PrimaryButton onClick={handleEdit} text="Save" />
+						<SecondaryButton onClick={handleCancel} text="Cancel" />
 					</div>
 				</>
 			) : (
-				<>
-					<p>{text}</p>
+				<div className="flex items-center gap-3">
+					<div className="bg-lighterGray p-3 rounded-md">
+						<img src={documenttext} alt="Document" />
+					</div>
 					<div className="flex gap-2">
-						<button className="">
-							<img src={editicon} />
+						<button className="" onClick={() => setIsEditing(true)}>
+							<img src={editicon} alt="Edit" />
 						</button>
 						<button className="" onClick={onDelete}>
-							<img src={deleteicon} />
+							<img src={deleteicon} alt="Delete" />
 						</button>
 					</div>
-				</>
+				</div>
 			)}
 		</div>
 	);
@@ -230,6 +241,7 @@ const AddContentButton = ({
 	onContentDeleted,
 }) => {
 	const [showInput, setShowInput] = useState(false);
+	const [uploading, setUploading] = useState(false);
 	const [contentType, setContentType] = useState(null);
 	const [text, setText] = useState(existingContent?.text || "");
 	const [file, setFile] = useState(null);
@@ -243,6 +255,7 @@ const AddContentButton = ({
 			const formData = new FormData();
 			formData.append("file", file);
 
+			setUploading(true);
 			try {
 				const response = await axios.post(
 					"https://edture.onrender.com/cloudinary/upload",
@@ -273,8 +286,10 @@ const AddContentButton = ({
 					duration,
 				});
 				resetState();
+				setUploading(false);
 			} catch (error) {
 				console.error("Error uploading video:", error);
+				setUploading(false);
 			}
 		}
 	};
@@ -329,22 +344,22 @@ const AddContentButton = ({
 							<div className="flex gap-2 mt-4">
 								<PrimaryButton onClick={handleAddText} text="Save" />
 								<SecondaryButton onClick={handleCancel} text="Cancel" />
-								{existingContent && (
-									<div className="flex gap-2">
-										<button className="">
-											<img src={editicon} />
-										</button>
-										<button
-											className=""
-											onClick={handleDeleteContent}
-										>
-											<img src={deleteicon} />
-										</button>
-									</div>
-								)}
 							</div>
 						</>
 					)}
+					{existingContent &&
+						existingContent.type === "text" &&
+						!showInput && (
+							<TextContentItem
+								text={existingContent.text}
+								onEdit={(newText) => {
+									setText(newText);
+									setShowInput(true);
+									setContentType("text");
+								}}
+								onDelete={handleDeleteContent}
+							/>
+						)}
 					{contentType === "video" && (
 						<div className="">
 							{file ? (
@@ -356,6 +371,7 @@ const AddContentButton = ({
 								<VideoInput
 									onChange={handleAddVideo}
 									note={"File requirements: 720p minimum, max 1.0 GB"}
+									loading={uploading}
 								/>
 							)}
 						</div>
@@ -386,7 +402,12 @@ const AddContentButton = ({
 	);
 };
 
-export const LessonItem = ({ item, updateLessonItem, deleteLessonItem }) => {
+export const LessonItem = ({
+	item,
+	index,
+	updateLessonItem,
+	deleteLessonItem,
+}) => {
 	const [showAddContent, setShowAddContent] = useState(false);
 	const [showAddResource, setShowAddResource] = useState(
 		item.content ? true : false
@@ -398,7 +419,10 @@ export const LessonItem = ({ item, updateLessonItem, deleteLessonItem }) => {
 	const [file, setFile] = useState(null);
 	const [inputFields, setInputFields] = useState([]);
 	const [resources, setResources] = useState(item.resources || []);
-	const [uploadLoading, setUploadLoading] = useState(false);
+	const [uploading, setUploading] = useState(false);
+	const [isEditingTitle, setIsEditingTitle] = useState(false);
+	const [newTopicTitle, setNewTopicTitle] = useState(item.topicTitle);
+
 
 	const handleAddContent = () => {
 		setShowAddContent(true);
@@ -416,7 +440,7 @@ export const LessonItem = ({ item, updateLessonItem, deleteLessonItem }) => {
 	const handleResourceUpload = async (event) => {
 		const { file } = event;
 		if (file) {
-			setUploadLoading(true);
+			setUploading(true);
 			try {
 				const formData = new FormData();
 				formData.append("file", file);
@@ -426,38 +450,35 @@ export const LessonItem = ({ item, updateLessonItem, deleteLessonItem }) => {
 					formData
 				);
 				const { url } = response.data;
+				const newResource = {
+					type: "pdf",
+					name: file.name,
+					url,
+				};
 
 				setResources((prevResources) => {
-					const newResource = {
-						type: "pdf",
-						name: file.name,
-						url,
-					};
-
 					const resourceExists = prevResources.some(
 						(res) => res.name === file.name
 					);
 
 					if (!resourceExists) {
-						console.log("New resource to be added:", newResource);
 						return [...prevResources, newResource];
 					}
 
-					console.log("Resource already exists:", newResource);
 					return prevResources;
+				});
+
+				updateLessonItem(item.id, {
+					...item,
+					resources: [...resources, newResource],
 				});
 			} catch (error) {
 				console.error("Error uploading file:", error);
 			} finally {
-				setUploadLoading(false);
+				setUploading(false);
 			}
 		}
 	};
-
-	useEffect(() => {
-		console.log("Updated resources state:", resources);
-	}, [resources]);
-
 
 	const handleAddResource = () => {
 		if (inputFields.length === 0) {
@@ -498,20 +519,50 @@ export const LessonItem = ({ item, updateLessonItem, deleteLessonItem }) => {
 		setShowAddResource(false);
 	};
 
+	const handleTitleChange = (e) => {
+		setNewTopicTitle(e.target.value);
+	};
+
+	const handleTitleSave = () => {
+		if (newTopicTitle.trim()) {
+			const updatedItem = { ...item, topicTitle: newTopicTitle };
+			updateLessonItem(item.id, updatedItem);
+		}
+		setIsEditingTitle(false);
+	};
+
+	const handleTitleCancel = () => {
+		setNewTopicTitle(item.topicTitle);
+		setIsEditingTitle(false);
+	};
+
+	const handleBlur = () => {
+		handleTitleSave();
+	};
+
 	return (
 		<div className="flex flex-col border border-lightGray rounded-lg p-4 mt-4">
 			<div className="flex justify-between items-center">
 				<div className="flex gap-3 items-center">
-					<h4 className="text-lg font-semibold">
-						Topic {item?.index + 1}:
-					</h4>
+					<h4 className="text-lg font-semibold">Topic {index + 1}:</h4>
 					<div className="flex gap-2 items-center">
 						<img src={documenttext} />
-						<h4 className="text-md">{item?.topicTitle}</h4>
+						{isEditingTitle ? (
+							<input
+								type="text"
+								value={newTopicTitle}
+								onChange={handleTitleChange}
+								onBlur={handleBlur}
+								className="border border-lightGray px-2 p-1 rounded-md focus:border-none outline-primaryBlue "
+								autoFocus
+							/>
+						) : (
+							<h4 className="">{item?.topicTitle}</h4>
+						)}
 					</div>
 					<div className="flex gap-2 items-center">
-						<button className="">
-							<img src={editicon} />
+						<button onClick={() => setIsEditingTitle(true)}>
+							<img src={editicon} alt="Edit" />
 						</button>
 						<button
 							className=""
@@ -595,7 +646,7 @@ export const LessonItem = ({ item, updateLessonItem, deleteLessonItem }) => {
 										note={
 											"A resource refers to any document that supports student learning in the lecture. This file will be treated as supplementary material, so ensure it's clear and concise. Please keep the file size under 1 GB to facilitate easy access."
 										}
-										loading={uploadLoading}
+										loading={uploading}
 									/>
 								)}
 							</div>

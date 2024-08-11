@@ -13,6 +13,8 @@ import documenttext from "/icons/document-text.svg";
 const Lesson = ({ lesson, updateLesson, deleteLesson, lessonCount }) => {
 	const [showItems, setShowItems] = useState(true);
 	const [items, setItems] = useState(lesson.items);
+	const [isEditingTitle, setIsEditingTitle] = useState(false);
+	const [newTitle, setNewTitle] = useState(lesson.lessonTitle);
 
 	useEffect(() => {
 		setItems(lesson.items);
@@ -21,21 +23,43 @@ const Lesson = ({ lesson, updateLesson, deleteLesson, lessonCount }) => {
 	const addLessonItem = (item) => {
 		const updatedLesson = { ...lesson, items: [...items, item] };
 		setItems(updatedLesson.items);
-		updateLesson(updatedLesson);
+		updateLesson(lesson.id, updatedLesson);
 	};
 
 	const updateLessonItem = (id, updatedItem) => {
 		const updatedItems = items.map((item) =>
 			item.id === id ? updatedItem : item
 		);
+		const updatedLesson = { ...lesson, items: updatedItems };
 		setItems(updatedItems);
-		updateLesson({ ...lesson, items: updatedItems });
+		updateLesson(lesson.id, updatedLesson);
 	};
 
 	const deleteLessonItem = (itemId) => {
 		const updatedItems = items.filter((item) => item.id !== itemId);
 		const updatedLesson = { ...lesson, items: updatedItems };
-		updateLesson(lesson.id, updatedLesson);
+		updateLesson(updatedLesson);
+	};
+
+	const handleTitleChange = (e) => {
+		setNewTitle(e.target.value);
+	};
+
+	const handleTitleSave = () => {
+		if (newTitle.trim()) {
+			const updatedLesson = { ...lesson, lessonTitle: newTitle };
+			updateLesson(lesson.id, updatedLesson);
+		}
+		setIsEditingTitle(false);
+	};
+
+	const handleTitleCancel = () => {
+		setNewTitle(lesson.lessonTitle);
+		setIsEditingTitle(false);
+	};
+
+	const handleBlur = (e) => {
+		handleTitleSave();
 	};
 
 	return (
@@ -44,20 +68,31 @@ const Lesson = ({ lesson, updateLesson, deleteLesson, lessonCount }) => {
 				<div className="flex gap-3 items-center">
 					<h4 className="text-lg font-bold">Lesson {lessonCount}:</h4>
 					<div className="flex gap-2 items-center">
-						<img src={documenttext} />
-						<h4 className="text-md">{lesson?.lessonTitle}</h4>
+						<img src={documenttext} alt="Document" />
+						{isEditingTitle ? (
+							<input
+								type="text"
+								value={newTitle}
+								onChange={handleTitleChange}
+								onBlur={handleBlur}
+								className="border border-lightGray px-2 p-1 rounded-md focus:border-none outline-primaryBlue "
+								autoFocus
+							/>
+						) : (
+							<h4 className="">{lesson?.lessonTitle}</h4>
+						)}
 					</div>
 					<div className="flex gap-2 items-center">
-						<button className="">
-							<img src={editicon} />
+						<button onClick={() => setIsEditingTitle(true)}>
+							<img src={editicon} alt="Edit" />
 						</button>
-						<button className="" onClick={() => deleteLesson(lesson?.id)}>
-							<img src={deleteicon} />
+						<button onClick={() => deleteLesson(lesson?.id)}>
+							<img src={deleteicon} alt="Delete" />
 						</button>
 					</div>
 				</div>
 				<div className="flex gap-2">
-					<button onClick={() => {setShowItems(!showItems), console.log("show")}}>
+					<button onClick={() => setShowItems(!showItems)}>
 						{showItems ? (
 							<img src={arrowup} alt="Collapse" />
 						) : (
@@ -73,7 +108,8 @@ const Lesson = ({ lesson, updateLesson, deleteLesson, lessonCount }) => {
 					{items.map((item, index) => (
 						<LessonItem
 							key={item.id}
-							item={{ ...item, index }}
+							item={item}
+							index={index}
 							updateLessonItem={updateLessonItem}
 							deleteLessonItem={deleteLessonItem}
 						/>

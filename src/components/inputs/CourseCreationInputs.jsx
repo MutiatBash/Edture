@@ -54,7 +54,11 @@ export const InputField = ({
 					{subtitle}
 				</p>
 			)}
-			{label && <label className="pb-2 font-trap-grotesk font-medium text-lg">{label}</label>}
+			{label && (
+				<label className="pb-2 font-trap-grotesk font-medium text-lg">
+					{label}
+				</label>
+			)}
 			<input
 				type={type === "number" ? "text" : type}
 				name={name}
@@ -165,6 +169,7 @@ export const FileUploadField = ({
 	fileData,
 	handleFileChange,
 	error,
+	loading,
 	...props
 }) => {
 	const [localFileData, setLocalFileData] = useState(fileData);
@@ -213,12 +218,20 @@ export const FileUploadField = ({
 						className="absolute inset-0 w-full h-full object-cover rounded-lg"
 					/>
 				) : (
-					<div className="flex flex-col items-center justify-center h-full text-center text-primaryBlack p-4 bg-lighterGray gap-2">
-						<img
-							src={imageupload}
-							className="rounded-full bg-white p-10"
-						/>
-						<span>Click to upload an image</span>
+					<div className="flex flex-col items-center justify-center h-full text-center text-primaryBlack p-4 bg-lighterGray">
+						{loading ? (
+							<p className="text-lightGray text-lg">
+								Uploading...
+							</p>
+						) : (
+							<div className="flex flex-col items-center justify-center gap-2">
+								<img
+									src={imageupload}
+									className="rounded-full bg-white p-10"
+								/>
+								<span>Click to upload an image</span>
+							</div>
+						)}
 					</div>
 				)}
 			</div>
@@ -280,7 +293,6 @@ export const FileUploadField = ({
 // 		</div>
 // 	);
 // };
-
 
 export const RadioTextGroup = ({ data, onDataChange }) => {
 	const [selectedValue, setSelectedValue] = useState(data.correctAnswer || "");

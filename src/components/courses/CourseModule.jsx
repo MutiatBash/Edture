@@ -51,7 +51,10 @@ export const CourseModule = ({
 				<div className="flex justify-between w-full">
 					<h3>{lessonTitle}</h3>
 					<p className="text-sm text-darkGray">
-						{totalTopics} {topicLabel} • {formattedTotalDuration}
+						{totalTopics} {topicLabel}{" "}
+						{totalDurationInSeconds > 0 && (
+							<>• {formattedTotalDuration}</>
+						)}
 					</p>
 				</div>
 			</div>
@@ -112,6 +115,7 @@ export const ContentModule = ({
 
 	const totalTopics = lessonItems.length;
 	const topicLabel = totalTopics === 1 ? "Topic" : "Topics";
+
 	const totalDurationInSeconds = lessonItems?.reduce((total, item) => {
 		return total + (item.videoDurationInSeconds || 0);
 	}, 0);
@@ -133,8 +137,11 @@ export const ContentModule = ({
 				</span>
 				<div className="flex justify-between w-full">
 					<h3>{lessonTitle}</h3>
-					<p className="text-sm text-darkGray whitespace-nowrap">
-						{totalTopics} {topicLabel}
+					<p className="text-xs text-darkGray">
+						{totalTopics} {topicLabel}{" "}
+						{totalDurationInSeconds > 0 && (
+							<> • {formattedTotalDuration}</>
+						)}
 					</p>
 				</div>
 			</div>

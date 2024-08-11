@@ -113,7 +113,10 @@ const CourseDetails = () => {
 
 	return (
 		<>
-			{courseDetailsLoading || (loading && <SpinnerLoader />)}
+			{(courseDetailsLoading ||
+				quizzesLoading ||
+				enrolledCoursesLoading ||
+				loading) && <SpinnerLoader />}
 			{courseDetailsError && <p>{courseDetailsError}</p>}
 			<CourseDetailsLayout>
 				{isTutor ? (
@@ -280,30 +283,32 @@ const StudentContent = ({ selectedCourse, recommendedCourse }) => {
 			});
 		});
 
+		if (totalSeconds === 0) {
+			return null;
+		}
+
 		const hours = Math.floor(totalSeconds / 3600);
 		const minutes = Math.floor((totalSeconds % 3600) / 60);
+		const seconds = Math.floor(totalSeconds % 60);
 
-		return { hours, minutes };
+		return { hours, minutes, seconds };
 	};
 
-	const { hours, minutes } = calculateTotalDuration();
+	const duration = calculateTotalDuration() || {};
+	const { hours = 0, minutes = 0, seconds = 0 } = duration;
+
+	const totalTopics = selectedCourse?.reduce(
+		(acc, lesson) => acc + lesson.topics.length,
+		0
+	);
+	const topicLabel = totalTopics === 1 ? "Topic" : "Topics";
+
+	const totalLessons = selectedCourse?.length;
+	const lessonLabel = totalLessons === 1 ? "Lesson" : "Lessons";
 
 	return (
 		<>
 			<div className="flex flex-col gap-10 py-8 pl-14 w-3/5 relative">
-				{/* <div className="font-trap-grotesk">
-					<div className="flex flex-col gap-3 border border-lightGray rounded-lg p-4 text-darkGray">
-						<p className="text-xl font-trap-grotesk">What you'll learn</p>
-						<div className="grid grid-cols-2 gap-3">
-						{selectedCourse?.learnings?.map((learning, index) => (
-							<div key={index} className="flex gap-3 items-start">
-								<img src={verify} alt="Verify Icon" />
-								{learning}
-							</div>
-						))}
-					</div> 
-					</div>
-				</div> */}
 				<div>
 					<h5 className="text-xl font-trap-grotesk font-semibold">
 						Course Content
@@ -312,7 +317,7 @@ const StudentContent = ({ selectedCourse, recommendedCourse }) => {
 						<div className="flex justify-between items-center">
 							<div>
 								<span className="font-trap-grotesk">
-									{selectedCourse?.length} Lessons •
+									{selectedCourse?.length} {lessonLabel} •
 								</span>
 								<span className="font-trap-grotesk">
 									{" "}
@@ -320,13 +325,14 @@ const StudentContent = ({ selectedCourse, recommendedCourse }) => {
 										(acc, lesson) => acc + lesson.topics.length,
 										0
 									)}{" "}
-									Topics •
+									{topicLabel}{" "}
 								</span>
-								<span className="font-trap-grotesk">
-									{" "}
-									{hours > 0 ? `${hours}h ` : ""}
-									{minutes}m total length
-								</span>
+								{(hours > 0 || minutes > 0 || seconds > 0) && (
+									<span className="font-trap-grotesk">
+										• {hours > 0 ? `${hours}h ` : ""}
+										{minutes}m {seconds}s total length
+									</span>
+								)}
 							</div>
 							<SecondaryButton
 								onClick={handleExpandAllClick}
@@ -400,13 +406,28 @@ const TutorContent = ({ selectedCourse, quizzes }) => {
 			});
 		});
 
+		if (totalSeconds === 0) {
+			return null;
+		}
+
 		const hours = Math.floor(totalSeconds / 3600);
 		const minutes = Math.floor((totalSeconds % 3600) / 60);
+		const seconds = Math.floor(totalSeconds % 60);
 
-		return { hours, minutes };
+		return { hours, minutes, seconds };
 	};
 
-	const { hours, minutes } = calculateTotalDuration();
+	const duration = calculateTotalDuration() || {};
+	const { hours = 0, minutes = 0, seconds = 0 } = duration;
+
+	const totalTopics = selectedCourse?.reduce(
+		(acc, lesson) => acc + lesson.topics.length,
+		0
+	);
+	const topicLabel = totalTopics === 1 ? "Topic" : "Topics";
+
+	const totalLessons = selectedCourse?.length;
+	const lessonLabel = totalLessons === 1 ? "Lesson" : "Lessons";
 
 	return (
 		<div className="flex flex-col gap-10 py-8 pl-14 w-3/5">
@@ -447,7 +468,7 @@ const TutorContent = ({ selectedCourse, quizzes }) => {
 					<div className="flex justify-between items-center">
 						<div>
 							<span className="font-trap-grotesk">
-								{selectedCourse?.length} Lessons •
+								{selectedCourse?.length} {lessonLabel} •
 							</span>
 							<span className="font-trap-grotesk">
 								{" "}
@@ -455,13 +476,14 @@ const TutorContent = ({ selectedCourse, quizzes }) => {
 									(acc, lesson) => acc + lesson.topics.length,
 									0
 								)}{" "}
-								Topics •
+								{topicLabel}{" "}
 							</span>
-							<span className="font-trap-grotesk">
-								{" "}
-								{hours > 0 ? `${hours}h ` : ""}
-								{minutes}m total length
-							</span>
+							{(hours > 0 || minutes > 0 || seconds > 0) && (
+								<span className="font-trap-grotesk">
+									• {hours > 0 ? `${hours}h ` : ""}
+									{minutes}m {seconds}s total length
+								</span>
+							)}
 						</div>
 						<SecondaryButton
 							onClick={handleExpandAllClick}
@@ -501,7 +523,6 @@ const CourseModal = ({ course, courseInProgress, handleShowCertificate }) => {
 
 	const handleAddToCart = async () => {
 		const itemAdded = await addItemToCart(course);
-		console.log("Item added:", itemAdded);
 		if (itemAdded) {
 			toast.success("Course added to cart!");
 		} else {
@@ -681,7 +702,7 @@ const TutorModal = ({ course, showDeleteModal }) => {
 					className="w-full"
 					onClick={handleEditCourse}
 				/>
-				{!course?.quiz && (
+				{course?.quiz.length === 0 && (
 					<SecondaryButton
 						text={"Create Quiz"}
 						className="w-full"
