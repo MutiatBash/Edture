@@ -6,10 +6,8 @@ export const truncateString = (str, num) => {
 };
 
 export const formatPriceWithCommas = (price) => {
-	// Convert the price to a string if it's not already
 	const priceStr = price?.toString();
 
-	// Format the price with commas
 	return priceStr?.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 };
 
@@ -30,4 +28,16 @@ export const formatVideoDuration = (seconds) => {
 	}
 
 	return `${minutes}:${remainingSeconds < 10 ? "0" : ""}${remainingSeconds}`;
+};
+
+export const formatDate = (dateString) => {
+	const options = { year: "numeric", month: "long", day: "numeric" };
+	return new Date(dateString).toLocaleDateString(undefined, options);
+};
+
+export const formatUpdatedAt = (dateString) => {
+	const date = new Date(dateString);
+	const month = String(date.getMonth() + 1).padStart(2, "0"); 
+	const year = date.getFullYear();
+	return `${month}/${year}`;
 };

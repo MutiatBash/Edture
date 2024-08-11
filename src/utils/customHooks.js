@@ -79,7 +79,10 @@ export const useInactivityTimeout = (timeout, setIsTimeoutModal) => {
 	};
 
 	const handleTimeout = () => {
-		localStorage.setItem("lastLocation", window.location.pathname);
+		const role = localStorage.getItem("userRole");
+		if (role) {
+			localStorage.setItem(`${role}_lastLocation`, window.location.pathname);
+		}
 		setIsTimeoutModal("inactivity");
 
 		if (modalTimerRef.current) {
@@ -130,6 +133,7 @@ export const useInactivityTimeout = (timeout, setIsTimeoutModal) => {
 	return null;
 };
 
+
 export const useSessionTimeout = (setIsTimeoutModal) => {
 	const modalTimerRef = useRef(null);
 	const { setUser, setToken } = useContext(userContext);
@@ -165,10 +169,13 @@ export const useSessionTimeout = (setIsTimeoutModal) => {
 			(error) => {
 				if (error.response && error.response.status === 401) {
 					if (!excludedRoutes.includes(window.location.pathname)) {
-						localStorage.setItem(
-							"lastLocation",
-							window.location.pathname
-						);
+						const role = localStorage.getItem("userRole");
+						if (role) {
+							localStorage.setItem(
+								`${role}_lastLocation`,
+								window.location.pathname
+							);
+						}
 						setIsTimeoutModal("session");
 
 						if (modalTimerRef.current) {
@@ -193,3 +200,4 @@ export const useSessionTimeout = (setIsTimeoutModal) => {
 
 	return null;
 };
+

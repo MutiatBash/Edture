@@ -81,7 +81,7 @@ const TutorSignin = () => {
 			localStorage.setItem("authToken", token);
 			setToken(token);
 
-			const lastLocation = localStorage.getItem("lastLocation");
+			const lastLocation = localStorage.getItem(`${role}_lastLocation`);
 			if (
 				lastLocation &&
 				![
@@ -97,7 +97,8 @@ const TutorSignin = () => {
 			} else {
 				navigate("/tutor-dashboard");
 			}
-			localStorage.removeItem("lastLocation");
+			
+			localStorage.removeItem(`${role}_lastLocation`);
 		} catch (error) {
 			setAuthLoading(false);
 			setAuthError(error.message);

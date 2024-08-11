@@ -238,6 +238,41 @@ const CourseContent = () => {
 	const textContent =
 		selectedTopic?.contentType === "text" ? selectedTopic.description : null;
 
+	function formatTextContent(text) {
+		if (!text) return "";
+
+		const sentences = text
+			.split(".")
+			.map((sentence) => sentence.trim())
+			.filter(Boolean);
+
+		const paragraphs = [];
+		let currentParagraph = [];
+		let lineCount = 0;
+
+		sentences.forEach((sentence) => {
+			const sentenceLines = sentence.split("\n").length;
+
+			if (lineCount + sentenceLines > 8) {
+				paragraphs.push(currentParagraph.join(". ") + ".");
+				currentParagraph = [];
+				lineCount = 0;
+			}
+
+			currentParagraph.push(sentence);
+			lineCount += sentenceLines;
+		});
+
+		if (currentParagraph.length > 0) {
+			paragraphs.push(currentParagraph.join(". ") + ".");
+		}
+
+		return paragraphs.join("\n\n");
+	}
+
+	const formattedText = formatTextContent(textContent);
+	console.log(formattedText);
+
 	const isFirstRender = useRef(true);
 
 	useEffect(() => {
@@ -339,52 +374,82 @@ const CourseContent = () => {
 				/>
 			);
 		}
-		return activeTab === "study" ? (
-			<div className="">
-				<p className="font-trap-grotesk text-lg">{textContent}</p>
-			</div>
-		) : activeTab === "discuss" ? (
-			<div className="flex flex-col gap-4">
-				<p className="font-trap-grotesk text-lg">
-					Visit the community page to browse topics and discussions. Post a
-					question, start a new discussion, or join an existing
-					conversation!
-				</p>
-				<div>
-					<Link
-						to={`/courses/${id}/chat`}
-						className="flex gap-2 font-trap-grotesk text-primaryBlue font-medium items-center justify-start"
+
+		if (activeTab === "study") {
+			return (
+				<div className="">
+					<div
+						style={{ whiteSpace: "pre-line" }}
+						className="font-trap-grotesk text-lg"
 					>
-						<img src={chatactive} alt="Chat" />
-						<span className="font-trap-grotesk">Chat</span>
-					</Link>
+						{formattedText}
+					</div>
 				</div>
-			</div>
-		) : activeTab === "resources" ? (
-			courseLessonsData?.map((lesson, index) => (
-				<div key={index} className="">
-					{lesson.topics.map((topic, i) =>
-						topic.downloadableMaterials?.map((resource, j) => (
-							<div
-								key={`${i}-${j}`}
-								className="flex gap-4 justify-start"
-							>
-								<h4 className="text-lg">{topic.title}:</h4>
-								<a
-									className="text-primaryBlue underline font-trap-grotesk text-lg"
-									href={resource.url}
-									target="_blank"
-									rel="noopener noreferrer"
+			);
+		}
+
+		if (activeTab === "discuss") {
+			return (
+				<div className="flex flex-col gap-4">
+					<p className="font-trap-grotesk text-lg">
+						Visit the community page to browse topics and discussions.
+						Post a question, start a new discussion, or join an existing
+						conversation!
+					</p>
+					<div>
+						<Link
+							to={`/courses/${id}/chat`}
+							className="flex gap-2 font-trap-grotesk text-primaryBlue font-medium items-center justify-start"
+						>
+							<img src={chatactive} alt="Chat" />
+							<span className="font-trap-grotesk">Chat</span>
+						</Link>
+					</div>
+				</div>
+			);
+		}
+
+		if (activeTab === "resources") {
+			const hasResources = courseLessonsData?.some((lesson) =>
+				lesson.topics.some(
+					(topic) => topic.downloadableMaterials?.length > 0
+				)
+			);
+
+			if (hasResources) {
+				return courseLessonsData.map((lesson, index) => (
+					<div key={index} className="">
+						{lesson.topics.map((topic, i) =>
+							topic.downloadableMaterials?.map((resource, j) => (
+								<div
+									key={`${i}-${j}`}
+									className="flex gap-4 justify-start"
 								>
-									{resource.name}
-								</a>
-							</div>
-						))
-					)}
-				</div>
-			))
-		) : null;
+									<h4 className="text-lg">{topic.title}:</h4>
+									<a
+										className="text-primaryBlue underline font-trap-grotesk text-lg"
+										href={resource.url}
+										rel="noopener noreferrer"
+									>
+										{resource.name}
+									</a>
+								</div>
+							))
+						)}
+					</div>
+				));
+			} else {
+				return (
+					<p className="text-lightGray text-lg font-medium font-trap-grotesk">
+						No resources available.
+					</p>
+				);
+			}
+		}
+
+		return null;
 	};
+
 
 	return (
 		<div>
@@ -424,21 +489,25 @@ const CourseContent = () => {
 					</div>
 
 					<div className="p-8 w-full">
-						<div className="flex justify-between items-center py-2">
-							<div></div>
-							<SecondaryButton
-								text={
-									selectedTopic?.isCompleted
-										? "Completed"
-										: isMarking
-										? "Marking as completed..."
-										: "Mark as completed"
-								}
-								onClick={markTopicAsCompleted}
-							/>
-						</div>
+						{!showQuizContent && (
+							<div className="flex justify-between items-center py-2">
+								<div></div>
+								<SecondaryButton
+									text={
+										selectedTopic?.isCompleted
+											? "Completed"
+											: isMarking
+											? "Marking as completed..."
+											: "Mark as completed"
+									}
+									onClick={markTopicAsCompleted}
+								/>
+							</div>
+						)}
 
-						{videoUrl && <VideoComponent url={videoUrl} />}
+						{!showQuizContent && videoUrl && (
+							<VideoComponent url={videoUrl} />
+						)}
 
 						{!showQuizContent && (
 							<>

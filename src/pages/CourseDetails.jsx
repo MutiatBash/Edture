@@ -26,6 +26,7 @@ import EditCourse from "../components/courses/EditCourse";
 import Certificate from "../components/courses/CertificateComponent";
 import { ConfirmationModal } from "../components/popups/Modal";
 import axios from "axios";
+import { formatUpdatedAt } from "../utils/utils";
 
 const CourseDetails = () => {
 	const { id } = useParams();
@@ -183,7 +184,10 @@ const StudentHeader = ({
 						<span className="font-trap-grotesk">4.5 •</span>
 					</div>
 					<span className="font-trap-grotesk">
-						Last updated: {selectedCourse?.lastUpdated} •
+						Last updated:{" "}
+						{selectedCourse?.updatedAt
+							? formatUpdatedAt(selectedCourse.updatedAt)
+							: ""}
 					</span>
 					{selectedCourse?.certificateAvailable && (
 						<span className="font-trap-grotesk">
@@ -220,7 +224,10 @@ const TutorHeader = ({ selectedCourse, showDeleteModal }) => (
 						<span className="font-trap-grotesk">4.5 •</span>
 					</div>
 					<span className="font-trap-grotesk">
-						Last updated: {selectedCourse?.updatedAt} •
+						Last updated:{" "}
+						{selectedCourse?.updatedAt
+							? formatUpdatedAt(selectedCourse.updatedAt)
+							: ""}
 					</span>
 					{selectedCourse?.certificateAvailable && (
 						<span className="font-trap-grotesk">

@@ -15,8 +15,10 @@ const ChatUI = ({ courseId, token }) => {
 	const [newMessage, setNewMessage] = useState("");
 	const [sendingMessageId, setSendingMessageId] = useState(null);
 	const endOfMessagesRef = useRef(null);
+	const [prevUrl, setPrevUrl] = useState(null);
 
 	useEffect(() => {
+		setPrevUrl(window.location.pathname);
 		if (courseId) {
 			fetchCourseById(courseId);
 		}
@@ -148,11 +150,21 @@ const ChatUI = ({ courseId, token }) => {
 		);
 	};
 
+	const handleHomeClick = () => {
+		if (prevUrl) {
+			navigate(prevUrl);
+		}
+	};
 	return (
 		<div className="px-12">
 			<div className=" flex flex-col gap-3 py-6">
 				<div className="flex gap-1 text-primaryBlue font-trap-grotesk items-center text-sm">
-					<Link className="font-trap-grotesk">Home</Link>
+					<Link
+						// to={`/courses/course-content/${courseId}`}
+						className="font-trap-grotesk"
+					>
+						Home
+					</Link>
 					<img src={arrowright} />
 					<Link className="font-trap-grotesk">Chat</Link>
 				</div>
@@ -245,7 +257,11 @@ const ChatUI = ({ courseId, token }) => {
 						}`}
 					>
 						<img
-							src={!newMessage.trim() && !isInputFocused ? sendicon : activesendicon}
+							src={
+								!newMessage.trim() && !isInputFocused
+									? sendicon
+									: activesendicon
+							}
 							alt="Send"
 						/>
 					</button>

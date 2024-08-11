@@ -85,7 +85,7 @@ const StudentSignin = () => {
 			localStorage.setItem("authToken", token);
 			setToken(token);
 
-			const lastLocation = localStorage.getItem("lastLocation");
+			const lastLocation = localStorage.getItem(`${role}_lastLocation`);
 			if (
 				lastLocation &&
 				![
@@ -94,14 +94,15 @@ const StudentSignin = () => {
 					"/forgot-password",
 					"/reset-password",
 					"tutor-dashboard",
-					"/"
+					"/",
 				].includes(lastLocation)
 			) {
 				navigate(lastLocation);
 			} else {
 				navigate("/student-dashboard");
 			}
-			localStorage.removeItem("lastLocation");
+
+			localStorage.removeItem(`${role}_lastLocation`);
 		} catch (error) {
 			setAuthLoading(false);
 			console.error("Error submitting data:", error.message);

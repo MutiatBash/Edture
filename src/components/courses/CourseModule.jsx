@@ -168,14 +168,15 @@ export const ContentModule = ({
 								>
 									{item.title}
 								</p>
-								{item.contentType === "video" &&
+								<div></div>
+								{/* {item.contentType === "video" &&
 									item.videoDurationInSeconds && (
 										<p>
 											{formatVideoDuration(
 												item.videoDurationInSeconds
 											)}
 										</p>
-									)}
+									)} */}
 								<img
 									className="w-4 cursor-pointer"
 									src={item.isCompleted ? bluecheck : whitecheck}
@@ -305,11 +306,6 @@ export const QuizSidebar = ({
 								<h5 className="font-medium font-trap-grotesk text-sm">
 									{quiz.title}
 								</h5>
-								<img
-									className="w-3"
-									src={completed ? bluecheck : whitecheck}
-									alt="completed"
-								/>
 							</div>
 						</div>
 					))}

@@ -254,7 +254,7 @@ const CreateCourse = ({ onCancel }) => {
 				topics: (lesson.items || []).map((item) => ({
 					title: item.topicTitle || "",
 					contentType: item?.content?.type || "",
-					textDescription:
+					description:
 						item?.content?.type === "text"
 							? item?.content?.text || ""
 							: "",
@@ -266,7 +266,6 @@ const CreateCourse = ({ onCancel }) => {
 						item?.content?.type === "video"
 							? item?.content?.duration || 0
 							: 0,
-					description: item.description || "",
 					downloadableMaterials: (item.resources || []).map(
 						(resource) => ({
 							type: "pdf",
@@ -484,7 +483,9 @@ const CreateCourse = ({ onCancel }) => {
 								disabled={imageLoading}
 							/>
 						</div>
-						{courseError && <div className="text-red">{courseError.message}</div>}
+						{courseError && (
+							<div className="text-red">{courseError.message}</div>
+						)}
 					</div>
 				)}
 
