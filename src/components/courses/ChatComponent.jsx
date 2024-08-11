@@ -15,10 +15,8 @@ const ChatUI = ({ courseId, token }) => {
 	const [newMessage, setNewMessage] = useState("");
 	const [sendingMessageId, setSendingMessageId] = useState(null);
 	const endOfMessagesRef = useRef(null);
-	const [prevUrl, setPrevUrl] = useState(null);
 
 	useEffect(() => {
-		setPrevUrl(window.location.pathname);
 		if (courseId) {
 			fetchCourseById(courseId);
 		}
@@ -150,11 +148,6 @@ const ChatUI = ({ courseId, token }) => {
 		);
 	};
 
-	const handleHomeClick = () => {
-		if (prevUrl) {
-			navigate(prevUrl);
-		}
-	};
 	return (
 		<div className="px-12">
 			<div className=" flex flex-col gap-3 py-6">
